@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Pokerturnier Mundingen</title>
+        <meta name="description" content="" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style>
+            * {
+                margin-bottom: 0;
+            }
+            body {
+                margin: 0;
+            }
+
+            main {
+                background:
+                radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 25%, #5d4a1f 75%, #5d4a1f 100%);
+                background-repeat: none;
+                color: black;
+                padding: 10px;
+            }
+
+            table {
+                font-family: Arial, Helvetica, sans-serif;
+                background-color: #1d5410;
+                color: white;
+                border-collapse: collapse;
+                width: 100%;
+                max-width: 600px;
+                margin: 1em 0;
+            }
+
+            h1 {
+                font-size: 1.6rem;
+                margin-top: 0.5em;
+            }
+
+            h1, p {
+                margin-top: 1rem;
+            }
+
+            h1 + p {
+                margin-top: 0;
+            }
+
+            th {
+                color: #ECE18F;
+            }
+
+            td, th {
+                padding: 5px;
+                text-align: left;
+            }
+
+            table tr:nth-child(even) td {
+                background: #36701e;
+            }
+        </style>
+    </head>
+    <body>
+        <main>
+            <h1>Pokerturnier Mundingen</h1>
+            <p>Zuletzt aktualisiert am 20.03.2023</p>
+            <section id="results">
+            </section>
+        </main>
+        <script>
+            fetch('/api/fetch.js')
+            .then((response) => response.json())
+            .then((json) => {
+                const data = json.data;
+                if (data.length > 0) {
+                    let html = '';
+                    let count = 0;
+                    html += '<table><tr><th></th><th>Name</th><th>Spiele</th><th>Siege</th></tr>';
+                    data.forEach((item) => {
+                        count += 1;
+                        html += `<tr><td>${count}</td><td>${item.Name}</td><td>${item.Spiele}</td><td>${item.Siege}</td></tr>`
+                    });
+                    html += '</table>';
+                    document.getElementById('results').innerHTML = html;
+                }
+            });
+        </script>
+    </body>
+</html>

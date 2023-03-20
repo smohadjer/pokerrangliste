@@ -8,8 +8,8 @@ async function run() {
     console.log('openning db...');
     await client.connect();
     const database = client.db('test');
-    const users = database.collection('customers');
-    const data = await users.find({}).toArray();
+    const users = database.collection('poker');
+    const data = await users.find({}).sort({ Siege: -1, Spiele: -1, Name: 1 }).toArray();
     return data;
   } catch (e) {
     console.error(e);
