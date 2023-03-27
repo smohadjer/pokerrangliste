@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Pokerturnier Mundingen</title>
+        <title>Pokerturnier</title>
         <meta name="description" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <style>
@@ -18,9 +18,6 @@
                 background:
                 radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 33%, #aa832a 66%, #5d4a1f 100%);
                 background-repeat: none;
-            }
-
-            main {
                 color: black;
                 padding: 10px;
             }
@@ -60,14 +57,44 @@
             table tr:nth-child(even) td {
                 background: #36701e;
             }
+
+            footer:first-child {
+                margin-top: 0;
+            }
+
+            svg {
+                display: block;
+                margin: 0 auto;
+                width: 50px;
+                height: 50px;
+                margin: 5px;
+            }
         </style>
     </head>
     <body>
         <main>
-            <h1>Pokerturnier Mundingen</h1>
-            <p>Zuletzt aktualisiert am 20.03.2023</p>
-            <section id="results"></section>
+            <h1>Pokerrangliste 2023</h1>
+            <section id="results">
+                <div id="svg">
+                    <svg id="loader" version="1.1" id="L9" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 100 100" enable-background="new 0 0 0 0" xml:space="preserve">
+                        <path fill="#666" d="M73,50c0-12.7-10.3-23-23-23S27,37.3,27,50 M30.9,50c0-10.5,8.5-19.1,19.1-19.1S69.1,39.5,69.1,50">
+                            <animateTransform
+                            attributeName="transform"
+                            attributeType="XML"
+                            type="rotate"
+                            dur="1s"
+                            from="0 50 50"
+                            to="360 50 50"
+                            repeatCount="indefinite" />
+                        </path>
+                    </svg>
+                </div>
+            </section>
         </main>
+        <footer>
+            <p>Ein Sieg bedeutet, dass ein Spieler bei einem Turnier den ersten oder zweiten Platz erreicht hat.</p>
+            <p>Zuletzt aktualisiert am 26.03.2023</p>
+        </footer>
         <script>
             fetch('/api/fetch.js')
             .then((response) => response.json())
@@ -76,7 +103,7 @@
                 if (data.length > 0) {
                     let html = '';
                     let count = 0;
-                    html += '<table><tr><th></th><th>Name</th><th>Spiele</th><th>Siege</th></tr>';
+                    html += '<table><tr><th>Platz</th><th>Spieler</th><th>Spielzahl</th><th>Siege</th></tr>';
                     data.forEach((item) => {
                         count += 1;
                         html += `<tr><td>${count}</td><td>${item.Name}</td><td>${item.Spiele}</td><td>${item.Siege}</td></tr>`
