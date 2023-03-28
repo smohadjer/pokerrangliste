@@ -95,23 +95,6 @@
             <p>Ein Sieg bedeutet, dass ein Spieler bei einem Turnier den ersten oder zweiten Platz erreicht hat.</p>
             <p>Erster Dateneintrag am 18.03.2023. Zuletzt aktualisiert am 26.03.2023.</p>
         </footer>
-        <script>
-            fetch('/api/fetch.js')
-            .then((response) => response.json())
-            .then((json) => {
-                const data = json.data;
-                if (data.length > 0) {
-                    let html = '';
-                    let count = 0;
-                    html += '<table><tr><th>Platz</th><th>Spieler</th><th>Spielzahl</th><th>Siege</th></tr>';
-                    data.forEach((item) => {
-                        count += 1;
-                        html += `<tr><td>${count}</td><td>${item.Name}</td><td>${item.Spiele}</td><td>${item.Siege}</td></tr>`
-                    });
-                    html += '</table>';
-                    document.getElementById('results').innerHTML = html;
-                }
-            });
-        </script>
+        <script src="js/index.js"></script>
     </body>
 </html>
