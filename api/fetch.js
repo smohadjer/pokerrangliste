@@ -9,7 +9,7 @@ async function run() {
     await client.connect();
     const database = client.db('test');
     const users = database.collection('poker2023');
-    const data = await users.find({}).sort({ Siege: -1, Spiele: -1, Name: 1 }).toArray();
+    const data = await users.find({}).sort({ Siege: -1, Spiele: 1, Name: 1 }).toArray();
     return data;
   } catch (e) {
     console.error(e);
