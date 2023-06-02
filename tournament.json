@@ -1,0 +1,35 @@
+{
+  "date": "02.06.2023",
+  "buyin": 10,
+  "bountyWinners": ["Silvia", "Pedram"],
+  "bountryPrizes": [35, 25],
+  "prizes": [35, 15],
+  "players": [
+    {
+      "name": "saeid",
+      "rebuys": 2,
+      "ranking": 1
+    },
+    {
+      "name": "majid",
+      "rebuys": 0,
+      "ranking": 2
+    },
+    {
+      "name": "silvia",
+      "rebuys": 1,
+      "ranking": 3
+    },
+    {
+      "name": "pedram",
+      "rebuys": 0,
+      "ranking": 4
+    },
+    {
+      "name": "masoud",
+      "rebuys": 3,
+      "ranking": 5
+    },
+  ]
+}
+
