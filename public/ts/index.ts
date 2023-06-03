@@ -90,7 +90,7 @@ fetch('/api/fetch.js')
             count += 1;
             html += `<tr>
             <td>${item.ranking}</td>
-            <td>${item.name}</td>
+            <td class="name">${item.name}</td>
             <td>${item.rebuys}</td>
             <td>${getPrize(item, data)}</td>
             <td>${getBounty(item, data)}</td>

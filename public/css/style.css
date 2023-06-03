@@ -46,6 +46,10 @@ td, th {
     text-align: left;
 }
 
+td.name {
+    text-transform: capitalize;
+}
+
 table tr:nth-child(even) td {
     background: #36701e;
 }
