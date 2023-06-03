@@ -1,5 +1,12 @@
-const getPoints = (item) => {
-    const points = 0;
+const getPoints = (item, data) => {
+    const rebuys = item.rebuys * data.buyin;
+    let points = 0 - data.buyin - rebuys;
+
+    const winnersCount = data.prizes.length;
+    console.log(winnersCount);
+    if (item.ranking <= winnersCount) {
+        points += data.prizes[item.ranking - 1];
+    }
 
     return points;
 };
@@ -29,10 +36,9 @@ fetch('/api/fetch.js')
         data.players.forEach((item) => {
             count += 1;
             html += `<tr><td>${item.ranking}</td><td>${item.name}</td><td>${item.rebuys}</td>
-            <td>${getPoints(item)}</td></tr>`
+            <td>${getPoints(item, data)}</td></tr>`
         });
         html += '</table>';
-        console.log(html);
         const results = document.getElementById('results');
         if (results) {
             results.innerHTML = html;
