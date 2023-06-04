@@ -1,3 +1,4 @@
+const players = [];
 const getPoints = (item, data) => {
     const rebuys = item.rebuys * data.buyin;
     let points = 0 - data.buyin - rebuys;
@@ -56,48 +57,71 @@ fetch('/api/fetch.js')
 .then((response) => response.json())
 .then((json) => {
     const data = json.data;
-    console.log(data);
-    console.log(data.length);
     if (data) {
+
+        data.players.forEach((item) => {
+            item.points = getPoints(item, data);
+            item.bounty = getBounty(item, data);
+            item.prize = getPrize(item, data);
+            players.push(item);
+        });
+
+        // sort based on points
+        players.sort((item1, item2) => {
+            return item2.points - item1.points;
+        });
+
+        // if points are the same, sort based on position
+        players.sort((item1, item2) => {
+            if (item1.points === item2.points) {
+                return item1.ranking - item2.ranking;
+            }
+        });
+
         let html = `<p>Date: ${data.date}<br>
-        Buyin: ${data.buyin}&euro;<br>
-        Players: ${data.players.length}`;
+        Buyin: ${data.buyin} &euro;<br>
+        Players: ${data.players.length}<br>`;
 
+        let pot = 0;
+        data.prizes.forEach((item) => {
+            pot += item;
+        });
+        data.bounties.forEach((item) => {
+            pot += item.prize;
+        });
 
-        if (data.prizes.length > 0) {
-            html += `<br>`;
-            data.prizes.forEach((item, index) => {
-                html += `Prize ${index+1}: ${item}&euro;<br>`
-            });
-        }
+        html += `Prize: ${pot} &euro;<br>`
 
-        html += `Total Rebuys: ${getRebuys(data)}`;
+        html += `Rebuys: ${getRebuys(data)}`;
 
 
         html += '</p>';
 
 
-        let count = 0;
-        html += `<table><tr>
-                <th>Ranking</th>
+        html += `<div class="wrapper"><table><tr>
+                <th></th>
                 <th>Player</th>
+                <th>Position</th>
                 <th>Rebuys</th>
                 <th>Prize</th>
                 <th>Bounty</th>
                 <th>Points</th>
             </tr>`;
-        data.players.forEach((item) => {
-            count += 1;
+
+        let count = 0;
+        players.forEach((item) => {
+            count ++;
             html += `<tr>
-            <td>${item.ranking}</td>
+            <td>${count}</td>
             <td class="name">${item.name}</td>
+            <td>${item.ranking}</td>
             <td>${item.rebuys}</td>
-            <td>${getPrize(item, data)}</td>
-            <td>${getBounty(item, data)}</td>
-            <td>${getPoints(item, data)}</td>
+            <td>${item.prize}</td>
+            <td>${item.bounty}</td>
+            <td>${item.points}</td>
             </tr>`
         });
-        html += '</table>';
+        html += '</table></div>';
         const results = document.getElementById('results');
         if (results) {
             results.innerHTML = html;
