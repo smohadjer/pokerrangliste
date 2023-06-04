@@ -9,7 +9,8 @@ const app = express();
 app.use(express.static('public'));
 
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(express.urlencoded({ extended: false }))
+app.use(express.json());
 
 const port = 8000;
 app.listen(port, () => {
@@ -17,5 +18,10 @@ app.listen(port, () => {
 });
 
 app.get('/api/fetch.js', (req, res) => {
+  fetch(req, res);
+});
+
+app.post('/api/fetch.js', (req, res) => {
+  console.log(req.body);
   fetch(req, res);
 });

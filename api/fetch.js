@@ -1,16 +1,26 @@
 import uri from './db.js';
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 
 const client = new MongoClient(uri);
 
-async function run() {
+async function run(req) {
   try {
     console.log('openning db...');
     await client.connect();
     const database = client.db('test');
     const collection = database.collection('tournaments');
-    const data = await collection.findOne();
-    console.log(data);
+    let data;
+
+    if (req.body.id) {
+      console.log(req.body.id);
+      data = await collection.findOne({_id: new ObjectId(req.body.id)});
+      console.log(data);
+    } else {
+      //const query = { "status" : { "$exists" : false } };
+      data = await collection.find().toArray();
+    }
+
+    //const data = await collection.find().toArray();
     //const data = await users.find({}).sort({ Siege: -1, Spiele: 1, Name: 1 }).toArray();
     return data;
   } catch (e) {
@@ -23,7 +33,7 @@ async function run() {
 }
 
 export default async (req, res) => {
-  const data = await run().catch(console.dir);
+  const data = await run(req).catch(console.dir);
 
   res.json({data: data});
   //res.status(200).send(table);

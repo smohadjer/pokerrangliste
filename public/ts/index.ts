@@ -53,10 +53,23 @@ const getBounty = (item, data) => {
     return bounty;
 };
 
-fetch('/api/fetch.js')
+const queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+const id = urlParams.get('id');
+
+//fetch('/api/fetch.js')
+fetch('/api/fetch.js', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({id: id})
+  })
 .then((response) => response.json())
 .then((json) => {
     const data = json.data;
+    console.log(data);
     if (data) {
 
         data.players.forEach((item) => {
@@ -80,7 +93,8 @@ fetch('/api/fetch.js')
 
         let html = `<p>Date: ${data.date}<br>
         Buyin: ${data.buyin} &euro;<br>
-        Players: ${data.players.length}<br>`;
+        Players: ${data.players.length}<br>
+        Rebuys: ${getRebuys(data)}<br>`;
 
         let pot = 0;
         data.prizes.forEach((item) => {
@@ -92,7 +106,6 @@ fetch('/api/fetch.js')
 
         html += `Prize: ${pot} &euro;<br>`
 
-        html += `Rebuys: ${getRebuys(data)}`;
 
 
         html += '</p>';
