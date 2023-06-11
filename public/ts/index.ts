@@ -77,15 +77,12 @@ const urlParams = new URLSearchParams(queryString);
 const id = urlParams.get('id');
 const renderPlayers = (players) => {
     let html = `<h1>Ranking 2023</h1>
-    <p>Players are ranked by earnings. Last updated: June 3, 2023</p>
     <div class="wrapper"><table><tr>
             <th>Rank</th>
             <th>Name</th>
-            <th>Earnings</th>
+            <th>Points</th>
             <th>Games</th>
             <th>Rebuys</th>
-            <th>Prize</th>
-            <th>Bounty</th>
         </tr>`;
 
     let count = 0;
@@ -94,11 +91,9 @@ const renderPlayers = (players) => {
         html += `<tr>
         <td>${count}</td>
         <td class="name">${item.name}</td>
-        <td>${item.points}&nbsp;&euro;</td>
+        <td>${item.points}</td>
         <td>${item.games}</td>
         <td>${item.rebuys}</td>
-        <td>${item.prize > 0 ? item.prize + '&nbsp;&euro;' : 0}</td>
-        <td>${item.bounty > 0 ? item.bounty + '&nbsp;&euro;' : 0}</td>
         </tr>`
     });
     html += '</table></div>';
@@ -123,24 +118,20 @@ const renderTournament = (data) => {
     });
 
     let html = `<p>Date: ${data.date}<br>
-    Buyin: ${data.buyin} &euro;<br>
+    Buyin: ${data.buyin}<br>
     Players: ${data.players.length}<br>
-    Rebuys: ${getRebuys(data)}<br>`;
+    Rebuys: ${getRebuys(data)}</p>`;
 
     let pot = 0;
     data.prizes.forEach((item) => {
         pot += item;
     });
-    data.bounties.forEach((item) => {
-        pot += item.prize;
-    });
 
-    html += `Prize: ${pot} &euro;<br>`
-
-
-
-    html += '</p>';
-
+    if ( data.bounties) {
+        data.bounties.forEach((item) => {
+            pot += item.prize;
+        });
+    }
 
     html += `<div class="wrapper"><table><tr>
             <th></th>
@@ -156,8 +147,8 @@ const renderTournament = (data) => {
         <td>${item.ranking}</td>
         <td class="name">${item.name}</td>
         <td>${item.rebuys}</td>
-        <td>${item.prize > 0 ? item.prize + '&nbsp;&euro;' : 0}</td>
-        <td>${item.bounty > 0 ? item.bounty + '&nbsp;&euro;' : 0}</td>
+        <td>${item.prize > 0 ? item.prize : 0}</td>
+        <td>${item.bounty > 0 ? item.bounty : 0}</td>
         <td>${item.points}</td>
         </tr>`
     });
