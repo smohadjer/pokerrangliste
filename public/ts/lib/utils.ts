@@ -99,17 +99,8 @@ const renderPlayers = (players) => {
     }
 };
 export const renderTournament = (data) => {
-    addPlayers(data);
-
-    // sort based on points
-    /*
-    players.sort((item1, item2) => {
-        return item2.points - item1.points;
-    });
-    */
-
     // if points are the same, sort based on position
-    players.sort((item1, item2) => {
+    data.players.sort((item1, item2) => {
         return item1.ranking - item2.ranking;
     });
 
@@ -137,14 +128,14 @@ export const renderTournament = (data) => {
             <th>Points</th>
         </tr>`;
 
-    players.forEach((item) => {
+    data.players.forEach((item) => {
         html += `<tr>
         <td>${item.ranking}</td>
         <td class="name"><a href="/?playerId=${item.name}">${item.name}</a></td>
         <td>${item.rebuys}</td>
-        <td>${item.prize > 0 ? item.prize : 0}</td>
-        <td>${item.bounty > 0 ? item.bounty : 0}</td>
-        <td>${item.points}</td>
+        <td>${getPrize(item, data)}</td>
+        <td>${getBounty(item, data)}</td>
+        <td>${getPoints(item, data)}</td>
         </tr>`
     });
     html += '</table></div>';
@@ -154,17 +145,22 @@ export const renderTournament = (data) => {
     }
 };
 
-export const renderRanking = (data) => {
+const setPlayers = (data) => {
+  if (players.length === 0) {
     data.forEach((tournament) => {
-        addPlayers(tournament);
+      addPlayers(tournament);
     });
 
-    // sort based on points
+    // sort players based on points
     players.sort((item1, item2) => {
-        return item2.points - item1.points;
+      return item2.points - item1.points;
     });
+  }
+};
 
-    renderPlayers(players);
+export const renderRanking = (data) => {
+  setPlayers(data);
+  renderPlayers(players);
 };
 
 const sortByDate = (data) => {
@@ -180,10 +176,14 @@ const sortByDate = (data) => {
 };
 
 export const renderProfile = (data, playerId) => {
-  console.log(playerId);
+  setPlayers(data);
+
+  const player = players.find((player) => player.name === playerId);
+  const index = players.findIndex((player) => player.name === playerId);
 
   let html = `<p><a href="/">Home</a></p>
   <h1>${playerId}</h1>
+  <p>Total Points: ${player.points} &nbsp; All-time Ranking: ${index + 1}</p>
   <div class="wrapper"><table><tr>
           <th>Games</th>
           <th>Points</th>
