@@ -1,16 +1,16 @@
 const players = [];
-const getPoints = (item, data) => {
-    const rebuys = item.rebuys * data.buyin;
-    let points = 0 - data.buyin - rebuys;
+const getPoints = (player, tournament) => {
+    const rebuys = player.rebuys * tournament.buyin;
+    let points = 0 - tournament.buyin - rebuys;
 
-    const winnersCount = data.prizes.length;
-    if (item.ranking <= winnersCount) {
-        points += data.prizes[item.ranking - 1];
+    const winnersCount = tournament.prizes.length;
+    if (player.ranking <= winnersCount) {
+        points += tournament.prizes[player.ranking - 1];
     }
 
-    if (data.bounties) {
-        data.bounties.forEach((bounty)=> {
-            if (item.name === bounty.name) {
+    if (tournament.bounties) {
+      tournament.bounties.forEach((bounty)=> {
+            if (player.name === bounty.name) {
                 points += bounty.prize;
             }
         });
@@ -86,7 +86,7 @@ const renderPlayers = (players) => {
         count ++;
         html += `<tr>
         <td>${count}</td>
-        <td class="name">${item.name}</td>
+        <td class="name"><a href="/?playerId=${item.name}">${item.name}</a></td>
         <td>${item.points}</td>
         <td>${item.games}</td>
         <td>${item.rebuys}</td>
@@ -113,11 +113,9 @@ export const renderTournament = (data) => {
         return item1.ranking - item2.ranking;
     });
 
-    let html = `<p><a href="/">Back</a></p>
-    <p>Date: ${data.date}<br>
-    Buyin: ${data.buyin}<br>
-    Players: ${data.players.length}<br>
-    Rebuys: ${getRebuys(data)}</p>`;
+    let html = `<p><a href="/">Home</a></p>
+    <h1>Tournament ${data.date}</h1>
+    <p>Buyin: ${data.buyin} &nbsp; Players: ${data.players.length} &nbsp; Rebuys: ${getRebuys(data)}</p>`;
 
     let pot = 0;
     data.prizes.forEach((item) => {
@@ -142,7 +140,7 @@ export const renderTournament = (data) => {
     players.forEach((item) => {
         html += `<tr>
         <td>${item.ranking}</td>
-        <td class="name">${item.name}</td>
+        <td class="name"><a href="/?playerId=${item.name}">${item.name}</a></td>
         <td>${item.rebuys}</td>
         <td>${item.prize > 0 ? item.prize : 0}</td>
         <td>${item.bounty > 0 ? item.bounty : 0}</td>
@@ -169,6 +167,54 @@ export const renderRanking = (data) => {
     renderPlayers(players);
 };
 
+const sortByDate = (data) => {
+    const sortedData = structuredClone(data);
+    // sort tournaments by date
+    sortedData.sort((item1, item2) => {
+      const date1 = new Date(item1.date).valueOf();
+      const date2 = new Date(item2.date).valueOf();
+      return date2 - date1;
+    });
+
+    return sortedData;
+};
+
+export const renderProfile = (data, playerId) => {
+  console.log(playerId);
+
+  let html = `<p><a href="/">Home</a></p>
+  <h1>${playerId}</h1>
+  <div class="wrapper"><table><tr>
+          <th>Games</th>
+          <th>Points</th>
+          <th>Ranking</th>
+          <th>Players</th>
+          <th>Rebuys</th>
+      </tr>`;
+
+  const sortedData = sortByDate(data);
+
+  sortedData.forEach((tournament) => {
+      console.log(tournament);
+      const player = tournament.players.filter(player => player.name === playerId);
+      if (player.length > 0) {
+        html += `<tr>
+        <td><a href="/?id=${tournament._id}">${tournament.date}</a></td>
+        <td>${getPoints(player[0], tournament)}</td>
+        <td>${player[0].ranking}</td>
+        <td>${tournament.players.length}</td>
+        <td>${player[0].rebuys}</td>
+        </tr>`
+      }
+  });
+
+  html += '</table></div>';
+  const results = document.getElementById('results');
+  if (results) {
+      results.innerHTML = html;
+  }
+};
+
 export const renderGamesList = (data) => {
   const heading = document.createElement('h2');
   heading.append('Games');
@@ -176,7 +222,9 @@ export const renderGamesList = (data) => {
   const ul = document.createElement('ul');
   ul.setAttribute('class', 'listing');
 
-  data.forEach((tournament) => {
+  const sortedData = sortByDate(data);
+
+  sortedData.forEach((tournament) => {
       const li = document.createElement('li');
       const anchor = document.createElement('a');
       anchor.setAttribute('href', `/?id=${tournament._id}`);

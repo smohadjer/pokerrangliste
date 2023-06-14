@@ -51,8 +51,17 @@ td, th {
     text-align: left;
 }
 
+h1,
 td.name {
     text-transform: capitalize;
+}
+
+td a {
+    color: white;
+}
+
+td a:visited {
+    color: yellowgreen;
 }
 
 table tr:nth-child(even) td {
