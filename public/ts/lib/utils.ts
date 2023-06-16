@@ -18,9 +18,9 @@ const getPoints = (player, tournament) => {
 
     return points;
 };
-const getRebuys = (data) => {
+const getRebuys = (tournament) => {
     let rebuys = 0;
-    data.players.forEach((player) => {
+    tournament.players.forEach((player) => {
         rebuys += player.rebuys;
     });
 
@@ -72,12 +72,12 @@ const addPlayers = (tournament) => {
 };
 
 const renderPlayers = (players) => {
-    let html = `<h1>Ranking 2023</h1>
+    let html = `<h1>Ranking</h1>
     <div class="wrapper"><table><tr>
             <th>Rank</th>
             <th>Name</th>
             <th>Points</th>
-            <th>Games</th>
+            <th>Tournaments</th>
             <th>Rebuys</th>
         </tr>`;
 
@@ -98,15 +98,16 @@ const renderPlayers = (players) => {
         results.innerHTML = html;
     }
 };
+
 export const renderTournament = (data) => {
     // if points are the same, sort based on position
     data.players.sort((item1, item2) => {
         return item1.ranking - item2.ranking;
     });
 
-    let html = `<p><a href="/">Home</a></p>
+    let html = `<p><a href="#" onclick="history.back();">Back</a></p>
     <h1>Tournament ${data.date}</h1>
-    <p>Buyin: ${data.buyin} &nbsp; Players: ${data.players.length} &nbsp; Rebuys: ${getRebuys(data)}</p>`;
+    <p>Players: ${data.players.length} &nbsp; Buyin: ${data.buyin} &nbsp; Rebuys: ${getRebuys(data)}</p>`;
 
     let pot = 0;
     data.prizes.forEach((item) => {
@@ -181,11 +182,11 @@ export const renderProfile = (data, playerId) => {
   const player = players.find((player) => player.name === playerId);
   const index = players.findIndex((player) => player.name === playerId);
 
-  let html = `<p><a href="/">Home</a></p>
+  let html = `<p><a href="#" onclick="history.back();">Back</a></p>
   <h1>${playerId}</h1>
   <p>Total Points: ${player.points} &nbsp; All-time Ranking: ${index + 1}</p>
   <div class="wrapper"><table><tr>
-          <th>Games</th>
+          <th>Tournaments</th>
           <th>Points</th>
           <th>Ranking</th>
           <th>Players</th>
@@ -216,26 +217,30 @@ export const renderProfile = (data, playerId) => {
 };
 
 export const renderGamesList = (data) => {
-  const heading = document.createElement('h2');
-  heading.append('Games');
-
-  const ul = document.createElement('ul');
-  ul.setAttribute('class', 'listing');
+    let html = `<h1>Tournaments</h1>
+    <div class="wrapper"><table><tr>
+            <th>Date</th>
+            <th>Players</th>
+            <th>Buyin</th>
+            <th>Rebuys</th>
+            <th>Bounty</th>
+        </tr>`;
 
   const sortedData = sortByDate(data);
 
   sortedData.forEach((tournament) => {
-      const li = document.createElement('li');
-      const anchor = document.createElement('a');
-      anchor.setAttribute('href', `/?id=${tournament._id}`);
-      anchor.append(tournament.date);
-      li.append(anchor);
-      ul.append(li);
+        html += `<tr>
+        <td><a href="/?id=${tournament._id}">${tournament.date}</a></td>
+        <td>${tournament.players.length}</td>
+        <td>${tournament.buyin}</td>
+        <td>${getRebuys(tournament)}</td>
+        <td>${tournament.bounties ? 'Yes' : 'No'}</td>
+        </tr>`;
   });
 
+  html += '</table></div>';
   const results = document.getElementById('results');
   if (results) {
-      results.append(heading);
-      results.append(ul);
+      results.innerHTML = html;
   }
 };

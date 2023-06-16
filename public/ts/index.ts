@@ -9,6 +9,7 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const id = urlParams.get('id');
 const playerId = urlParams.get('playerId');
+const view = urlParams.get('view');
 
 fetch('/api/fetch.js', {
     method: 'POST',
@@ -25,8 +26,11 @@ fetch('/api/fetch.js', {
         if (playerId) {
             renderProfile(data, playerId);
         } else {
-            renderRanking(data);
-            renderGamesList(data);
+            if (view === 'tournaments') {
+                renderGamesList(data);
+            } else {
+                renderRanking(data);
+            }
         }
     } else {
         renderTournament(data);
