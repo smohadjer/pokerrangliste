@@ -12,11 +12,10 @@ body {
     radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 33%, #aa832a 66%, #5d4a1f 100%);
     background-repeat: none;
     color: black;
-    padding: 10px;
 }
 
 nav ul {
-    margin: 0;
+    margin: 10px;
     padding: 0;
     list-style: none;
 }
@@ -55,11 +54,10 @@ table {
 
 h1 {
     font-size: 1.6rem;
-    margin-top: 0.5em;
 }
 
 h1, p {
-    margin-top: 1rem;
+    margin: 10px;
 }
 
 h1 + p {
