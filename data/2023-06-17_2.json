@@ -1,0 +1,68 @@
+{
+  "date": "2023-06-17",
+  "buyin": 5,
+  "rebuys": 1,
+  "prizes": [35, 20, 10],
+  "players": [
+    {
+      "name": "saeid",
+      "rebuys": 0,
+      "ranking": 2
+    },
+    {
+      "name": "masoud",
+      "rebuys": 0,
+      "ranking": 9
+    },
+    {
+      "name": "nikolai",
+      "rebuys": 0,
+      "ranking": 7
+    },
+    {
+      "name": "mehdi",
+      "rebuys": 0,
+      "ranking": 3
+    },
+    {
+      "name": "michael",
+      "rebuys": 0,
+      "ranking": 1
+    },
+    {
+      "name": "eva",
+      "rebuys": 0,
+      "ranking": 6
+    },
+    {
+      "name": "silvia",
+      "rebuys": 1,
+      "ranking": 4
+    },
+    {
+      "name": "andreas l.",
+      "rebuys": 0,
+      "ranking": 5
+    },
+    {
+      "name": "isabela",
+      "rebuys": 0,
+      "ranking": 12
+    },
+    {
+      "name": "simon",
+      "rebuys": 0,
+      "ranking": 8
+    },
+    {
+      "name": "vika",
+      "rebuys": 0,
+      "ranking": 10
+    },
+    {
+      "name": "anca",
+      "rebuys": 0,
+      "ranking": 11
+    }
+  ]
+}
