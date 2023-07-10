@@ -10,14 +10,37 @@ async function run(req) {
     console.log('openning db...');
     await client.connect();
     const database = client.db('test');
-    console.log(req.body);
-    return;
+    const count = Number(req.body.count);
+    const players = [];
+    const prizes = [];
+    let rebuys = 0;
+
+    for (let i=0; i<count; i++) {
+      console.log(req.body[`players_${i}_name`]);
+      const player = {};
+      const prize = Number(sanitize(req.body[`players_${i}_prize`]));
+      player.name = sanitize(req.body[`players_${i}_name`]).toLowerCase();
+      player.rebuys = Number(sanitize(req.body[`players_${i}_rebuys`]));
+      player.ranking = i+1;
+      players.push(player);
+
+      if (player.rebuys > 0) {
+        rebuys += player.rebuys;
+      }
+
+      if (prize > 0) {
+        prizes.push(prize);
+      }
+    }
+
     const collection = database.collection('tournaments');
     await collection.insertOne({
       date: sanitize(req.body.date),
       round: sanitize(req.body.round),
       buyin: sanitize(req.body.buyin),
-      rebuys: 0
+      rebuys: rebuys,
+      prizes: prizes,
+      players: players
     });
   } catch (e) {
     console.error(e);

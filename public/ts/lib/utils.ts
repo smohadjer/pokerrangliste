@@ -72,7 +72,7 @@ const addPlayers = (tournament) => {
 };
 
 const renderPlayers = (players) => {
-    let html = `<h1>All-time Ranking</h1>
+    let html = `<h1>Ranking</h1>
     <div class="wrapper"><table><tr>
             <th>Rank</th>
             <th>Name</th>
@@ -105,8 +105,7 @@ export const renderTournament = (data) => {
         return item1.ranking - item2.ranking;
     });
 
-    let html = `<p><a href="#" onclick="history.go(-1); event.preventDefault();">Back</a></p>
-    <h1>Tournament ${data.date}</h1>
+    let html = `<h1>Tournament ${data.date}</h1>
     <p>Players: ${data.players.length} &nbsp; Buyin: ${data.buyin} &nbsp; Rebuys: ${getRebuys(data)}</p>`;
 
     let pot = 0;
@@ -182,9 +181,8 @@ export const renderProfile = (data, playerId) => {
   const player = players.find((player) => player.name === playerId);
   const index = players.findIndex((player) => player.name === playerId);
 
-  let html = `<p><a href="#" onclick="history.go(-1); event.preventDefault();">Back</a></p>
-  <h1>${playerId}</h1>
-  <p>Total Points: ${player.points} &nbsp; All-time Ranking: ${index + 1}</p>
+  let html = `<h1>${playerId}</h1>
+  <p>Total Points: ${player.points} &nbsp; Ranking: ${index + 1}</p>
   <div class="wrapper"><table><tr>
           <th>Tournament</th>
           <th>Points</th>
