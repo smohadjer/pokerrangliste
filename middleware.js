@@ -9,7 +9,7 @@ export default function middleware(req) {
     const authValue = basicAuth.split(' ')[1];
     const [user, pwd] = atob(authValue).split(':');
 
-    if (user === 'admin' && pwd === 'Opengl?1') {
+    if (user === process.env.admin_username && pwd === process.env.admin_password) {
       next();
     } else {
       return new Response('credentials wrong', {
