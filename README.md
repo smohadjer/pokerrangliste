@@ -20,10 +20,10 @@ mongod --config /usr/local/etc/mongod.conf
 ````
 Follow instructions here: 
 https://www.mongodb.com/docs/manual/reference/configuration-options/
-Example of my config file:
+Example of config file with access control
 ````
 processManagement:
-   fork: true
+   fork: false
 net:
    bindIp: localhost
    port: 27017
@@ -36,5 +36,9 @@ systemLog:
 storage:
    journal:
       enabled: true
+security:
+  authorization: enabled
 ````
+## Enable access control
+https://www.mongodb.com/docs/manual/tutorial/configure-scram-client-authentication/
 
