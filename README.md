@@ -1,12 +1,11 @@
+https://poker.myendpoint.de/
 
-Live URL  
-- https://poker.myendpoint.de/
-
-Local URL: http://localhost:3000
-vercel dev
-
-Deployment:
-vercel --prod
+# Run on localhost
+- git clone https://github.com/smohadjer/pokerrangliste.git
+- npm install
+- npm start
+- vercel dev
+- Open http://localhost:3000 in your browser
 
 # Using a local MongoDB database
 ## Install MongoDB 6.0.8 on macOS Catalina
