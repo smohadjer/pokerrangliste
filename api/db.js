@@ -2,7 +2,6 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const protocol = process.env.development === 'true' ? 'mongodb://' : 'mongodb+srv://';
-const uri = protocol + process.env.db_username + ':' + encodeURIComponent(process.env.db_password) + '@' + process.env.db_url;
+const uri =  process.env.development === 'true' ? process.env.db_uri_local : process.env.db_uri_remote;
 
 export default uri;

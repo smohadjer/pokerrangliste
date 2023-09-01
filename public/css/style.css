@@ -99,7 +99,7 @@ ul {
     padding: 0;
 }
 
-svg {
+.loader {
     display: block;
     margin: 0 auto;
     width: 50px;

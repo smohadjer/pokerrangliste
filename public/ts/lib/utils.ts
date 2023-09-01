@@ -72,7 +72,7 @@ const addPlayers = (tournament) => {
 };
 
 const renderPlayers = (players) => {
-    let html = `<h1>Ranking</h1>
+    let html = `<h1>All-Time Ranking</h1>
     <div class="wrapper"><table><tr>
             <th>Rank</th>
             <th>Name</th>

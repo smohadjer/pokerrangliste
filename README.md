@@ -1,11 +1,13 @@
 https://poker.myendpoint.de/
 
-# Run on localhost
+# Run on localhost using Vercel CLI and local MongoDB
 - git clone https://github.com/smohadjer/pokerrangliste.git
 - npm install
-- npm start
+- npm start (watches typescript files for changes)
 - vercel dev
 - Open http://localhost:3000 in your browser
+
+If you have MongoFB installed on localhost, set development="true" in .env and start MongoDB in terminal: `mongod --config /usr/local/etc/mongod.conf`
 
 # Using a local MongoDB database
 ## Install MongoDB 6.0.8 on macOS Catalina
@@ -14,11 +16,11 @@ Follow instructions in below link. For Intel-based Macs select "MacOS x64" as Pl
 Follow instructions in below link:
 https://www.mongodb.com/docs/mongodb-shell/install/
 ## Create a configuration file (optional)
-This would allow to start MongoDB using such command: 
+This would allow to start MongoDB using such command:
 ````
 mongod --config /usr/local/etc/mongod.conf
 ````
-Follow instructions here: 
+Follow instructions here:
 https://www.mongodb.com/docs/manual/reference/configuration-options/
 Example of config file with access control
 ````
