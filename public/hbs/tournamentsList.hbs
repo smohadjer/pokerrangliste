@@ -1,0 +1,21 @@
+<h1>Tournaments</h1>
+<div class="wrapper">
+  <table>
+    <tr>
+      <th>Date</th>
+      <th>Players</th>
+      <th>Buyin</th>
+      <th>Rebuys</th>
+      <th>Bounty</th>
+    </tr>
+    {{#each tournaments}}
+      <tr>
+        <td class="name"><a href="/?id={{this._id}}">{{this.date}}</a></td>
+        <td>{{this.players.length}}</td>
+        <td>{{this.buyin}}</td>
+        <td>{{this.rebuys}}</td>
+        <td>{{this.hasBounty}}</td>
+      </tr>
+    {{/each}}
+  </table>
+</div>

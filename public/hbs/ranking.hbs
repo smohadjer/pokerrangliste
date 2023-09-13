@@ -1,0 +1,21 @@
+<h1>All-Time Ranking</h1>
+<div class="wrapper">
+  <table>
+    <tr>
+        <th>Rank</th>
+        <th>Name</th>
+        <th>Points</th>
+        <th>Tournaments</th>
+        <th>Rebuys</th>
+    </tr>
+    {{#each players}}
+      <tr>
+          <td>{{inc @index}}</td>
+          <td class="name"><a href="/?playerId={{this.name}}">{{this.name}}</a></td>
+          <td>{{this.points}}</td>
+          <td>{{this.games}}</td>
+          <td>{{this.rebuys}}</td>
+      </tr>
+    {{/each}}
+  </table>
+</div>

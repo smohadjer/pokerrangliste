@@ -5,9 +5,13 @@ import {
     renderProfile
 } from './lib/utils.js';
 
+Handlebars.registerHelper("inc", function(value, options) {
+    return parseInt(value) + 1;
+});
+
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-const id = urlParams.get('id');
+const tournamentId = urlParams.get('id');
 const playerId = urlParams.get('playerId');
 const view = urlParams.get('view');
 
@@ -17,7 +21,7 @@ fetch('/api/fetch.js', {
       'Accept': 'application/json',
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify({id: id})
+    body: JSON.stringify({id: tournamentId})
   })
 .then((response) => response.json())
 .then((json) => {
@@ -33,6 +37,7 @@ fetch('/api/fetch.js', {
             }
         }
     } else {
+        // rendering result of single tournament
         renderTournament(data);
     }
 });

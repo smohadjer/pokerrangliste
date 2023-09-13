@@ -1,0 +1,24 @@
+<h1>Tournament {{date}}</h1>
+<p>Players: {{playersCount}} &nbsp; Buyin: {{buyin}} &nbsp; Rebuys: {{rebuys}}</p>
+<div class="wrapper">
+  <table>
+    <tr>
+      <th>Rank</th>
+      <th>Player</th>
+      <th>Rebuys</th>
+      <th>Prize</th>
+      <th>Bounty</th>
+      <th>Points</th>
+    </tr>
+    {{#each players}}
+      <tr>
+        <td>{{this.ranking}}</td>
+        <td class="name"><a href="/?playerId={{this.name}}">{{this.name}}</a></td>
+        <td>{{this.rebuys}}</td>
+        <td>{{this.prize}}</td>
+        <td>{{this.bounty}}</td>
+        <td>{{this.points}}</td>
+      </tr>
+    {{/each}}
+  </table>
+</div>
