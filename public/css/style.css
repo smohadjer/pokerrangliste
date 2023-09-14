@@ -40,10 +40,6 @@ nav ul li a:hover {
     background: #b9aa56;
 }
 
-#results {
-    min-height: 50vh;
-}
-
 .wrapper {
     width: 100%;
     overflow-x: auto;
