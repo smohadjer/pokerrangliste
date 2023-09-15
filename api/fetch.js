@@ -5,20 +5,26 @@ const client = new MongoClient(uri);
 
 async function run(req) {
   try {
+    const dbName = req.body.db || 'test';
+    const seasonId = req.body.seasonId;
     console.log('openning db...');
+
     await client.connect();
-    const database = client.db('test');
+    const database = client.db(dbName);
     const collection = database.collection('tournaments');
     let data;
+
+    const query = seasonId ? {"seasonId": seasonId} : {};
 
     if (req.body.id) {
       console.log(req.body.id);
       data = await collection.findOne({_id: new ObjectId(req.body.id)});
-      console.log(data);
     } else {
       //const query = { "status" : { "$exists" : false } };
-      data = await collection.find().toArray();
+      data = await collection.find(query).toArray();
     }
+
+    console.log(data);
 
     //const data = await collection.find().toArray();
     //const data = await users.find({}).sort({ Siege: -1, Spiele: 1, Name: 1 }).toArray();

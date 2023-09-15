@@ -14,6 +14,11 @@ body {
     color: black;
 }
 
+nav {
+    display: flex;
+    align-items: center;
+}
+
 nav ul {
     margin: 1rem;
     padding: 0;
@@ -122,4 +127,9 @@ footer {
 footer p {
     margin: 0.5rem 1rem;
     font-size: 14px;
+}
+
+#results.empty {
+    background: url('../images/loader.svg') no-repeat left;
+    min-height: 100px;
 }
