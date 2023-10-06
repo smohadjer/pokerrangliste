@@ -1,0 +1,21 @@
+main {
+  margin: 1em;
+}
+
+h1 {
+  margin-left: 0;
+}
+
+form {
+  padding: 10px;
+  background: rgba(255,255,255,0.5);
+}
+
+div {
+  margin: 1em 0;
+}
+
+label {
+  min-width: 130px;
+  display: inline-block;
+}

@@ -1,39 +1,34 @@
-import uri from './db.js';
-import { MongoClient, ObjectId } from 'mongodb';
-
-const client = new MongoClient(uri);
+import client from './db.js';
+import { ObjectId } from 'mongodb';
 
 async function run(req) {
   try {
-    const dbName = req.body.db || 'test';
-    const seasonId = req.body.seasonId;
-    console.log('openning db...');
-
     await client.connect();
-    const database = client.db(dbName);
+
+    const seasonId = req.body.seasonId;
+    const database = client.db('pokerrangliste');
     const collection = database.collection('tournaments');
-    let data;
+    const query = (seasonId === 'all-time') ? {} : {'season_id': seasonId};
+    const seasonsCollection = database.collection('seasons');
+    const seasonsData = await seasonsCollection.find().toArray();
+    const data = {
+      seasons: seasonsData,
+      tournaments: []
+    };
 
-    const query = seasonId ? {"seasonId": seasonId} : {};
-
-    if (req.body.id) {
-      console.log(req.body.id);
-      data = await collection.findOne({_id: new ObjectId(req.body.id)});
+    if (req.body.tournament_id) {
+      data.tournaments = await collection.findOne({
+        _id: new ObjectId(req.body.tournament_id)
+      });
     } else {
       //const query = { "status" : { "$exists" : false } };
-      data = await collection.find(query).toArray();
+      data.tournaments = await collection.find(query).toArray();
     }
 
-    console.log(data);
-
-    //const data = await collection.find().toArray();
-    //const data = await users.find({}).sort({ Siege: -1, Spiele: 1, Name: 1 }).toArray();
     return data;
   } catch (e) {
     console.error(e);
   } finally {
-    //Ensures that the client will close when you finish/error
-    console.log('closing db...');
     await client.close();
   }
 }
@@ -41,6 +36,6 @@ async function run(req) {
 export default async (req, res) => {
   const data = await run(req).catch(console.dir);
 
-  res.json({data: data});
+  res.json(data);
   //res.status(200).send(table);
 }

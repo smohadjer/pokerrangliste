@@ -1,9 +1,14 @@
-// inc helper is used in hbs/ranking.hbs
 Handlebars.registerHelper("inc", function(value, options) {
     return parseInt(value) + 1;
 });
 
+Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+});
+
 const players = [];
+const container = document.getElementById('results');
+
 const getPoints = (player, tournament) => {
     const rebuys = player.rebuys * tournament.buyin;
     const prize = getPrize(player, tournament);
@@ -70,15 +75,18 @@ const setPlayers = (data) => {
   }
 };
 
-const render = (templateFile, data) => {
-    const resultsElement = document.getElementById('results');
-    fetch(templateFile).then((res) => res.text()).then((text) => {
-        const template = Handlebars.compile(text);
-        const html = template(data);
-        resultsElement.innerHTML = html;
-        resultsElement.classList.remove('empty');
+export const getHTML = async (templateFile, data) => {
+    const response = await fetch(templateFile);
+    const responseText = await response.text();
+    const template = Handlebars.compile(responseText);
+    const html = template(data);
+    return html;
+};
 
-    });
+const render = async (templateFile, data, container) => {
+    const html = await getHTML(templateFile, data);
+    container.innerHTML = html;
+    container.classList.remove('empty');
 };
 
 const sortByDate = (data) => {
@@ -98,6 +106,7 @@ export const renderPage = (options) => {
     const view = options.view;
     const playerId = options.playerId;
     const seasonName = options.seasonName;
+    const seasonId = options.seasonId;
 
     if (view === 'ranking') {
         players.length = 0;
@@ -105,8 +114,9 @@ export const renderPage = (options) => {
 
         render('hbs/ranking.hbs', {
             seasonName: seasonName,
-            players: players
-        });
+            players: players,
+            seasonId: seasonId
+        }, container);
     }
 
     if (view === 'tournament') {
@@ -126,8 +136,9 @@ export const renderPage = (options) => {
             playersCount: data.players.length,
             buyin: data.buyin,
             rebuys: getRebuys(data),
-            players: players
-        });
+            players: players,
+            seasonId: seasonId
+        }, container);
     }
 
     if (view === 'tournaments') {
@@ -139,8 +150,9 @@ export const renderPage = (options) => {
         });
         render('hbs/tournamentsList.hbs', {
             tournaments: optimizedData,
-            seasonName: seasonName
-        });
+            seasonName: seasonName,
+            seasonId: seasonId
+        }, container);
     }
 
     if (view === 'profile') {
@@ -152,24 +164,27 @@ export const renderPage = (options) => {
         });
         const sortedTournaments = sortByDate(tournaments);
         const results = [];
+
         sortedTournaments.forEach((item) => {
             const index = item.players.findIndex((player) => player.name === playerId);
             const result = {};
             result.date = item.date;
-            result.id = item._id;
+            result._id = item._id;
             result.ranking = item.players[index].ranking;
             result.rebuys = item.players[index].rebuys;
             result.players = item.players.length;
             result.points = getPoints(item.players[index], item);
             results.push(result);
         });
+        console.log(player.points);
         render('hbs/profile.hbs', {
             playerId: playerId,
             points: player.points,
             rebuys: player.rebuys,
             ranking: ranking,
-            results: results
-        });
+            results: results,
+            seasonId: seasonId
+        }, container);
     }
 };
 
