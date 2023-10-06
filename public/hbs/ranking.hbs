@@ -11,7 +11,7 @@
     {{#each players}}
       <tr>
           <td>{{inc @index}}</td>
-          <td class="name"><a href="/?playerId={{this.name}}">{{this.name}}</a></td>
+          <td class="name"><a href="/?view=profile&season={{../seasonId}}&playerId={{this.name}}">{{this.name}}</a></td>
           <td>{{this.points}}</td>
           <td>{{this.games}}</td>
           <td>{{this.rebuys}}</td>

@@ -1,15 +1,11 @@
-import path from 'path';
-import uri from './db.js';
-import { MongoClient } from 'mongodb';
 import { sanitize } from './sanitize.js';
-
-const client = new MongoClient(uri);
+import client from './db.js';
 
 async function run(req) {
   try {
-    console.log('openning db...');
     await client.connect();
-    const database = client.db('test');
+
+    const database = client.db('pokerrangliste');
     const count = Number(req.body.count);
     const players = [];
     const prizes = [];
@@ -35,6 +31,7 @@ async function run(req) {
 
     const collection = database.collection('tournaments');
     await collection.insertOne({
+      season_id: req.body.season_id,
       date: sanitize(req.body.date),
       round: sanitize(req.body.round),
       buyin: sanitize(req.body.buyin),

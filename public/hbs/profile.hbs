@@ -14,7 +14,7 @@
     </tr>
     {{#each results}}
       <tr>
-        <td><a href="/?id={{this.id}}">{{this.date}}</a></td>
+        <td><a href="/?view=tournament&season={{../seasonId}}&id={{this._id}}">{{this.date}}</a></td>
         <td>{{this.points}}</td>
         <td>{{this.ranking}}</td>
         <td>{{this.players}}</td>

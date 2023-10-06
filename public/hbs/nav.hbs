@@ -1,0 +1,16 @@
+<nav>
+  <div id="seasons">
+    <label>Season:</label>
+    <select>
+        {{#each seasons}}
+          <option {{#ifEquals this._id ../seasonId }}selected="selected"{{/ifEquals}} value="{{this._id}}">{{this.name}}</option>
+        {{/each}}
+        <option {{#ifEquals seasonId 'all-time'}}selected="selected"{{/ifEquals}} value="all-time">All-Time</option>
+    </select>
+  </div>
+  <ul>
+      <li><a href="/?view=ranking&season={{seasonId}}">Ranking</a></li>
+      <li><a href="/?view=tournaments&season={{seasonId}}">Tournaments</a></li>
+  </ul>
+</nav>
+
