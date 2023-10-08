@@ -1,31 +1,49 @@
 import { renderPage, getHTML } from './lib/utils.js';
 
 const urlParams = new URLSearchParams(window.location.search);
-const seasonId = urlParams.get('season') || 'all-time';
+const seasonId = urlParams.get('season_id');
+const tournamentId = urlParams.get('tournament_id');
 const addNavigation = async (seasons) => {
     const navHTML = await getHTML('hbs/nav.hbs', {
-        seasonId: seasonId,
+        season_id: seasonId,
         seasons: seasons
     });
     const navElm = new DOMParser().parseFromString(navHTML, 'text/html').body.firstChild;
     navElm.addEventListener('change', (event) => {
-        const season = event.target.value;
-        urlParams.set('season', season);
+        const season_id = event.target.value;
+        if (season_id) {
+            urlParams.set('season_id', season_id);
+        } else {
+            urlParams.delete('season_id');
+        }
         window.location.search = urlParams;
     });
     document.querySelector('main').prepend(navElm);
 };
+
+/*
+let query = '';
+if (tournamentId) {
+    query = `tournament_id=${tournamentId}`;
+} else if (seasonId) {
+    query = `season_id=${seasonId}`
+}
+*/
+
+const query = tournamentId ? `tournament_id=${tournamentId}` :
+seasonId ? `season_id=${seasonId}` : '';
+
 const fetchData = () => {
-    fetch('/api/fetch.js', {
-        method: 'POST',
+    fetch(`/api/tournament.js?${query}`, {
+        method: 'GET',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
-        },
+        }/*,
         body: JSON.stringify({
-            tournament_id: urlParams.get('id'),
+            tournament_id: ,
             seasonId: seasonId
-        })
+        })*/
       })
     .then((response) => response.json())
     .then(async (json) => {
@@ -38,8 +56,8 @@ const fetchData = () => {
             renderPage({
                 data: json.tournaments,
                 view: urlParams.get('view') || 'ranking',
-                playerId:  urlParams.get('playerId'),
-                seasonId: seasonId
+                player_id:  urlParams.get('player_id'),
+                season_id: seasonId
                 //seasonName: seasonName
             });
         } else {

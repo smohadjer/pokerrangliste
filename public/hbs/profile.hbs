@@ -1,4 +1,4 @@
-<h1>{{playerId}}</h1>
+<h1>{{player_id}}</h1>
 <p>Ranking: {{ranking}} &nbsp;
    Total Points: {{points}} &nbsp;
    Total Rebuys: {{rebuys}}
@@ -14,7 +14,11 @@
     </tr>
     {{#each results}}
       <tr>
-        <td><a href="/?view=tournament&season={{../seasonId}}&id={{this._id}}">{{this.date}}</a></td>
+        {{#if ../season_id}}
+        <td><a href="/?view=tournament&season_id={{../season_id}}&tournament_id={{this._id}}">{{this.date}}</a></td>
+        {{else}}
+        <td><a href="/?view=tournament&tournament_id={{this._id}}">{{this.date}}</a></td>
+        {{/if}}
         <td>{{this.points}}</td>
         <td>{{this.ranking}}</td>
         <td>{{this.players}}</td>
