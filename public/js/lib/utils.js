@@ -104,9 +104,9 @@ const sortByDate = (data) => {
 export const renderPage = (options) => {
     const data = options.data;
     const view = options.view;
-    const playerId = options.playerId;
+    const playerId = options.player_id;
     const seasonName = options.seasonName;
-    const seasonId = options.seasonId;
+    const seasonId = options.season_id;
 
     if (view === 'ranking') {
         players.length = 0;
@@ -115,7 +115,7 @@ export const renderPage = (options) => {
         render('hbs/ranking.hbs', {
             seasonName: seasonName,
             players: players,
-            seasonId: seasonId
+            season_id: seasonId
         }, container);
     }
 
@@ -137,7 +137,7 @@ export const renderPage = (options) => {
             buyin: data.buyin,
             rebuys: getRebuys(data),
             players: players,
-            seasonId: seasonId
+            season_id: seasonId
         }, container);
     }
 
@@ -151,7 +151,7 @@ export const renderPage = (options) => {
         render('hbs/tournamentsList.hbs', {
             tournaments: optimizedData,
             seasonName: seasonName,
-            seasonId: seasonId
+            season_id: seasonId
         }, container);
     }
 
@@ -178,12 +178,12 @@ export const renderPage = (options) => {
         });
         console.log(player.points);
         render('hbs/profile.hbs', {
-            playerId: playerId,
+            player_id: playerId,
             points: player.points,
             rebuys: player.rebuys,
             ranking: ranking,
             results: results,
-            seasonId: seasonId
+            season_id: seasonId
         }, container);
     }
 };
