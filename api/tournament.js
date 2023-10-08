@@ -2,7 +2,6 @@ import client from './db.js';
 import { ObjectId } from 'mongodb';
 
 const getTournaments = async (tournaments, req) => {
-  console.log(req.query);
   const seasonId =  req.query.season_id;
   const id = req.query.tournament_id;
   const query = (seasonId) ? {'season_id': seasonId} : {};
