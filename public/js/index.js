@@ -3,6 +3,8 @@ import { renderPage, getHTML } from './lib/utils.js';
 const urlParams = new URLSearchParams(window.location.search);
 const seasonId = urlParams.get('season_id');
 const tournamentId = urlParams.get('tournament_id');
+const query = tournamentId ? `tournament_id=${tournamentId}` :
+    seasonId ? `season_id=${seasonId}` : '';
 const addNavigation = async (seasons) => {
     const navHTML = await getHTML('hbs/nav.hbs', {
         season_id: seasonId,
@@ -21,18 +23,6 @@ const addNavigation = async (seasons) => {
     document.querySelector('main').prepend(navElm);
 };
 
-/*
-let query = '';
-if (tournamentId) {
-    query = `tournament_id=${tournamentId}`;
-} else if (seasonId) {
-    query = `season_id=${seasonId}`
-}
-*/
-
-const query = tournamentId ? `tournament_id=${tournamentId}` :
-seasonId ? `season_id=${seasonId}` : '';
-
 const fetchData = () => {
     fetch(`/api/tournament.js?${query}`, {
         method: 'GET',
@@ -47,18 +37,13 @@ const fetchData = () => {
       })
     .then((response) => response.json())
     .then(async (json) => {
-        console.log('rendering page...', json);
-        //const seasonName = seasonSelector.querySelector('select').options[seasonSelector.querySelector('select').selectedIndex].text;
-
         await addNavigation(json.seasons);
-
         if (json.tournaments) {
             renderPage({
                 data: json.tournaments,
                 view: urlParams.get('view') || 'ranking',
                 player_id:  urlParams.get('player_id'),
                 season_id: seasonId
-                //seasonName: seasonName
             });
         } else {
           // if user navigates to another page immediately after fetchDate() is invoked
