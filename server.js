@@ -1,8 +1,8 @@
 import express from 'express';
-import fetch from './api/fetch.js';
+import tournament from './api/tournament.js';
 
 //import cors from 'cors';
-import bodyParser from 'body-parser';
+//import bodyParser from 'body-parser';
 
 const app = express();
 
@@ -17,11 +17,6 @@ app.listen(port, () => {
   console.log(`Server started at port ${port}`);
 });
 
-app.get('/api/fetch.js', (req, res) => {
-  fetch(req, res);
-});
-
-app.post('/api/fetch.js', (req, res) => {
-  console.log(req.body);
-  fetch(req, res);
+app.all('/api/tournament.js', (req, res) => {
+  tournament(req, res);
 });
