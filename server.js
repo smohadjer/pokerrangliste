@@ -17,6 +17,6 @@ app.listen(port, () => {
   console.log(`Server started at port ${port}`);
 });
 
-app.all('/api/tournament.js', (req, res) => {
+app.all('/api/tournament', (req, res) => {
   tournament(req, res);
 });

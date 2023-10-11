@@ -24,7 +24,7 @@ const addNavigation = async (seasons) => {
 };
 
 const fetchData = () => {
-    fetch(`/api/tournament.js?${query}`, {
+    fetch(`/api/tournament?${query}`, {
         method: 'GET',
         headers: {
           'Accept': 'application/json',

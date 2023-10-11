@@ -40,7 +40,7 @@ const insertTournament = async (tournaments, req) => {
     }
   }
 
-  await tournaments.insertOne({
+  const insertResponse = await tournaments.insertOne({
     season_id: req.body.season_id,
     date: sanitize(req.body.date),
     round: sanitize(req.body.round),
@@ -49,6 +49,8 @@ const insertTournament = async (tournaments, req) => {
     prizes: prizes,
     players: players
   });
+
+  return insertResponse.insertedId;
 };
 
 export default async (req, res) => {
@@ -67,8 +69,11 @@ export default async (req, res) => {
     }
 
     if (req.method === 'POST') {
-      await insertTournament(tournaments, req);
-      res.status(200).send({ message: "Tournament inserted" });
+      const tournament_id = await insertTournament(tournaments, req);
+      res.status(200).send({
+        message: 'Tournament inserted!',
+        tournament_id: tournament_id
+      });
     }
   } catch (e) {
     console.error(e);
