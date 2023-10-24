@@ -38,6 +38,9 @@ const fetchData = () => {
     .then((response) => response.json())
     .then(async (json) => {
         await addNavigation(json.seasons);
+        if (json.error) {
+            alert(json.message);
+        }
         if (json.tournaments) {
             renderPage({
                 data: json.tournaments,
@@ -48,7 +51,7 @@ const fetchData = () => {
         } else {
           // if user navigates to another page immediately after fetchDate() is invoked
           // json is empty so we need to invoke fetchData() again
-          fetchData();
+          //fetchData();
         }
     }).catch(function(err) {
         console.error(` Err: ${err}`);

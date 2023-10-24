@@ -1,0 +1,9 @@
+POST http://localhost:8000/api/tournament
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.8wL_WHr6GuJgsxhbJ5WIZwqpEbNWvL6_
+
+
+###
+
+GET http://localhost:8000/api/tournament
+Content-Type: application/json

@@ -1,22 +1,36 @@
 import express from 'express';
 import tournament from './api/tournament.js';
+import authenticate from './api/authenticate.js';
+import verifyAccess from './middlewares/verifyAccess.js';
+import dotenv from 'dotenv';
 
-//import cors from 'cors';
-//import bodyParser from 'body-parser';
+dotenv.config();
 
+const port = process.env.PORT || 8000;
 const app = express();
 
 app.use(express.static('public'));
 
-// parse application/x-www-form-urlencoded
-app.use(express.urlencoded({ extended: false }))
-app.use(express.json());
+app.use(express.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
+app.use(express.json()); // parse application/json
 
-const port = 8000;
+// requires access token
+app.post('/api/tournament', verifyAccess, (req, res) => {
+  tournament(req, res);
+});
+
+// no token required to access
+app.get('/api/tournament', (req, res) => {
+  tournament(req, res);
+});
+
+// login
+app.post('/api/authenticate', (req, res) => {
+  authenticate(req, res);
+});
+
 app.listen(port, () => {
   console.log(`Server started at port ${port}`);
 });
 
-app.all('/api/tournament', (req, res) => {
-  tournament(req, res);
-});
+

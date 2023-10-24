@@ -11,48 +11,59 @@
     </head>
     <body>
         <main class="admin">
-            <h1>Add Tournament</h1>
-            <form method="POST" action="/api/tournament">
-                <div>
-                    <label>Season *</label>
-                    <select required name="season_id">
-                        <option value="2023">2023</option>
-                        <option value="2024">2024</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Date *</label>
-                    <input required name="date" type="date" />
-                </div>
-                <div>
-                    <label>Round *</label>
-                    <select required name="round">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Buyin *</label>
-                    <input required name="buyin" type="number" value="10"/>
-                </div>
-                <div>
-                    <label>Bounty Winner</label>
-                    <input name="bounty_winner">
-                </div>
-                <div>
-                    <label>Bounty Prize</label>
-                    <input name="bountry_prize" type="number">
-                </div>
-                <div>
-                    <label>Players count *</label>
-                    <input name="count" type="number" />
-                </div>
-                <div id="players"></div>
-                <button>Submit</button>
-            </form>
+            <section>
+                <form id="login" method="POST" action="/api/authenticate">
+                    <h1>Login</h1>
+                    <p><label>Username: <input required name="username"></label></p>
+                    <p><label>Password: <input required name="password"></label></p>
+                    <button>Login</button>
+                </form>
+            </section>
+            <section>
+                <form hidden id="post-tournament" method="POST" action="/api/tournament">
+                    <h1>Add Tournament</h1>
+                    <div>
+                        <label>Season *</label>
+                        <select required name="season_id">
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Date *</label>
+                        <input required name="date" type="date" />
+                    </div>
+                    <div>
+                        <label>Round *</label>
+                        <select required name="round">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label>Buyin *</label>
+                        <input required name="buyin" type="number" value="10"/>
+                    </div>
+                    <div>
+                        <label>Bounty Winner</label>
+                        <input name="bounty_winner">
+                    </div>
+                    <div>
+                        <label>Bounty Prize</label>
+                        <input name="bountry_prize" type="number">
+                    </div>
+                    <div>
+                        <label>Players count *</label>
+                        <input name="count" type="number" />
+                    </div>
+                    <div id="players"></div>
+                    <button>Submit</button>
+                </form>
+                <div id="api-status"></div>
+            </section>
         </main>
         <script src="/js/admin.js"></script>
     </body>
