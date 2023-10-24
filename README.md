@@ -1,4 +1,5 @@
-https://poker.myendpoint.de/
+Hosted on Render at:  
+https://tournaments.myendpoint.de/
 
 # Run on localhost using Vercel CLI and local MongoDB
 - git clone https://github.com/smohadjer/pokerrangliste.git
