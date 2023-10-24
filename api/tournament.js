@@ -6,13 +6,14 @@ const getTournaments = async (tournaments, req) => {
   const seasonId =  req.query.season_id;
   const id = req.query.tournament_id;
   const query = (seasonId) ? {'season_id': seasonId} : {};
+  const sortQuery = {'date': -1};
 
   if (id) {
     return await tournaments.findOne({
       _id: new ObjectId(id)
     });
   } else {
-    return await tournaments.find(query).toArray();
+    return await tournaments.find(query).sort(sortQuery).toArray();
   }
 };
 
