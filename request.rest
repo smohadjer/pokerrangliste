@@ -1,6 +1,17 @@
 POST http://localhost:8000/api/tournament
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.8wL_WHr6GuJgsxhbJ5WIZwqpEbNWvL6_
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNtb2hhZGplciIsImlhdCI6MTY5ODY3NDEwMywiZXhwIjoxNjk4Njc3NzAzfQ.XbMqX6b3oXNaXwIX_rcWAReWPNJfN9E_g9u8clBF7I8
+
+{
+  "buyin": 20,
+  "count": 2,
+  "players_0_name": "saeid",
+  "players_0_rebuys": 1,
+  "players_0_prize": 40,
+  "players_1_name": "eva",
+  "players_1_rebuys": 1,
+  "players_1_prize": 20
+}
 
 
 ###

@@ -46,7 +46,6 @@ countElm.addEventListener('change', (event) => {
 
 const postTournamentForm = document.getElementById('post-tournament');
 const loginForm = document.getElementById('login');
-const apiStatusElm = document.getElementById('api-status');
 
 postTournamentForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -63,8 +62,12 @@ postTournamentForm.addEventListener('submit', (e) => {
     .then((response) => response.json())
     .then(async (json) => {
         console.log(json);
-        e.target.reset();
-        apiStatusElm.innerHTML = JSON.stringify(json);
+        if (json.error) {
+            alert(json.error + ' ' + json.message);
+        } else {
+            e.target.reset();
+            alert(`Tournament with id ${json.tournament_id} was posted successfully.`);
+        }
     }).catch(function(err) {
         console.log(err);
         alert(err);
@@ -88,7 +91,7 @@ loginForm.addEventListener('submit', (e) => {
         accessToken = json.access_token;
         postTournamentForm.removeAttribute('hidden');
         loginForm.setAttribute('hidden', 'hidden');
-        console.log('Access to API granted for 1 hour');
+        console.log('Access to API granted for 1 hour. Your access token is: ', accessToken);
         e.target.reset();
     }).catch(function(err) {
         console.error(` Err: ${err}`);

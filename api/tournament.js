@@ -22,6 +22,15 @@ const insertTournament = async (tournaments, req) => {
   const players = [];
   const prizes = [];
   let rebuys = 0;
+  const dataIsValid = () => {
+    const totalprize = prizes.reduce((accumulator, currentValue) => {
+      return accumulator + currentValue
+    },0);
+    const buyIns = count * req.body.buyin;
+    const rebuysTotal = req.body.buyin * rebuys;
+
+    return totalprize === buyIns + rebuysTotal;
+  };
 
   for (let i=0; i<count; i++) {
     console.log(req.body[`players_${i}_name`]);
@@ -39,6 +48,10 @@ const insertTournament = async (tournaments, req) => {
     if (prize > 0) {
       prizes.push(prize);
     }
+  }
+
+  if (!dataIsValid(req.body)) {
+    return;
   }
 
   const insertResponse = await tournaments.insertOne({
@@ -71,10 +84,17 @@ export default async (req, res) => {
 
     if (req.method === 'POST') {
       const tournament_id = await insertTournament(tournaments, req);
-      res.status(200).send({
-        message: 'Tournament inserted!',
-        tournament_id: tournament_id
-      });
+      if (tournament_id) {
+        res.status(200).send({
+          message: 'Tournament inserted!',
+          tournament_id: tournament_id
+        });
+      } else {
+        res.status(500).send({
+          error: 500,
+          message: 'Invalid data!'
+        });
+      }
     }
   } catch (e) {
     console.error(e);

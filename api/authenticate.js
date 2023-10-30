@@ -9,7 +9,7 @@ export default async (req, res) => {
   if (username === process.env.admin_username && password === process.env.admin_password) {
     const token = jwt.sign({
       username: username
-    }, 'mySecret', {expiresIn: '15min'});
+    }, 'mySecret', {expiresIn: '1h'});
     res.json({
       "access_token": token
     });
