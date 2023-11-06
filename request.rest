@@ -1,20 +1,19 @@
-POST http://localhost:8000/api/tournament
+POST http://localhost:3000/api/tournament
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InNtb2hhZGplciIsImlhdCI6MTY5ODY3NDEwMywiZXhwIjoxNjk4Njc3NzAzfQ.XbMqX6b3oXNaXwIX_rcWAReWPNJfN9E_g9u8clBF7I8
+Authorization: Bearer put-your-jwt-token-here
 
 {
   "buyin": 20,
   "count": 2,
   "players_0_name": "saeid",
   "players_0_rebuys": 1,
-  "players_0_prize": 40,
+  "players_0_prize": 60,
   "players_1_name": "eva",
   "players_1_rebuys": 1,
   "players_1_prize": 20
 }
 
-
 ###
 
-GET http://localhost:8000/api/tournament
+GET http://localhost:3000/api/tournament
 Content-Type: application/json
