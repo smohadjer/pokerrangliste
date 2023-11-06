@@ -46,7 +46,8 @@ const fetchData = () => {
                 data: json.tournaments,
                 view: urlParams.get('view') || 'ranking',
                 player_id:  urlParams.get('player_id'),
-                season_id: seasonId
+                season_id: seasonId,
+                season_name: json.seasons.find(item => item._id == seasonId)?.name || 'All-Time'
             });
         } else {
           // if user navigates to another page immediately after fetchDate() is invoked

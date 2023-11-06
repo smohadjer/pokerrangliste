@@ -106,6 +106,7 @@ export const renderPage = (options) => {
     const view = options.view;
     const playerId = options.player_id;
     const seasonId = options.season_id;
+    const seasonName = options.season_name;
 
     if (view === 'ranking') {
         players.length = 0;
@@ -148,7 +149,8 @@ export const renderPage = (options) => {
         });
         render('hbs/tournamentsList.hbs', {
             tournaments: optimizedData,
-            season_id: seasonId
+            season_id: seasonId,
+            seasonName: seasonName
         }, container);
     }
 
