@@ -1,13 +1,14 @@
-const countElm = document.querySelector('input[name=count]');
-const playersElm = document.querySelector('#players');
-let accessToken;
-countElm.addEventListener('change', (event) => {
-    const count = event.target.value;
-    playersElm.innerHTML = '';
-    var html = '';
-    for (let i = 0; i<count; i++) {
-        html += `<div>
-        <label>Player #${i+1} *</label>
+// public/ts/admin.ts
+var countElm = document.querySelector("input[name=count]");
+var playersElm = document.querySelector("#players");
+var accessToken;
+countElm.addEventListener("change", (event) => {
+  const count = event.target.value;
+  playersElm.innerHTML = "";
+  var html = "";
+  for (let i = 0; i < count; i++) {
+    html += `<div>
+        <label>Player #${i + 1} *</label>
         <input required list="players-list" name="players_${i}_name" placeholder="Name"><br>
         <datalist id="players-list">
             <option value="Andreas D.">
@@ -40,62 +41,55 @@ countElm.addEventListener('change', (event) => {
         <label class="label">Prize:</label>
         <input required name="players_${i}_prize" value="0">
         </div>`;
+  }
+  playersElm.innerHTML = html;
+});
+var postTournamentForm = document.getElementById("post-tournament");
+var loginForm = document.getElementById("login");
+postTournamentForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const data = new FormData(e.target);
+  console.log(accessToken);
+  fetch(e.target.action, {
+    method: e.target.getAttribute("method"),
+    headers: {
+      "Authorization": "Bearer " + accessToken,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(Object.fromEntries(data))
+  }).then((response) => response.json()).then(async (json) => {
+    console.log(json);
+    if (json.error) {
+      alert(json.error + " " + json.message);
+    } else {
+      e.target.reset();
+      alert(`Tournament with id ${json.tournament_id} was posted successfully.`);
     }
-    playersElm.innerHTML = html;
+  }).catch(function(err) {
+    console.log(err);
+    alert(err);
+  });
 });
-
-const postTournamentForm = document.getElementById('post-tournament');
-const loginForm = document.getElementById('login');
-
-postTournamentForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const data = new FormData(e.target);
-    console.log(accessToken);
-    fetch(e.target.action, {
-        method: e.target.getAttribute('method'),
-        headers: {
-            'Authorization': 'Bearer ' +  accessToken,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(Object.fromEntries(data))
-    })
-    .then((response) => response.json())
-    .then(async (json) => {
-        console.log(json);
-        if (json.error) {
-            alert(json.error + ' ' + json.message);
-        } else {
-            e.target.reset();
-            alert(`Tournament with id ${json.tournament_id} was posted successfully.`);
-        }
-    }).catch(function(err) {
-        console.log(err);
-        alert(err);
-    });
+loginForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const data = new FormData(e.target);
+  fetch(e.target.action, {
+    method: e.target.getAttribute("method"),
+    headers: {
+      "Accept": "application/json",
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(Object.fromEntries(data))
+  }).then((response) => response.json()).then(async (json) => {
+    accessToken = json.access_token;
+    postTournamentForm.removeAttribute("hidden");
+    loginForm.setAttribute("hidden", "hidden");
+    console.log("Access to API granted for 1 hour. Your access token is: ", accessToken);
+    e.target.reset();
+  }).catch(function(err) {
+    console.error(` Err: ${err}`);
+    accessToken = void 0;
+    alert("Wrong credentials. Try again");
+  });
 });
-
-// submit handler for login
-loginForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const data = new FormData(e.target);
-    fetch(e.target.action, {
-        method: e.target.getAttribute('method'),
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(Object.fromEntries(data))
-    })
-    .then((response) => response.json())
-    .then(async (json) => {
-        accessToken = json.access_token;
-        postTournamentForm.removeAttribute('hidden');
-        loginForm.setAttribute('hidden', 'hidden');
-        console.log('Access to API granted for 1 hour. Your access token is: ', accessToken);
-        e.target.reset();
-    }).catch(function(err) {
-        console.error(` Err: ${err}`);
-        accessToken = undefined;
-        alert('Wrong credentials. Try again');
-    });
-});
+//# sourceMappingURL=admin.js.map

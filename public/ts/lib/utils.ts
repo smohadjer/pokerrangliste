@@ -1,3 +1,35 @@
+declare const Handlebars: any;
+
+interface player {
+    name: string,
+    rebuys: number,
+    ranking: number,
+    points: number,
+    bounty?: number,
+    prize?: number,
+    games?: number
+}
+
+interface tournament {
+    _id: {},
+    date: string,
+    round: number,
+    buyin: number,
+    rebuys: number,
+    prizes: number[],
+    players: player[],
+    season_id: string
+}
+
+interface profile {
+    date: string,
+    _id: {},
+    ranking: number,
+    rebuys: number,
+    players: number,
+    points: number
+}
+
 Handlebars.registerHelper("inc", function(value, options) {
     return parseInt(value) + 1;
 });
@@ -6,7 +38,7 @@ Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
     return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
 
-const players = [];
+const players: player[] = [];
 const container = document.getElementById('results');
 
 const getPoints = (player, tournament) => {
@@ -40,7 +72,15 @@ const getBounty = (player, tournament) => {
     return bountyWinner ? bountyWinner.prize : 0;
 };
 
-const addPlayers = (tournament) => {
+const updatePlayer = (player, clone) => {
+    player.points += clone.points;
+    player.bounty += clone.bounty;
+    player.prize += clone.prize;
+    player.rebuys += clone.rebuys;
+    player.games += clone.games;
+}
+
+const addPlayers = (tournament: tournament) => {
     tournament.players.forEach((item) => {
         const clone = {...item};
         clone.points = getPoints(clone, tournament);
@@ -51,11 +91,7 @@ const addPlayers = (tournament) => {
         const foundPlayer = players.find((player) => player.name === clone.name);
 
         if (foundPlayer) {
-            foundPlayer.points += clone.points;
-            foundPlayer.bounty += clone.bounty;
-            foundPlayer.prize += clone.prize;
-            foundPlayer.rebuys += clone.rebuys;
-            foundPlayer.games += clone.games;
+            updatePlayer(foundPlayer, clone);
         } else {
             players.push(clone);
         }
@@ -102,7 +138,7 @@ const sortByDate = (data) => {
 };
 
 export const renderPage = (options) => {
-    const data = options.data;
+    const data: tournament[] = options.data;
     const view = options.view;
     const playerId = options.player_id;
     const seasonId = options.season_id;
@@ -120,21 +156,22 @@ export const renderPage = (options) => {
 
     if (view === 'tournament') {
         // if points are the same, sort based on position
-        data.players.sort((item1, item2) => {
+        data[0].players.sort((item1, item2) => {
             return item1.ranking - item2.ranking;
         });
 
-        const players = data.players.map((player) => {
-            player.prize = getPrize(player, data);
-            player.bounty = getBounty(player, data);
-            player.points = getPoints(player, data);
+        const players = data[0].players.map((player) => {
+            player.prize = getPrize(player, data[0]);
+            player.bounty = getBounty(player, data[0]);
+            player.points = getPoints(player, data[0]);
             return player;
         });
+
         render('hbs/tournament.hbs', {
-            date: data.date,
-            playersCount: data.players.length,
-            buyin: data.buyin,
-            rebuys: getRebuys(data),
+            date: data[0].date,
+            playersCount: data[0].players.length,
+            buyin: data[0].buyin,
+            rebuys: getRebuys(data[0]),
             players: players,
             season_id: seasonId
         }, container);
@@ -162,24 +199,25 @@ export const renderPage = (options) => {
             return tournament.players.find((player) => player.name === playerId)
         });
         const sortedTournaments = sortByDate(tournaments);
-        const results = [];
+        const results: profile[] = [];
 
-        sortedTournaments.forEach((item) => {
+        sortedTournaments.forEach((item:tournament) => {
             const index = item.players.findIndex((player) => player.name === playerId);
-            const result = {};
-            result.date = item.date;
-            result._id = item._id;
-            result.ranking = item.players[index].ranking;
-            result.rebuys = item.players[index].rebuys;
-            result.players = item.players.length;
-            result.points = getPoints(item.players[index], item);
+            const result: profile = {
+                date: item.date,
+                _id: item._id,
+                ranking: item.players[index].ranking,
+                rebuys: item.players[index].rebuys,
+                players: item.players.length,
+                points: getPoints(item.players[index], item)
+            };
             results.push(result);
         });
-        console.log(player.points);
+
         render('hbs/profile.hbs', {
             player_id: playerId,
-            points: player.points,
-            rebuys: player.rebuys,
+            points: player?.points,
+            rebuys: player?.rebuys,
             ranking: ranking,
             results: results,
             season_id: seasonId

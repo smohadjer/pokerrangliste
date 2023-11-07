@@ -9,9 +9,10 @@ const getTournaments = async (tournaments, req) => {
   const sortQuery = {'date': -1};
 
   if (id) {
-    return await tournaments.findOne({
+    const tournament = await tournaments.findOne({
       _id: new ObjectId(id)
     });
+    return [tournament];
   } else {
     return await tournaments.find(query).sort(sortQuery).toArray();
   }
