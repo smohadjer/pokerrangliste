@@ -10,7 +10,7 @@ interface player {
     games?: number
 }
 
-interface tournament {
+export interface tournament {
     _id: {},
     date: string,
     round: number,
@@ -150,7 +150,8 @@ export const renderPage = (options) => {
 
         render('hbs/ranking.hbs', {
             players: players,
-            season_id: seasonId
+            season_id: seasonId,
+            seasonName: seasonName
         }, container);
     }
 
