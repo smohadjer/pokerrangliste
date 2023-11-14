@@ -1,9 +1,10 @@
-import { renderPage, tournament } from './lib/utils.js';
+import { renderPage, tournament, playerDB } from './lib/utils.js';
 import { addNavigation, season} from './lib/nav.js';
 
 interface data {
     tournaments: tournament[],
     seasons: season[],
+    players: playerDB[],
     error?: string,
     message?: string
 }
@@ -34,6 +35,7 @@ const fetchData = () => {
       })
     .then((response) => response.json())
     .then(async (json: data) => {
+        console.log(json);
         await addNavigation(json.seasons, seasonId, urlParams);
         if (json.error) {
             alert(json.message);
@@ -43,6 +45,7 @@ const fetchData = () => {
                 item._id == seasonId)?.name || 'All-Time';
             renderPage({
                 data: json.tournaments,
+                players: json.players,
                 view: urlParams.get('view') || 'ranking',
                 player_id: urlParams.get('player_id'),
                 season_id: seasonId,

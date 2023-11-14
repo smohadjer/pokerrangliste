@@ -8,7 +8,7 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment=jsdom",
     "bundle:index": "esbuild public/ts/index.ts --bundle --format=esm --sourcemap --outfile=public/js/index.js",
     "bundle:admin": "esbuild public/ts/admin.ts --bundle --format=esm --sourcemap --outfile=public/js/admin.js",
-    "start": "npm run bundle:index --watch=forever & npm run bundle:admin --watch=forever & npm run dev",
+    "start": "npm run bundle:index -- --watch=forever & npm run bundle:admin -- --watch=forever & npm run dev",
     "build": "npm run bundle:index && npm run bundle:admin",
     "dev": "nodemon server.js"
   },

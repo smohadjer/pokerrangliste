@@ -74,10 +74,12 @@ export default async (req, res) => {
     const database = client.db('pokerrangliste');
     const tournaments = database.collection('tournaments');
     const seasons = database.collection('seasons');
+    const players = database.collection('players');
 
     if (req.method === 'GET') {
       const data = {
         seasons: await seasons.find().toArray(),
+        players: await players.find().toArray(),
         tournaments: await getTournaments(tournaments, req)
       };
       res.json(data);

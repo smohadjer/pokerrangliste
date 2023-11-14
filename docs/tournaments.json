@@ -1167,4 +1167,146 @@
       "ranking": 5
     }
   ]
+},{
+  "_id": {
+    "$oid": "653e088c9b5472aa2831dd0f"
+  },
+  "season_id": "2023",
+  "date": "2023-10-28",
+  "round": "1",
+  "buyin": "10",
+  "rebuys": 1,
+  "prizes": [
+    50,
+    50,
+    20
+  ],
+  "players": [
+    {
+      "name": "nikolai",
+      "rebuys": 0,
+      "ranking": 1
+    },
+    {
+      "name": "simon",
+      "rebuys": 0,
+      "ranking": 2
+    },
+    {
+      "name": "michael",
+      "rebuys": 0,
+      "ranking": 3
+    },
+    {
+      "name": "mehdi",
+      "rebuys": 0,
+      "ranking": 4
+    },
+    {
+      "name": "saeid",
+      "rebuys": 0,
+      "ranking": 5
+    },
+    {
+      "name": "eva",
+      "rebuys": 0,
+      "ranking": 6
+    },
+    {
+      "name": "isabela",
+      "rebuys": 0,
+      "ranking": 7
+    },
+    {
+      "name": "anca",
+      "rebuys": 0,
+      "ranking": 8
+    },
+    {
+      "name": "silvia",
+      "rebuys": 0,
+      "ranking": 9
+    },
+    {
+      "name": "andreas d.",
+      "rebuys": 0,
+      "ranking": 10
+    },
+    {
+      "name": "vika",
+      "rebuys": 1,
+      "ranking": 11
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "653e0a629b5472aa2831dd10"
+  },
+  "season_id": "2023",
+  "date": "2023-10-28",
+  "round": "2",
+  "buyin": "10",
+  "rebuys": 5,
+  "prizes": [
+    75,
+    55,
+    30
+  ],
+  "players": [
+    {
+      "name": "silvia",
+      "rebuys": 0,
+      "ranking": 1
+    },
+    {
+      "name": "simon",
+      "rebuys": 0,
+      "ranking": 2
+    },
+    {
+      "name": "saeid",
+      "rebuys": 1,
+      "ranking": 3
+    },
+    {
+      "name": "eva",
+      "rebuys": 0,
+      "ranking": 4
+    },
+    {
+      "name": "nikolai",
+      "rebuys": 1,
+      "ranking": 5
+    },
+    {
+      "name": "anca",
+      "rebuys": 0,
+      "ranking": 6
+    },
+    {
+      "name": "andreas d.",
+      "rebuys": 0,
+      "ranking": 7
+    },
+    {
+      "name": "mehdi",
+      "rebuys": 1,
+      "ranking": 8
+    },
+    {
+      "name": "isabela",
+      "rebuys": 0,
+      "ranking": 9
+    },
+    {
+      "name": "michael",
+      "rebuys": 1,
+      "ranking": 10
+    },
+    {
+      "name": "vika",
+      "rebuys": 1,
+      "ranking": 11
+    }
+  ]
 }]
