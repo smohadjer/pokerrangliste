@@ -156,7 +156,6 @@ export const renderPage = (options) => {
         player.name = getPlayerName(player.id)
         return player;
     })
-    console.log(enhancedPlayers);
 
     if (view === 'ranking') {
         render('hbs/ranking.hbs', {
@@ -208,7 +207,6 @@ export const renderPage = (options) => {
     if (view === 'profile') {
         const player = enhancedPlayers.find((player) => player.id === playerId);
         const ranking = enhancedPlayers.findIndex((player) => player.id === playerId) + 1;
-        console.log(player, ranking);
         const tournaments = data.filter((tournament) => {
             return tournament.players.find((player) => player.id === playerId)
         });
