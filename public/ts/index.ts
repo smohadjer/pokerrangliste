@@ -1,13 +1,14 @@
 import { renderPage, tournament, playerDB } from './lib/utils.js';
 import { addNavigation, season} from './lib/nav.js';
 
-interface data {
+interface JsonData {
     tournaments: tournament[],
     seasons: season[],
     players: playerDB[],
     error?: string,
     message?: string
 }
+
 const urlParams = new URLSearchParams(window.location.search);
 const seasonId: string | null = urlParams.get('season_id');
 const tournamentId: string | null = urlParams.get('tournament_id');
@@ -34,7 +35,7 @@ const fetchData = () => {
         })*/
       })
     .then((response) => response.json())
-    .then(async (json: data) => {
+    .then(async (json: JsonData) => {
         console.log(json);
         await addNavigation(json.seasons, seasonId, urlParams);
         if (json.error) {

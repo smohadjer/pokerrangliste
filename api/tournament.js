@@ -34,10 +34,9 @@ const insertTournament = async (tournaments, req) => {
   };
 
   for (let i=0; i<count; i++) {
-    console.log(req.body[`players_${i}_name`]);
     const player = {};
     const prize = Number(sanitize(req.body[`players_${i}_prize`]));
-    player.name = sanitize(req.body[`players_${i}_name`]).toLowerCase();
+    player.id = req.body[`players_${i}_id`];
     player.rebuys = Number(sanitize(req.body[`players_${i}_rebuys`]));
     player.ranking = i+1;
     players.push(player);
@@ -79,7 +78,7 @@ export default async (req, res) => {
     if (req.method === 'GET') {
       const data = {
         seasons: await seasons.find().toArray(),
-        players: await players.find().toArray(),
+        players: await players.find().sort({'name': 1}).toArray(),
         tournaments: await getTournaments(tournaments, req)
       };
       res.json(data);

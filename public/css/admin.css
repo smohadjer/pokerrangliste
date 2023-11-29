@@ -19,3 +19,14 @@ label {
   min-width: 130px;
   display: inline-block;
 }
+
+form {
+  font-size: 16px;
+}
+
+input,
+select {
+  min-width: 180px;
+  box-sizing: border-box;
+  font-size: inherit;
+}
