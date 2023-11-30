@@ -1,3 +1,5 @@
+import { PlayerDB } from './lib/definitions';
+
 const countElm = document.querySelector('input[name=count]');
 const playersElm = document.querySelector('#players');
 const loginForm = document.getElementById('login')!;
@@ -13,10 +15,8 @@ if (accessToken && accessTokenIsValid) {
 
 let playersSelect = '';
 const getPlayers = async() => {
-    const response = await fetch('api/tournament');
-    const json = await response.json();
-    const players = json.players;
-    console.log({players});
+    const response = await fetch('api/players');
+    const players: Array<PlayerDB> = await response.json();
     players.forEach(element => {
         playersSelect += `<option value="${element._id}">${element.name}</option>`
     });

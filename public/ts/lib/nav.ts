@@ -1,9 +1,5 @@
 import { getHTML } from './utils.js';
-
-export interface season {
-  _id: string,
-  name: string
-}
+import { Season } from './definitions';
 
 const onChange = (target, urlParams) => {
   if (target instanceof HTMLSelectElement) {
@@ -19,8 +15,11 @@ const onChange = (target, urlParams) => {
   }
 };
 
-export const addNavigation = async (seasons: season[],
-  seasonId: string | null, urlParams: URLSearchParams) => {
+export const addNavigation = async (
+  seasons: Season[],
+  seasonId: string | undefined,
+  urlParams: URLSearchParams
+) => {
   const html: string = await getHTML('hbs/nav.hbs', {
     season_id: seasonId,
     seasons: seasons

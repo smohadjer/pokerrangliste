@@ -1,40 +1,6 @@
+import { Tournament, PlayerDB, Player, Profile } from './definitions';
+
 declare const Handlebars: any;
-
-interface player {
-    id: any,
-    name?: string,
-    rebuys: number,
-    ranking: number,
-    points: number,
-    bounty?: number,
-    prize?: number,
-    games?: number
-}
-
-export interface playerDB {
-    _id: {},
-    name: string
-}
-
-export interface tournament {
-    _id: {},
-    date: string,
-    round: number,
-    buyin: number,
-    rebuys: number,
-    prizes: number[],
-    players: player[],
-    season_id: string
-}
-
-interface profile {
-    date: string,
-    _id: {},
-    ranking: number,
-    rebuys: number,
-    players: number,
-    points: number
-}
 
 Handlebars.registerHelper("inc", function(value, options) {
     return parseInt(value) + 1;
@@ -54,13 +20,21 @@ export const getHTML = async (templateFile, data) => {
     return html;
 };
 
-export const renderPage = (options) => {
-    const data: tournament[] = options.data;
-    const view = options.view;
-    const playerId: string = options.player_id;
-    const seasonId: string = options.season_id;
-    const seasonName: string = options.season_name;
-    const playersList: playerDB[] = options.players;
+
+// season_name: getSeasonName(state.seasonId)
+const getSeasonName = (seasonId, seasons) => {
+    if (seasons) {
+        return seasons.find(item => item._id == seasonId)?.name || 'All-Time';
+    }
+}
+
+export const renderPage = (state) => {
+    const data: Tournament[] = state.json.tournaments;
+    const view = state.view;
+    const playerId: string = state.player_id;
+    const seasonId: string = state.season_id;
+    const seasonName: string = getSeasonName(state.seasonId, state.json.seasons);
+    const playersList: PlayerDB[] = state.json.players;
 
     const render = async (templateFile, data, container) => {
         const html = await getHTML(templateFile, data);
@@ -122,7 +96,7 @@ export const renderPage = (options) => {
         player.games += clone.games;
     }
 
-    const addPlayers = (players, tournament: tournament) => {
+    const addPlayers = (players, tournament: Tournament) => {
         tournament.players.forEach((item) => {
             const clone = {...item};
             clone.points = getPoints(clone, tournament);
@@ -140,8 +114,8 @@ export const renderPage = (options) => {
         });
     };
 
-    const setPlayers = (data: tournament[]) => {
-        const players: player[] = [];
+    const setPlayers = (data: Tournament[]) => {
+        const players: Player[] = [];
         data.forEach((tournament) => {
             addPlayers(players, tournament);
         });
@@ -212,11 +186,11 @@ export const renderPage = (options) => {
         });
 
         const sortedTournaments = sortByDate(tournaments);
-        const results: profile[] = [];
+        const results: Profile[] = [];
 
-        sortedTournaments.forEach((item:tournament) => {
+        sortedTournaments.forEach((item: Tournament) => {
             const index = item.players.findIndex((player) => player.id === playerId);
-            const result: profile = {
+            const result: Profile = {
                 date: item.date,
                 _id: item._id,
                 ranking: item.players[index].ranking,
