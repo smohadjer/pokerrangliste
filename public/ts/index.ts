@@ -23,12 +23,12 @@ function enableSpaMode() {
             e.preventDefault();
             const href = link.search;
             const params = new URLSearchParams(href);
+            params.set('spa', 'true');
             for (const [key, value] of params) {
                 state[key] = value;
             }
             renderPage(state);
-            console.log(state);
-            window.history.pushState(state, state.view , link.getAttribute('href'));
+            window.history.pushState(state, state.view , '/?' + params.toString());
         }
     });
 
