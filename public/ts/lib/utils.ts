@@ -141,7 +141,10 @@ export const renderPage = (state) => {
 
     if (view === 'tournament') {
         // if points are the same, sort based on position
-        const tournament = data[0];
+        const tournament = data.find((item) => {
+            return item._id === state.tournament_id
+        })
+        if (!tournament) return;
         tournament.players.sort((item1, item2) => {
             return item1.ranking - item2.ranking;
         });

@@ -49,8 +49,9 @@ export interface JsonData {
 
 export interface State {
   seasonId?: string
-  tournamentId?: string
+  tournament_id?: string
   player_id?: string
   view: string
-  json?: JsonData
+  json?: JsonData,
+  spa: string
 }

@@ -6,22 +6,13 @@ const urlParams = new URLSearchParams(window.location.search);
 const state: State = {
     view: urlParams.get('view') || 'ranking',
     seasonId: urlParams.get('season_id') || undefined,
-    tournamentId: urlParams.get('tournament_id') || undefined,
-    player_id: urlParams.get('player_id') || undefined
+    tournament_id: urlParams.get('tournament_id') || undefined,
+    player_id: urlParams.get('player_id') || undefined,
+    spa: urlParams.get('spa') || 'false'
 };
 
-const getQuery = (tournamentId, seasonId) => {
-    if (tournamentId) {
-        return `tournament_id=${tournamentId}`;
-    } else if (seasonId) {
-        return `season_id=${seasonId}`;
-    } else {
-        return '';
-    }
-}
-
 if (urlParams.get('spa')) {
-    console.log('spa on');
+    console.log('SPA mode is on');
     enableSpaMode();
 }
 
@@ -36,6 +27,7 @@ function enableSpaMode() {
                 state[key] = value;
             }
             renderPage(state);
+            console.log(state);
             window.history.pushState(state, state.view , link.getAttribute('href'));
         }
     });
@@ -46,8 +38,7 @@ function enableSpaMode() {
 }
 
 const fetchData = () => {
-    const query = getQuery(state.tournamentId, state.seasonId);
-    fetch(`/api/tournament?${query}`, {
+    fetch('/api/tournament', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
