@@ -4,25 +4,31 @@ export interface Player {
   rebuys: number,
   ranking: number,
   points: number,
-  bounty?: number,
-  prize?: number,
-  games?: number
+  bounty: number,
+  prize: number,
+  games: number
 }
 
 export interface PlayerDB {
-  _id: {},
+  readonly _id: {},
   name: string
 }
 
+export type bounty = {
+  prize: number;
+  readonly id: {}
+}
+
 export interface Tournament {
-  _id: {},
-  date: string,
-  round: number,
-  buyin: number,
-  rebuys: number,
-  prizes: number[],
-  players: Player[],
-  season_id: string
+  readonly _id: {};
+  date: string;
+  round: number;
+  buyin: number;
+  rebuys: number;
+  prizes: number[];
+  players: Player[];
+  season_id: string;
+  bounties?: bounty[];
 }
 
 export interface Profile {
@@ -39,7 +45,7 @@ export interface Season {
   name: string
 }
 
-export interface JsonData {
+export interface Data {
   tournaments: Tournament[],
   seasons: Season[],
   players: PlayerDB[],
@@ -48,9 +54,9 @@ export interface JsonData {
 }
 
 export interface State {
-  seasonId?: string
+  season_id?: string
   tournament_id?: string
   player_id?: string
   view: string
-  json?: JsonData,
+  data?: Data,
 }

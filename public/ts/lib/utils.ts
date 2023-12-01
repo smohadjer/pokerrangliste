@@ -1,102 +1,83 @@
-import { Tournament, PlayerDB, Player, Profile } from './definitions';
+import { Tournament, PlayerDB, Player, Profile, Season, State } from './definitions';
 
 declare const Handlebars: any;
 
+// setting Handlebars helpers to help with compiling templates
 Handlebars.registerHelper("inc", function(value, options) {
     return parseInt(value) + 1;
 });
-
 Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
     return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
 
-const container = document.getElementById('results');
-
-export const getHTML = async (templateFile, data) => {
+export const getHTML = async (templateFile, templateData) => {
     const response = await fetch(templateFile);
     const responseText = await response.text();
     const template = Handlebars.compile(responseText);
-    const html = template(data);
+    const html = template(templateData);
     return html;
 };
 
-
-// season_name: getSeasonName(state.seasonId)
-const getSeasonName = (seasonId, seasons) => {
-    if (seasons) {
-        return seasons.find(item => item._id == seasonId)?.name || 'All-Time';
-    }
+const getSeasonName = (season_id: string, seasons: Season[]) => {
+    return seasons.find(item => item._id == season_id)?.name || 'All-Time';
 }
 
-export const renderPage = (state) => {
-    const data: Tournament[] = state.json.tournaments;
-    const view = state.view;
-    const playerId: string = state.player_id;
-    const seasonId: string = state.season_id;
-    const seasonName: string = getSeasonName(state.seasonId, state.json.seasons);
-    const playersList: PlayerDB[] = state.json.players;
+const sortByDate = (data) => {
+    const sortedData = structuredClone(data);
+    // sort tournaments by date
+    sortedData.sort((item1, item2) => {
+      const date1 = new Date(item1.date).valueOf();
+      const date2 = new Date(item2.date).valueOf();
+      return date2 - date1;
+    });
+    return sortedData;
+};
 
-    const render = async (templateFile, data, container) => {
-        const html = await getHTML(templateFile, data);
-        container.innerHTML = html;
-        container.classList.remove('empty');
-    };
+const render = async (templateFile, templateData, container) => {
+    const html = await getHTML(templateFile, templateData);
+    container.innerHTML = html;
+    container.classList.remove('empty');
+};
 
-    const sortByDate = (data) => {
-        const sortedData = structuredClone(data);
-        // sort tournaments by date
-        sortedData.sort((item1, item2) => {
-          const date1 = new Date(item1.date).valueOf();
-          const date2 = new Date(item2.date).valueOf();
-          return date2 - date1;
-        });
-        return sortedData;
-    };
+const getRebuys = (tournament) => {
+    let rebuys = 0;
+    tournament.players.forEach((player) => {
+        rebuys += player.rebuys;
+    });
+    return rebuys;
+};
 
-    const getRebuys = (tournament) => {
-        let rebuys = 0;
-        tournament.players.forEach((player) => {
-            rebuys += player.rebuys;
-        });
-        return rebuys;
-    };
+const getPoints = (player, tournament: Tournament) => {
+    const rebuys = player.rebuys * tournament.buyin;
+    const prize = getPrize(player, tournament);
+    const bounty = getBounty(player, tournament);
+    const points = prize + bounty - tournament.buyin - rebuys;
+    return points;
+};
 
-    const getPoints = (player, tournament) => {
-        const rebuys = player.rebuys * tournament.buyin;
-        const prize = getPrize(player, tournament);
-        const bounty = getBounty(player, tournament);
-        const points = prize + bounty - tournament.buyin - rebuys;
-        return points;
-    };
+const getPrize = (player, tournament) => {
+    const prize = (player.ranking <= tournament.prizes.length)
+    ? tournament.prizes[player.ranking - 1] : 0;
+    return prize;
+};
 
-    const getPrize = (player, tournament) => {
-        const prize = (player.ranking <= tournament.prizes.length)
-        ? tournament.prizes[player.ranking - 1] : 0;
-        return prize;
-    };
-
-    const getBounty = (player, tournament) => {
-        if (!tournament.bounties) {
-            return 0;
-        }
-        const bountyWinner = tournament.bounties.find((item) => item.id === player.id);
-        return bountyWinner ? bountyWinner.prize : 0;
-    };
-
-    const getPlayerName = (id) => {
-        const player = playersList.find(player => player._id === id);
-        return player?.name;
+const getBounty = (player: Player, tournament: Tournament) => {
+    if (!tournament.bounties) {
+        return 0;
     }
+    const bountyWinner = tournament.bounties.find((item) =>
+        item.id === player.id);
+    return bountyWinner ? bountyWinner.prize : 0;
+};
 
-    const updatePlayer = (player, clone) => {
-        player.points += clone.points;
-        player.bounty += clone.bounty;
-        player.prize += clone.prize;
-        player.rebuys += clone.rebuys;
-        player.games += clone.games;
-    }
+const getPlayerName = (id: string, players: PlayerDB[]) => {
+    const player = players.find(player => player._id === id);
+    return player?.name;
+}
 
-    const addPlayers = (players, tournament: Tournament) => {
+const setPlayers = (tournaments: Tournament[]) => {
+    const players: Player[] = [];
+    tournaments.forEach((tournament) => {
         tournament.players.forEach((item) => {
             const clone = {...item};
             clone.points = getPoints(clone, tournament);
@@ -104,91 +85,105 @@ export const renderPage = (state) => {
             clone.prize = getPrize(clone, tournament);
             clone.games = 1;
 
-            const foundPlayer = players.find((player) => player.id === clone.id);
+            const foundPlayer = players.find(player => player.id === clone.id);
 
             if (foundPlayer) {
-                updatePlayer(foundPlayer, clone);
+                foundPlayer.points += clone.points;
+                foundPlayer.bounty += clone.bounty;
+                foundPlayer.prize += clone.prize;
+                foundPlayer.rebuys += clone.rebuys;
+                foundPlayer.games += clone.games;
             } else {
                 players.push(clone);
             }
         });
-    };
+    });
+    players.sort((item1, item2) => {
+        return item2.points - item1.points;
+    });
+    return players;
+};
 
-    const setPlayers = (data: Tournament[]) => {
-        const players: Player[] = [];
-        data.forEach((tournament) => {
-            addPlayers(players, tournament);
-        });
-        players.sort((item1, item2) => {
-            return item2.points - item1.points;
-        });
-        return players;
-    };
-
-    const players = setPlayers(data);
+export const renderPage = (state: State) => {
+    const container = document.getElementById('results');
+    const tournaments: Tournament[] = sortByDate(state.data!.tournaments);
+    const view = state.view;
+    const playerId = state.player_id;
+    const season_id = state.season_id!;
+    const seasonName = getSeasonName(season_id, state.data!.seasons);
+    const playersList: PlayerDB[] = state.data!.players;
+    const players = setPlayers(tournaments);
     const enhancedPlayers = players.map((player) => {
-        player.name = getPlayerName(player.id)
+        player.name = getPlayerName(player.id, playersList)
         return player;
     })
 
     if (view === 'ranking') {
         render('hbs/ranking.hbs', {
             players: enhancedPlayers,
-            season_id: seasonId,
+            season_id: season_id,
             seasonName: seasonName
         }, container);
     }
 
     if (view === 'tournament') {
-        // if points are the same, sort based on position
-        const tournament = data.find((item) => {
+        const tournament = tournaments.find((item) => {
             return item._id === state.tournament_id
         })
         if (!tournament) return;
-        tournament.players.sort((item1, item2) => {
+
+        const cloneTournament = structuredClone(tournament);
+
+        // if players have same points, list them sorted by their ranking
+        cloneTournament.players.sort((item1, item2) => {
             return item1.ranking - item2.ranking;
         });
 
-        const players = tournament.players.map((player) => {
-            player.prize = getPrize(player, tournament);
-            player.bounty = getBounty(player, tournament);
-            player.points = getPoints(player, tournament);
-            player.name = getPlayerName(player.id);
+        const players = cloneTournament.players.map((player) => {
+            player.prize = getPrize(player, cloneTournament);
+            player.bounty = getBounty(player, cloneTournament);
+            player.points = getPoints(player, cloneTournament);
+            player.name = getPlayerName(player.id, playersList);
             return player;
         });
 
         render('hbs/tournament.hbs', {
-            date: tournament.date,
-            playersCount: tournament.players.length,
-            buyin: tournament.buyin,
-            rebuys: getRebuys(tournament),
+            date: cloneTournament.date,
+            playersCount: cloneTournament.players.length,
+            buyin: cloneTournament.buyin,
+            rebuys: getRebuys(cloneTournament),
             players: players,
-            season_id: seasonId
+            season_id: season_id
         }, container);
     }
 
     if (view === 'tournaments') {
-        const sortedData = sortByDate(data);
-        const optimizedData = sortedData.map((item) => {
+        interface ClonedTournaments extends Tournament {
+            hasBounty?: string;
+        }
+        const clonedTournaments: ClonedTournaments[] = structuredClone(tournaments);
+        const optimizedData = clonedTournaments.map((item) => {
             item.rebuys = getRebuys(item);
             item.hasBounty = item.bounties ? 'Yes' : 'No';
             return item;
         });
         render('hbs/tournamentsList.hbs', {
             tournaments: optimizedData,
-            season_id: seasonId,
+            season_id: season_id,
             seasonName: seasonName
         }, container);
     }
 
     if (view === 'profile') {
-        const player = enhancedPlayers.find((player) => player.id === playerId);
-        const ranking = enhancedPlayers.findIndex((player) => player.id === playerId) + 1;
-        const tournaments = data.filter((tournament) => {
+        if (!playerId) return;
+        const player = enhancedPlayers.find((player) =>
+            player.id === playerId);
+        const ranking = enhancedPlayers.findIndex((player) =>
+            player.id === playerId) + 1;
+        const playerTournaments = tournaments.filter((tournament) => {
             return tournament.players.find((player) => player.id === playerId)
         });
-
-        const sortedTournaments = sortByDate(tournaments);
+        const sortedTournaments = sortByDate(playerTournaments);
         const results: Profile[] = [];
 
         sortedTournaments.forEach((item: Tournament) => {
@@ -210,7 +205,7 @@ export const renderPage = (state) => {
             rebuys: player?.rebuys,
             ranking: ranking,
             results: results,
-            season_id: seasonId
+            season_id: season_id
         }, container);
     }
 };

@@ -1,13 +1,16 @@
 import { renderPage } from './lib/utils.js';
 import { addNavigation} from './lib/nav.js';
-import { JsonData, State } from './lib/definitions';
+import { Data, State } from './lib/definitions';
 
 const urlParams = new URLSearchParams(window.location.search);
+
+// set app's initial state
 const state: State = {
     view: urlParams.get('view') || 'ranking',
-    seasonId: urlParams.get('season_id') || undefined,
+    season_id: urlParams.get('season_id') || undefined,
     tournament_id: urlParams.get('tournament_id') || undefined,
     player_id: urlParams.get('player_id') || undefined,
+    data: undefined
 };
 
 enableSpaMode();
@@ -23,7 +26,7 @@ function enableSpaMode() {
                 state[key] = value;
             }
             renderPage(state);
-            window.history.pushState(state, state.view , '/?' + params.toString());
+            window.history.pushState(state, '', '/?' + params.toString());
         }
     });
 
@@ -32,7 +35,7 @@ function enableSpaMode() {
     });
 }
 
-const fetchData = () => {
+function fetchData() {
     fetch('/api/tournament', {
         method: 'GET',
         headers: {
@@ -41,19 +44,14 @@ const fetchData = () => {
         }
       })
     .then((response) => response.json())
-    .then(async (json: JsonData) => {
+    .then(async (json: Data) => {
         console.log(json);
-        await addNavigation(json.seasons, state.seasonId, urlParams);
+        await addNavigation(json.seasons, state.season_id, urlParams);
         if (json.error) {
             alert(json.message);
-        }
-        if (json.tournaments) {
-            state.json = json;
-            renderPage(state);
         } else {
-          // if user navigates to another page immediately after fetchDate() is invoked
-          // json is empty so we need to invoke fetchData() again
-          //fetchData();
+            state.data = json;
+            renderPage(state);
         }
     }).catch(function(err) {
         console.error(` Err: ${err}`);
