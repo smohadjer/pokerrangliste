@@ -2,14 +2,14 @@ import { PlayerDB } from './lib/definitions';
 
 const countElm = document.querySelector('input[name=count]');
 const playersElm = document.querySelector('#players');
-const loginForm = document.getElementById('login')!;
+const loginForm = document.getElementById('login');
 const postTournamentForm = document.getElementById('post-tournament')!;
 
 let accessToken = localStorage.getItem('accessToken');
 const accessTokenIsValid = true;
 
 if (accessToken && accessTokenIsValid) {
-    loginForm.setAttribute('hidden', 'hidden');
+    loginForm?.setAttribute('hidden', 'hidden');
     postTournamentForm.removeAttribute('hidden');
 }
 
