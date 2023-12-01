@@ -1,6 +1,7 @@
 import express from 'express';
 import tournament from './api/tournament.js';
 import players from './api/players.js';
+import seasons from './api/seasons.js';
 import authenticate from './api/authenticate.js';
 import verifyAccess from './middlewares/verifyAccess.js';
 import dotenv from 'dotenv';
@@ -22,6 +23,10 @@ app.post('/api/tournament', verifyAccess, (req, res) => {
 
 app.post('/api/players', verifyAccess, (req, res) => {
   players(req, res);
+});
+
+app.post('/api/seasons', verifyAccess, (req, res) => {
+  seasons(req, res);
 });
 
 // no access token required for get requests

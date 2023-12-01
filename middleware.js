@@ -3,6 +3,7 @@ import { next } from '@vercel/edge';
 import {jwtVerify} from 'jose';
 
 export default async function middleware(req) {
+  // only POST requests require authentication
   if (req.method === 'GET') {
     return next();
   }
@@ -28,5 +29,5 @@ export default async function middleware(req) {
 }
 
 export const config = {
-  matcher: '/api/tournament'
+  matcher: '/api/*'
 }
