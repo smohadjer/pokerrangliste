@@ -52,6 +52,7 @@ function fetchData() {
         } else {
             state.data = json;
             renderPage(state);
+            window.history.pushState(state, '', '/?' + urlParams.toString());
         }
     }).catch(function(err) {
         console.error(` Err: ${err}`);
