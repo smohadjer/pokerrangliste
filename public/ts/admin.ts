@@ -71,6 +71,7 @@ if (countElm) {
                 console.log(json);
                 if (json.error) {
                     alert(json.error + ' ' + json.message);
+                    localStorage.removeItem('accessToken');
                 } else {
                     form.reset();
                     alert(`Tournament with id ${json.tournament_id} was posted successfully.`);

@@ -18,17 +18,25 @@ const getTournaments = async (tournaments, req) => {
   }
 };
 
+const getRebuys = (players) => {
+  let rebuys = 0;
+  players.forEach((player) => {
+      rebuys += player.rebuys;
+  });
+  return rebuys;
+};
+
 const insertTournament = async (tournaments, req) => {
   const count = Number(req.body.count);
   const players = [];
   const prizes = [];
-  let rebuys = 0;
   const dataIsValid = () => {
     const totalprize = prizes.reduce((accumulator, currentValue) => {
       return accumulator + currentValue
-    },0);
+    }, 0);
     const buyIns = count * req.body.buyin;
-    const rebuysTotal = req.body.buyin * rebuys;
+    const rebuysTotal = getRebuys(players) * req.body.buyin;
+    console.log(rebuysTotal);
 
     return totalprize === buyIns + rebuysTotal;
   };
@@ -40,11 +48,6 @@ const insertTournament = async (tournaments, req) => {
     player.rebuys = Number(sanitize(req.body[`players_${i}_rebuys`]));
     player.ranking = i+1;
     players.push(player);
-
-    if (player.rebuys > 0) {
-      rebuys += player.rebuys;
-    }
-
     if (prize > 0) {
       prizes.push(prize);
     }
@@ -59,7 +62,6 @@ const insertTournament = async (tournaments, req) => {
     date: sanitize(req.body.date),
     round: sanitize(req.body.round),
     buyin: sanitize(req.body.buyin),
-    rebuys: rebuys,
     prizes: prizes,
     players: players
   });
