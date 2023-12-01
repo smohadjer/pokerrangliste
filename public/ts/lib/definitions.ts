@@ -53,5 +53,4 @@ export interface State {
   player_id?: string
   view: string
   json?: JsonData,
-  spa: string
 }

@@ -8,22 +8,17 @@ const state: State = {
     seasonId: urlParams.get('season_id') || undefined,
     tournament_id: urlParams.get('tournament_id') || undefined,
     player_id: urlParams.get('player_id') || undefined,
-    spa: urlParams.get('spa') || 'false'
 };
 
-if (urlParams.get('spa')) {
-    console.log('SPA mode is on');
-    enableSpaMode();
-}
+enableSpaMode();
 
 function enableSpaMode() {
-    document.addEventListener('click', (e) => {
+    document.querySelector('main')?.addEventListener('click', (e) => {
         const link = e.target as HTMLAnchorElement;
         if (link.nodeName === 'A') {
             e.preventDefault();
             const href = link.search;
             const params = new URLSearchParams(href);
-            params.set('spa', 'true');
             for (const [key, value] of params) {
                 state[key] = value;
             }
