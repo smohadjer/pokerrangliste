@@ -30,3 +30,12 @@ Content-Type: application/json
 {
   "name": "Saeid"
 }
+
+###
+
+POST https://tournaments.myendpoint.de/api/players
+Content-Type: application/json
+
+{
+  "name": "Majid"
+}
