@@ -16,6 +16,7 @@ const state: State = {
 };
 
 enableSpaMode();
+fetchData();
 
 function enableSpaMode() {
     document.querySelector('main')?.addEventListener('click', (e) => {
@@ -81,5 +82,3 @@ function fetchData() {
         console.error(` Err: ${err}`);
     });
 }
-
-fetchData();
