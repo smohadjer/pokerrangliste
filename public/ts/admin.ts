@@ -99,6 +99,7 @@ if (countElm) {
             })
             .then((response) => response.json())
             .then(async (json) => {
+                console.log(json);
                 accessToken = json.access_token;
                 if (accessToken) {
                     localStorage.setItem('accessToken', accessToken);
