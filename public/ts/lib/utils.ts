@@ -22,15 +22,13 @@ const getSeasonName = (season_id: string, seasons: Season[]) => {
     return seasons.find(item => item._id == season_id)?.name || 'All-Time';
 }
 
-const sortByDate = (data) => {
-    const sortedData = structuredClone(data);
-    // sort tournaments by date
-    sortedData.sort((item1, item2) => {
+const sortByDate = (tournaments) => {
+    tournaments.sort((item1, item2) => {
       const date1 = new Date(item1.date).valueOf();
       const date2 = new Date(item2.date).valueOf();
       return date2 - date1;
     });
-    return sortedData;
+    return tournaments;
 };
 
 const render = async (templateFile, templateData, container) => {
@@ -73,6 +71,16 @@ const getBounty = (player: Player, tournament: Tournament) => {
 const getPlayerName = (id: string, players: PlayerDB[]) => {
     const player = players.find(player => player._id === id);
     return player?.name;
+}
+
+// deep cloning arrays or objects
+const deepClone = (arrayOrObject) => {
+    if (typeof structuredClone !== 'undefined') {
+        return structuredClone(arrayOrObject);
+    }
+    const str = JSON.stringify(arrayOrObject);
+    const json = JSON.parse(str);
+    return json;
 }
 
 const setPlayers = (tournaments: Tournament[]) => {
@@ -132,7 +140,7 @@ export const renderPage = (state: State) => {
         })
         if (!tournament) return;
 
-        const cloneTournament = structuredClone(tournament);
+        const cloneTournament = deepClone(tournament);
 
         // if players have same points, list them sorted by their ranking
         cloneTournament.players.sort((item1, item2) => {
@@ -161,7 +169,7 @@ export const renderPage = (state: State) => {
         interface ClonedTournaments extends Tournament {
             hasBounty?: string;
         }
-        const clonedTournaments: ClonedTournaments[] = structuredClone(tournaments);
+        const clonedTournaments: ClonedTournaments[] = deepClone(tournaments);
         const optimizedData = clonedTournaments.map((item) => {
             item.rebuys = getRebuys(item);
             item.hasBounty = item.bounties ? 'Yes' : 'No';

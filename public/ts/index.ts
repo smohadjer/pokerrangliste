@@ -32,7 +32,13 @@ function enableSpaMode() {
             }
 
             const params = new URLSearchParams(link.search);
-            if (params.size > 0) {
+
+            // for browsers not supporting URLSearchParams's size property
+            const size = (params.size)
+                ? params.size
+                : params.toString().length;
+
+            if (size > 0) {
                 for (const [key, value] of params) {
                     state[key] = value;
                 }
