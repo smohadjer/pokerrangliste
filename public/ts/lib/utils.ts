@@ -73,15 +73,16 @@ const getPlayerName = (id: string, players: PlayerDB[]) => {
     return player?.name;
 }
 
-// deep cloning arrays or objects
+// Deep cloning arrays and objects with support for older browsers
 const deepClone = (arrayOrObject) => {
-    if (typeof structuredClone !== 'undefined') {
+    if (typeof structuredClone === 'function') {
+        console.log(`Deep cloning via structuredClone`);
         return structuredClone(arrayOrObject);
+    } else {
+        console.log(`Deep cloning via JSON stringify/parse`);
+        return JSON.parse(JSON.stringify(arrayOrObject));
     }
-    const str = JSON.stringify(arrayOrObject);
-    const json = JSON.parse(str);
-    return json;
-}
+ }
 
 const setPlayers = (tournaments: Tournament[]) => {
     const players: Player[] = [];
