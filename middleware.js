@@ -1,18 +1,44 @@
 /* middleware for vercel edge runtime */
 import { next } from '@vercel/edge';
 import {jwtVerify} from 'jose';
+import { RequestCookies } from '@edge-runtime/cookies'
+
+// middleware only runs for these paths
+export const config = {
+  matcher: [
+    '/api/tournament',
+    '/api/seasons',
+    '/api/players',
+    '/admin'
+  ]
+};
+
+if (typeof EdgeRuntime === 'string') {
+  console.log('******* EdgeRuntime *********');
+}
 
 export default async function middleware(req) {
-  // only POST requests require authentication
-  if (req.method === 'GET') {
+  console.log('middleware: ', req.method, req.url);
+  const url = new URL(req.url);
+
+  // only POST requests to api endpoints and access to admin page is restrigted
+  if (req.method === 'GET' && !url.pathname.startsWith('/admin')) {
     return next();
   }
+
+  const cookies = new RequestCookies(req.headers)
+  const jwt = cookies.get('jwt')?.value;
   const authHeader = req.headers.get('authorization');
-  if (authHeader) {
-    const token = authHeader.split(' ')[1];
+
+  // we check whether jwt token is sent using authorization header or cookie
+  if (authHeader || jwt) {
+    const token = authHeader ? authHeader.split(' ')[1] : jwt;
     const secret = new TextEncoder().encode('mySecret');
+    console.log({token});
+
     try {
       const payload = await jwtVerify(token, secret);
+      console.log(payload);
       next();
     } catch(err) {
       return Response.json(
@@ -21,13 +47,12 @@ export default async function middleware(req) {
       )
     }
   } else {
-    return Response.json(
-      { success: false, message: 'authorization header not found' },
-      { status: 403 }
-    )
+    // return Response.json(
+    //   { success: false, message: 'authorization header not found' },
+    //   { status: 403 }
+    // )
+    console.log('redirecting to login page');
+    url.pathname = '/login';
+    return Response.redirect(url, 302);
   }
-}
-
-export const config = {
-  matcher: ['/api/tournament', '/api/seasons', '/api/players']
 }

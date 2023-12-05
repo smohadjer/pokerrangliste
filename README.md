@@ -4,10 +4,13 @@ https://tournaments-express.myendpoint.de/
 Serverless version hosted on Vercel:
 https://tournaments.myendpoint.de/
 
-# Run on localhost
+# Run on localhost using Express server
 - git clone https://github.com/smohadjer/pokerrangliste.git
 - npm install
-- npm start
+- npm run start-express
+
+# Run on localhost using Vercel serverless
+- vercel dev
 
 This will start an express server on port 3000 which is watched by nodemon for server/api changes. Typescript files are watched and bundled via esbuild.
 

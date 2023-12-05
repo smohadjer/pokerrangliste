@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Pokerrangliste</title>
+        <title>Admin</title>
         <meta name="description" content="" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="robots" content="noindex, nofollow">
@@ -12,15 +12,7 @@
     <body>
         <main class="admin">
             <section>
-                <form id="login" method="POST" action="/api/authenticate">
-                    <h1>Login</h1>
-                    <p><label>Username: <input required name="username"></label></p>
-                    <p><label>Password: <input required name="password" type="password"></label></p>
-                    <button>Login</button>
-                </form>
-            </section>
-            <section>
-                <form hidden id="post-tournament" method="POST" action="/api/tournament">
+                <form id="post-tournament" method="POST" action="/api/tournament">
                     <h1>Add Tournament</h1>
                     <div>
                         <label>Season *</label>
