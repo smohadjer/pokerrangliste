@@ -49,6 +49,10 @@ app.get('/api/players', (req, res) => {
   players(req, res);
 });
 
+app.get('/api/seasons', (req, res) => {
+  seasons(req, res);
+});
+
 // login
 app.post('/api/authenticate', (req, res) => {
   authenticate(req, res);

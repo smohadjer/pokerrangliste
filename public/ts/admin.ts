@@ -1,19 +1,33 @@
-import { PlayerDB } from './lib/definitions';
+import { PlayerDB, Season } from './lib/definitions';
 
 const countElm = document.querySelector('input[name=count]');
 const playersElm = document.querySelector('#players');
+const seasonDropdown = document.querySelector('#season_dropdown');
 const postTournamentForm = document.getElementById('post-tournament')!;
 
 let playersSelect = '';
-const getPlayers = async() => {
+const getPlayers = async () => {
     const response = await fetch('api/players');
     const players: Array<PlayerDB> = await response.json();
     players.forEach(element => {
         playersSelect += `<option value="${element._id}">${element.name}</option>`
     });
-}
-
+};
 getPlayers();
+
+if (seasonDropdown) {
+    let seasonsOptions = '';
+    const getSeasons = async () => {
+        const response = await fetch('api/seasons');
+        const seasons: Array<Season> = await response.json();
+        seasons.forEach(element => {
+            seasonsOptions += `<option value="${element._id}">${element.name}</option>`
+        });
+        console.log(seasonsOptions);
+        seasonDropdown.innerHTML = seasonsOptions;
+    };
+    getSeasons();
+}
 
 const getPlayersList = (count) => {
     let html = '';
