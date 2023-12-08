@@ -25,12 +25,8 @@ function enableSpaMode() {
             e.preventDefault();
 
             const href = link.getAttribute('href')!;
-            const animatonClass = link.getAttribute('data-animation');
             const options: { animation?: string} = {};
-
-            if (href.length === 0) {
-                history.back();
-            }
+            const animatonClass = link.getAttribute('data-animation');
 
             if (animatonClass) {
                 options.animation = animatonClass;
@@ -73,7 +69,7 @@ function enableSpaMode() {
 
     window.addEventListener("popstate", function(e) {
         console.log('pop')
-        renderPage(e.state, {animation: 'slideInLTR'});
+        renderPage(e.state);
     });
 }
 
