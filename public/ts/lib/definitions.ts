@@ -29,6 +29,7 @@ export interface Tournament {
   players: Player[];
   season_id: string;
   bounties?: bounty[];
+  hasBounty?: string;
 }
 
 export interface Profile {

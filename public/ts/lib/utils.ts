@@ -126,12 +126,21 @@ const setPlayers = (tournaments: Tournament[]) => {
 };
 
 export const renderPage = async (state: State, options?) => {
-    const tournaments: Tournament[] = sortByDate(state.data!.tournaments);
+    let tournaments: Tournament[] = deepClone(state.data!.tournaments);
     const view = state.view;
     const playerId = state.player_id;
     const season_id = state.season_id!;
     const seasonName = getSeasonName(season_id, state.data!.seasons);
     const playersList: PlayerDB[] = state.data!.players;
+
+    if (season_id) {
+        tournaments = tournaments.filter((tour) => {
+            return tour.season_id === season_id;
+        });
+    }
+
+    tournaments = sortByDate(tournaments);
+
     const players = setPlayers(tournaments);
     const enhancedPlayers = players.map((player) => {
         player.name = getPlayerName(player.id, playersList)
@@ -194,11 +203,7 @@ export const renderPage = async (state: State, options?) => {
     }
 
     if (view === 'tournaments') {
-        interface ClonedTournaments extends Tournament {
-            hasBounty?: string;
-        }
-        const clonedTournaments: ClonedTournaments[] = deepClone(tournaments);
-        const optimizedData = clonedTournaments.map((item) => {
+        const optimizedData = tournaments.map((item) => {
             item.rebuys = getRebuys(item);
             item.hasBounty = item.bounties ? 'Yes' : 'No';
             return item;

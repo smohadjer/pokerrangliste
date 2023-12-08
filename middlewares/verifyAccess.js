@@ -17,7 +17,8 @@ export default async (req, res, next) => {
       console.log(payload);
       next();
     } catch(err) {
-      res.status(401).json({'error': 401, 'message': 'invalid token'})
+      //res.status(401).json({'error': 401, 'message': 'invalid token'})
+      res.redirect('/login');
     }
   } else {
     console.log('authorization header or jwt cookie missing...');
