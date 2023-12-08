@@ -2,6 +2,9 @@ import { Tournament, PlayerDB, Player, Profile, Season, State } from './definiti
 
 declare const Handlebars: any;
 
+const $nav = document.querySelector('main nav');
+const container = document.getElementById('results');
+
 // setting Handlebars helpers to help with compiling templates
 Handlebars.registerHelper("inc", function(value, options) {
     return parseInt(value) + 1;
@@ -31,11 +34,22 @@ const sortByDate = (tournaments) => {
     return tournaments;
 };
 
-const render = async (templateFile, templateData, container) => {
+const render = async (templateFile, templateData, container, options) => {
     const html = await getHTML(templateFile, templateData);
     container.innerHTML = html;
     container.classList.remove('empty');
+
+    if (options) {
+        container.classList.add(options.animation);
+    }
 };
+
+container?.addEventListener('animationend', (e) => {
+    console.log('animaiton end');
+    container?.classList.remove('slideInRTL');
+    container?.classList.remove('slideInLTR');
+    container?.classList.remove('fadeIn');
+})
 
 const getRebuys = (tournament) => {
     let rebuys = 0;
@@ -76,10 +90,8 @@ const getPlayerName = (id: string, players: PlayerDB[]) => {
 // Deep cloning arrays and objects with support for older browsers
 const deepClone = (arrayOrObject) => {
     if (typeof structuredClone === 'function') {
-        console.log(`Deep cloning via structuredClone`);
         return structuredClone(arrayOrObject);
     } else {
-        console.log(`Deep cloning via JSON stringify/parse`);
         return JSON.parse(JSON.stringify(arrayOrObject));
     }
  }
@@ -113,10 +125,7 @@ const setPlayers = (tournaments: Tournament[]) => {
     return players;
 };
 
-const $nav = document.querySelector('main nav');
-const container = document.getElementById('results');
-
-export const renderPage = (state: State) => {
+export const renderPage = (state: State, options?) => {
     const tournaments: Tournament[] = sortByDate(state.data!.tournaments);
     const view = state.view;
     const playerId = state.player_id;
@@ -140,11 +149,16 @@ export const renderPage = (state: State) => {
     );
 
     if (view === 'ranking') {
-        render('hbs/ranking.hbs', {
-            players: enhancedPlayers,
-            season_id: season_id,
-            seasonName: seasonName
-        }, container);
+        render(
+            'hbs/ranking.hbs',
+            {
+                players: enhancedPlayers,
+                season_id: season_id,
+                seasonName: seasonName
+            },
+            container,
+            options
+        );
     }
 
     if (view === 'tournament') {
@@ -175,7 +189,7 @@ export const renderPage = (state: State) => {
             rebuys: getRebuys(cloneTournament),
             players: players,
             season_id: season_id
-        }, container);
+        }, container, options);
     }
 
     if (view === 'tournaments') {
@@ -192,7 +206,7 @@ export const renderPage = (state: State) => {
             tournaments: optimizedData,
             season_id: season_id,
             seasonName: seasonName
-        }, container);
+        }, container, options);
     }
 
     if (view === 'profile') {
@@ -227,7 +241,7 @@ export const renderPage = (state: State) => {
             ranking: ranking,
             results: results,
             season_id: season_id
-        }, container);
+        }, container, options);
     }
 };
 

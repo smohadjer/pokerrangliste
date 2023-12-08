@@ -134,11 +134,18 @@ footer p {
     min-height: 100px;
 }
 
-#results {
-    view-transition-name: results;
+@keyframes slideInLTR {
+    from {
+        transform: translateX(-100vw);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
 }
 
-@keyframes slideIn {
+@keyframes slideInRTL {
     from {
         transform: translateX(100vw);
         opacity: 0;
@@ -149,15 +156,36 @@ footer p {
     }
 }
 
-@keyframes slideOut {
+@keyframes fadeIn {
     from {
-        transform: translateX(0);
-        opacity: 1
+        opacity: 0;
     }
     to {
-        transform: translateX(-100vw);
-        opacity: 0
+        opacity: 1;
     }
+}
+
+#results.slideInLTR {
+    animation: slideInLTR 0.5s;
+    animation-fill-mode: both;
+    animation-timing-function: ease-out;
+}
+
+#results.slideInRTL {
+    animation: slideInRTL 0.5s;
+    animation-fill-mode: both;
+    animation-timing-function: ease-out;
+}
+
+#results.fadeIn {
+    animation: fadeIn 0.5s;
+    animation-fill-mode: both;
+    animation-timing-function: ease-out;
+}
+
+/*
+#results {
+    view-transition-name: results;
 }
 
 ::view-transition-old(results) {
@@ -171,4 +199,5 @@ footer p {
   animation-fill-mode: both;
   animation-timing-function: ease-out;
 }
+*/
 

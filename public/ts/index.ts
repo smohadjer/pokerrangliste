@@ -25,6 +25,16 @@ function enableSpaMode() {
             e.preventDefault();
 
             const href = link.getAttribute('href')!;
+            const animatonClass = link.getAttribute('data-animation');
+            const options: { animation?: string} = {};
+
+            if (href.length === 0) {
+                history.back();
+            }
+
+            if (animatonClass) {
+                options.animation = animatonClass;
+            }
 
             // Do nothing when link to current page is clicked
             if (link.search === window.location.search) {
@@ -54,21 +64,16 @@ function enableSpaMode() {
               url = '/?' +  params.toString();
             }
 
-            // With View Transitions:
-            if (!document.startViewTransition) {
-                renderPage(state);
-            } else {
-                const transition = document.startViewTransition(() => {
-                    renderPage(state);
-                });
-            }
+            console.log(options);
+            renderPage(state, options);
 
             window.history.pushState(state, '', url);
         }
     });
 
     window.addEventListener("popstate", function(e) {
-        renderPage(e.state);
+        console.log('pop')
+        renderPage(e.state, {animation: 'slideInLTR'});
     });
 }
 

@@ -12,7 +12,7 @@
     {{#each tournaments}}
       <tr>
         <td>{{inc @index}}</td>
-        <td class="name"><a href="/?view=tournament&tournament_id={{this._id}}">{{this.date}}</a></td>
+        <td class="name"><a data-animation="slideInRTL" href="/?view=tournament&tournament_id={{this._id}}">{{this.date}}</a></td>
         <td>{{this.players.length}}</td>
         <td>{{this.buyin}}</td>
         <td>{{this.rebuys}}</td>
