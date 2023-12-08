@@ -166,38 +166,19 @@ footer p {
 }
 
 #results.slideInLTR {
-    animation: slideInLTR 0.5s;
+    animation: slideInLTR 0.25s;
     animation-fill-mode: both;
     animation-timing-function: ease-out;
 }
 
 #results.slideInRTL {
-    animation: slideInRTL 0.5s;
+    animation: slideInRTL 0.25s;
     animation-fill-mode: both;
     animation-timing-function: ease-out;
 }
 
 #results.fadeIn {
-    animation: fadeIn 0.5s;
+    animation: fadeIn 0.25s;
     animation-fill-mode: both;
     animation-timing-function: ease-out;
 }
-
-/*
-#results {
-    view-transition-name: results;
-}
-
-::view-transition-old(results) {
-  animation: slideOut 0.5s;
-  animation-fill-mode: both;
-  animation-timing-function: ease-out;
-}
-
-::view-transition-new(results) {
-  animation: slideIn 0.5s;
-  animation-fill-mode: both;
-  animation-timing-function: ease-out;
-}
-*/
-
