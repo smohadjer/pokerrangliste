@@ -1,36 +1,25 @@
-import { getHTML } from './utils.js';
-import { Season } from './definitions';
+import { State } from './definitions';
+import { renderPage } from './utils.js';
 
-const onChange = (target, urlParams) => {
-  if (target instanceof HTMLSelectElement) {
-    const season_id = target.value;
+export const onChangeEventHandler = (
+    target: HTMLSelectElement,
+    state: State
+  ) => {
+  // update state
+  state.season_id = target.value ? target.value : undefined;
 
-    if (season_id) {
-      urlParams.set('season_id', season_id);
-    } else {
-      urlParams.delete('season_id');
-    }
+  renderPage(state);
 
-    window.location.search = urlParams.toString();
+  // update URL in browser address bar
+  const urlParams = new URLSearchParams(window.location.search);
+  if (state.season_id) {
+    urlParams.set('season_id', (state.season_id));
+  } else {
+    urlParams.delete('season_id');
   }
-};
-
-export const addNavigation = async (
-  seasons: Season[],
-  seasonId: string | undefined,
-  urlParams: URLSearchParams
-) => {
-  const html: string = await getHTML('hbs/nav.hbs', {
-    season_id: seasonId,
-    seasons: seasons
-  });
-
-  const $nav = new DOMParser().parseFromString(html, 'text/html').body.firstChild;
-
-  if ($nav) {
-    $nav.addEventListener('change', (event) => {
-      onChange(event.target, urlParams);
-    });
-    document.querySelector('main')?.prepend($nav);
+  let url = '/';
+  if (urlParams.toString().length > 0) {
+    url = '/?' +  urlParams.toString();
   }
+  window.history.pushState(state, '', url);
 };

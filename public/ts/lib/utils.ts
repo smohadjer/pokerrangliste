@@ -113,8 +113,10 @@ const setPlayers = (tournaments: Tournament[]) => {
     return players;
 };
 
+const $nav = document.querySelector('main nav');
+const container = document.getElementById('results');
+
 export const renderPage = (state: State) => {
-    const container = document.getElementById('results');
     const tournaments: Tournament[] = sortByDate(state.data!.tournaments);
     const view = state.view;
     const playerId = state.player_id;
@@ -126,6 +128,16 @@ export const renderPage = (state: State) => {
         player.name = getPlayerName(player.id, playersList)
         return player;
     })
+
+    // render navigation
+    render(
+      'hbs/nav.hbs',
+      {
+        season_id: season_id,
+        seasons: state.data!.seasons
+      },
+      $nav
+    );
 
     if (view === 'ranking') {
         render('hbs/ranking.hbs', {

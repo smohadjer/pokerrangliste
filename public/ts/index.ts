@@ -1,5 +1,5 @@
 import { renderPage } from './lib/utils.js';
-import { addNavigation} from './lib/nav.js';
+import { onChangeEventHandler } from './lib/nav.js';
 import { Data, State } from './lib/definitions';
 
 const DEFAULT_VIEW = 'ranking'
@@ -38,19 +38,23 @@ function enableSpaMode() {
                 ? params.size
                 : params.toString().length;
 
+            // update state
             if (size > 0) {
                 for (const [key, value] of params) {
                     state[key] = value;
                 }
-            } else {
-                // If there is no "view" query in url, set "view" to default
-                // This is special case to allow links to homepage of app direct
-                // to it without a "view" parameter.
-                state.view = DEFAULT_VIEW
             }
 
+            if (!params.get('view')) {
+                state.view = DEFAULT_VIEW;
+            }
+
+            let url = '/';
+            if (params.toString().length > 0) {
+              url = '/?' +  params.toString();
+            }
             renderPage(state);
-            window.history.pushState(state, '', href);
+            window.history.pushState(state, '', url);
         }
     });
 
@@ -70,12 +74,18 @@ function fetchData() {
     .then((response) => response.json())
     .then(async (json: Data) => {
         console.log({json});
-        await addNavigation(json.seasons, state.season_id, urlParams);
         if (json.error) {
             alert(json.message);
         } else {
             state.data = json;
             renderPage(state);
+
+            // set event listener for season selector in nav
+            document.querySelector('nav')?.addEventListener('change', (event) => {
+                if (event.target instanceof HTMLSelectElement) {
+                    onChangeEventHandler(event.target, state);
+                }
+            });
 
             // When the app loads from server we need to update browser history
             // by adding state to it, so when user returns to entry page via
