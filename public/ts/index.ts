@@ -53,7 +53,16 @@ function enableSpaMode() {
             if (params.toString().length > 0) {
               url = '/?' +  params.toString();
             }
-            renderPage(state);
+
+            // With View Transitions:
+            if (!document.startViewTransition) {
+                renderPage(state);
+            } else {
+                const transition = document.startViewTransition(() => {
+                    renderPage(state);
+                });
+            }
+
             window.history.pushState(state, '', url);
         }
     });
