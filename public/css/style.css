@@ -12,6 +12,7 @@ body {
     radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 33%, #aa832a 66%, #5d4a1f 100%);
     background-repeat: none;
     color: black;
+    font-size: 16px;
 }
 
 nav {
