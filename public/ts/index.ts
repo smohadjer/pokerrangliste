@@ -19,15 +19,19 @@ enableSpaMode();
 fetchData();
 
 function enableSpaMode() {
-    document.querySelector('main')?.addEventListener('click', (e) => {
+    document.querySelector('main')?.addEventListener('click', async (e) => {
         const link = e.target as HTMLAnchorElement;
         if (link.nodeName === 'A') {
             e.preventDefault();
 
+            // replace existing history state with one that has scrolling position
+            const scrollPosition = document.documentElement.scrollTop;
+            const tempState = {...history.state, scroll: scrollPosition};
+            history.replaceState(tempState, '', window.location.search);
+
             const href = link.getAttribute('href')!;
             const options: { animation?: string} = {};
             const animatonClass = link.getAttribute('data-animation');
-
             if (animatonClass) {
                 options.animation = animatonClass;
             }
@@ -60,16 +64,17 @@ function enableSpaMode() {
               url = '/?' +  params.toString();
             }
 
-            console.log(options);
-            renderPage(state, options);
-
+            window.scrollTo(0, 0);
+            await renderPage(state, options);
             window.history.pushState(state, '', url);
         }
     });
 
-    window.addEventListener("popstate", function(e) {
-        console.log('pop')
-        renderPage(e.state);
+    window.addEventListener("popstate", async (event) => {
+        await renderPage(event.state);
+        if (event.state.scroll) {
+            window.scrollTo(0, event.state.scroll);
+        }
     });
 }
 

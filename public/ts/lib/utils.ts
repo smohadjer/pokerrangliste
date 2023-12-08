@@ -125,7 +125,7 @@ const setPlayers = (tournaments: Tournament[]) => {
     return players;
 };
 
-export const renderPage = (state: State, options?) => {
+export const renderPage = async (state: State, options?) => {
     const tournaments: Tournament[] = sortByDate(state.data!.tournaments);
     const view = state.view;
     const playerId = state.player_id;
@@ -139,7 +139,7 @@ export const renderPage = (state: State, options?) => {
     })
 
     // render navigation
-    render(
+    await render(
       'hbs/nav.hbs',
       {
         season_id: season_id,
@@ -150,7 +150,7 @@ export const renderPage = (state: State, options?) => {
     );
 
     if (view === 'ranking') {
-        render(
+        await render(
             'hbs/ranking.hbs',
             {
                 players: enhancedPlayers,
@@ -183,7 +183,7 @@ export const renderPage = (state: State, options?) => {
             return player;
         });
 
-        render('hbs/tournament.hbs', {
+        await render('hbs/tournament.hbs', {
             date: cloneTournament.date,
             playersCount: cloneTournament.players.length,
             buyin: cloneTournament.buyin,
@@ -203,7 +203,7 @@ export const renderPage = (state: State, options?) => {
             item.hasBounty = item.bounties ? 'Yes' : 'No';
             return item;
         });
-        render('hbs/tournamentsList.hbs', {
+        await render('hbs/tournamentsList.hbs', {
             tournaments: optimizedData,
             season_id: season_id,
             seasonName: seasonName
@@ -235,7 +235,7 @@ export const renderPage = (state: State, options?) => {
             results.push(result);
         });
 
-        render('hbs/profile.hbs', {
+        await render('hbs/profile.hbs', {
             player_name: player?.name,
             points: player?.points,
             rebuys: player?.rebuys,
