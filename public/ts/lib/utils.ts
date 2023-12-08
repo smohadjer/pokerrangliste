@@ -145,7 +145,8 @@ export const renderPage = (state: State, options?) => {
         season_id: season_id,
         seasons: state.data!.seasons
       },
-      $nav
+      $nav,
+      options
     );
 
     if (view === 'ranking') {
