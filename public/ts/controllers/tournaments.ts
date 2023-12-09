@@ -1,8 +1,7 @@
 import { getRebuys, getTournaments, getSeasonName } from '../lib/utils';
 import { State } from '../lib/definitions';
 
-// tournaments, season_id, seasonName
-export function getTournamentsData(state: State) {
+export default (state: State) => {
     const tournaments = getTournaments(state.data!.tournaments, state.season_id);
 
     const optimizedData = tournaments.map((item) => {
@@ -18,4 +17,4 @@ export function getTournamentsData(state: State) {
     }
 
     return tournamentsData;
-}
+};

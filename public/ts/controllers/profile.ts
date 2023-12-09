@@ -1,7 +1,7 @@
 import { Tournament, PlayerDB, Profile, State } from '../lib/definitions';
 import { getPoints, getPlayers, getTournaments } from '../lib/utils';
 
-export function getProfileData(state: State) {
+export default (state: State) => {
     const tournaments: Tournament[] = getTournaments(state.data!.tournaments, state.season_id);
     const playersList: PlayerDB[] = state.data!.players;
 
@@ -39,4 +39,4 @@ export function getProfileData(state: State) {
     };
 
     return profileData;
-}
+};

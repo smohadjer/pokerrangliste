@@ -148,7 +148,7 @@ export const renderPage = async (state: State, options?) => {
 
     await render(
         `views/${state.view}.hbs`,
-        controller[state.view].getData(state),
+        controller[state.view](state),
         document.getElementById('results'),
         options
     );

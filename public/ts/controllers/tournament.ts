@@ -9,8 +9,7 @@ import {
     getTournaments,
 } from '../lib/utils';
 
-//tournaments, tournament_id, season_id, playersList
-export function getTournamentData(state: State) {
+export default (state: State) => {
     const tournaments: Tournament[] = getTournaments(state.data!.tournaments, state.season_id);
     const playersList: PlayerDB[] = state.data!.players;
 
@@ -43,7 +42,5 @@ export function getTournamentData(state: State) {
         season_id: state.season_id
     }
 
-    console.log(tournamentData)
-
     return tournamentData;
-}
+};
