@@ -102,6 +102,14 @@ function fetchData() {
                 }
             });
 
+            document.getElementById('results')?.addEventListener('animationend', (event) => {
+                console.log('animaiton end');
+                const container = event.target as HTMLElement;
+                container.classList.remove('slideInRTL');
+                container.classList.remove('slideInLTR');
+                container.classList.remove('fadeIn');
+            })
+
             // When the app loads from server we need to update browser history
             // by adding state to it, so when user returns to entry page via
             // back button, popState handler can access history to render page.

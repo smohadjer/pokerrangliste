@@ -1,9 +1,11 @@
-import { Tournament, PlayerDB, Player, Profile, Season, State } from './definitions';
-
+import {
+    Tournament,
+    PlayerDB, Player,
+    Season,
+    State
+} from './definitions';
+import { controller } from '../controllers/controller';
 declare const Handlebars: any;
-
-const $nav = document.querySelector('main nav');
-const container = document.getElementById('results');
 
 // setting Handlebars helpers to help with compiling templates
 Handlebars.registerHelper("inc", function(value, options) {
@@ -21,8 +23,12 @@ export const getHTML = async (templateFile, templateData) => {
     return html;
 };
 
-const getSeasonName = (season_id: string, seasons: Season[]) => {
-    return seasons.find(item => item._id == season_id)?.name || 'All-Time';
+export const getSeasonName = (season_id: string | undefined, seasons: Season[]) => {
+    if (season_id) {
+        return seasons.find(item => item._id == season_id)?.name;
+    } else {
+        return 'All-Time';
+    }
 }
 
 const sortByDate = (tournaments) => {
@@ -35,6 +41,7 @@ const sortByDate = (tournaments) => {
 };
 
 const render = async (templateFile, templateData, container, options) => {
+    console.log(templateData);
     const html = await getHTML(templateFile, templateData);
     container.innerHTML = html;
     container.classList.remove('empty');
@@ -44,14 +51,7 @@ const render = async (templateFile, templateData, container, options) => {
     }
 };
 
-container?.addEventListener('animationend', (e) => {
-    console.log('animaiton end');
-    container?.classList.remove('slideInRTL');
-    container?.classList.remove('slideInLTR');
-    container?.classList.remove('fadeIn');
-})
-
-const getRebuys = (tournament) => {
+export const getRebuys = (tournament) => {
     let rebuys = 0;
     tournament.players.forEach((player) => {
         rebuys += player.rebuys;
@@ -59,7 +59,7 @@ const getRebuys = (tournament) => {
     return rebuys;
 };
 
-const getPoints = (player, tournament: Tournament) => {
+export const getPoints = (player, tournament: Tournament) => {
     const rebuys = player.rebuys * tournament.buyin;
     const prize = getPrize(player, tournament);
     const bounty = getBounty(player, tournament);
@@ -67,13 +67,13 @@ const getPoints = (player, tournament: Tournament) => {
     return points;
 };
 
-const getPrize = (player, tournament) => {
+export const getPrize = (player, tournament) => {
     const prize = (player.ranking <= tournament.prizes.length)
     ? tournament.prizes[player.ranking - 1] : 0;
     return prize;
 };
 
-const getBounty = (player: Player, tournament: Tournament) => {
+export const getBounty = (player: Player, tournament: Tournament) => {
     if (!tournament.bounties) {
         return 0;
     }
@@ -82,13 +82,13 @@ const getBounty = (player: Player, tournament: Tournament) => {
     return bountyWinner ? bountyWinner.prize : 0;
 };
 
-const getPlayerName = (id: string, players: PlayerDB[]) => {
+export const getPlayerName = (id: string, players: PlayerDB[]) => {
     const player = players.find(player => player._id === id);
     return player?.name;
 }
 
 // Deep cloning arrays and objects with support for older browsers
-const deepClone = (arrayOrObject) => {
+export const deepClone = (arrayOrObject) => {
     if (typeof structuredClone === 'function') {
         return structuredClone(arrayOrObject);
     } else {
@@ -96,7 +96,7 @@ const deepClone = (arrayOrObject) => {
     }
  }
 
-const setPlayers = (tournaments: Tournament[]) => {
+export const getPlayers = (tournaments: Tournament[], playersList) => {
     const players: Player[] = [];
     tournaments.forEach((tournament) => {
         tournament.players.forEach((item) => {
@@ -105,6 +105,7 @@ const setPlayers = (tournaments: Tournament[]) => {
             clone.bounty = getBounty(clone, tournament);
             clone.prize = getPrize(clone, tournament);
             clone.games = 1;
+            clone.name = getPlayerName(clone.id, playersList)
 
             const foundPlayer = players.find(player => player.id === clone.id);
 
@@ -125,129 +126,31 @@ const setPlayers = (tournaments: Tournament[]) => {
     return players;
 };
 
-export const renderPage = async (state: State, options?) => {
-    let tournaments: Tournament[] = deepClone(state.data!.tournaments);
-    const view = state.view;
-    const playerId = state.player_id;
-    const season_id = state.season_id!;
-    const seasonName = getSeasonName(season_id, state.data!.seasons);
-    const playersList: PlayerDB[] = state.data!.players;
-
+export const getTournaments = (tournaments, season_id) => {
+    let clone: Tournament[] = deepClone(tournaments);
     if (season_id) {
-        tournaments = tournaments.filter((tour) => {
+        clone = clone.filter((tour) => {
             return tour.season_id === season_id;
         });
     }
+    clone = sortByDate(clone);
+    return clone;
+};
 
-    tournaments = sortByDate(tournaments);
-
-    const players = setPlayers(tournaments);
-    const enhancedPlayers = players.map((player) => {
-        player.name = getPlayerName(player.id, playersList)
-        return player;
-    })
-
+export const renderPage = async (state: State, options?) => {
     // render navigation
     await render(
-      'hbs/nav.hbs',
-      {
-        season_id: season_id,
-        seasons: state.data!.seasons
-      },
-      $nav,
+      'views/nav.hbs', { season_id: state.season_id,
+        seasons: state.data!.seasons},
+      document.querySelector('main nav'),
       options
     );
 
-    if (view === 'ranking') {
-        await render(
-            'hbs/ranking.hbs',
-            {
-                players: enhancedPlayers,
-                season_id: season_id,
-                seasonName: seasonName
-            },
-            container,
-            options
-        );
-    }
-
-    if (view === 'tournament') {
-        const tournament = tournaments.find((item) => {
-            return item._id === state.tournament_id
-        })
-        if (!tournament) return;
-
-        const cloneTournament = deepClone(tournament);
-
-        // if players have same points, list them sorted by their ranking
-        cloneTournament.players.sort((item1, item2) => {
-            return item1.ranking - item2.ranking;
-        });
-
-        const players = cloneTournament.players.map((player) => {
-            player.prize = getPrize(player, cloneTournament);
-            player.bounty = getBounty(player, cloneTournament);
-            player.points = getPoints(player, cloneTournament);
-            player.name = getPlayerName(player.id, playersList);
-            return player;
-        });
-
-        await render('hbs/tournament.hbs', {
-            date: cloneTournament.date,
-            playersCount: cloneTournament.players.length,
-            buyin: cloneTournament.buyin,
-            rebuys: getRebuys(cloneTournament),
-            players: players,
-            season_id: season_id
-        }, container, options);
-    }
-
-    if (view === 'tournaments') {
-        const optimizedData = tournaments.map((item) => {
-            item.rebuys = getRebuys(item);
-            item.hasBounty = item.bounties ? 'Yes' : 'No';
-            return item;
-        });
-        await render('hbs/tournamentsList.hbs', {
-            tournaments: optimizedData,
-            season_id: season_id,
-            seasonName: seasonName
-        }, container, options);
-    }
-
-    if (view === 'profile') {
-        if (!playerId) return;
-        const player = enhancedPlayers.find((player) =>
-            player.id === playerId);
-        const ranking = enhancedPlayers.findIndex((player) =>
-            player.id === playerId) + 1;
-        const playerTournaments = tournaments.filter((tournament) => {
-            return tournament.players.find((player) => player.id === playerId)
-        });
-        const sortedTournaments = sortByDate(playerTournaments);
-        const results: Profile[] = [];
-
-        sortedTournaments.forEach((item: Tournament) => {
-            const index = item.players.findIndex((player) => player.id === playerId);
-            const result: Profile = {
-                date: item.date,
-                _id: item._id,
-                ranking: item.players[index].ranking,
-                rebuys: item.players[index].rebuys,
-                players: item.players.length,
-                points: getPoints(item.players[index], item)
-            };
-            results.push(result);
-        });
-
-        await render('hbs/profile.hbs', {
-            player_name: player?.name,
-            points: player?.points,
-            rebuys: player?.rebuys,
-            ranking: ranking,
-            results: results,
-            season_id: season_id
-        }, container, options);
-    }
+    await render(
+        `views/${state.view}.hbs`,
+        controller[state.view].getData(state),
+        document.getElementById('results'),
+        options
+    );
 };
 
