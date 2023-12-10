@@ -23,11 +23,11 @@ export const getHTML = async (templateFile, templateData) => {
     return html;
 };
 
-export const getSeasonName = (season_id: string | undefined, seasons: Season[]) => {
-    if (season_id) {
-        return seasons.find(item => item._id == season_id)?.name;
-    } else {
+export const getSeasonName = (season_id: string, seasons: Season[]) => {
+    if (season_id === 'all-time') {
         return 'All-Time';
+    } else {
+        return seasons.find(item => item._id == season_id)?.name;
     }
 }
 
@@ -128,7 +128,7 @@ export const getPlayers = (tournaments: Tournament[], playersList) => {
 
 export const getTournaments = (tournaments, season_id) => {
     let clone: Tournament[] = deepClone(tournaments);
-    if (season_id) {
+    if (season_id !== 'all-time') {
         clone = clone.filter((tour) => {
             return tour.season_id === season_id;
         });
@@ -140,10 +140,13 @@ export const getTournaments = (tournaments, season_id) => {
 export const renderPage = async (state: State, options?) => {
     // render navigation
     await render(
-      'views/nav.hbs', { season_id: state.season_id,
-        seasons: state.data!.seasons},
-      document.querySelector('main nav'),
-      options
+        'views/nav.hbs',
+        {
+            season_id: state.season_id,
+            seasons: state.data!.seasons
+        },
+        document.querySelector('main nav'),
+        options
     );
 
     await render(

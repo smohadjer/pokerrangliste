@@ -12,6 +12,6 @@ export default (state: State) => {
     return {
         players: getPlayers(tournaments, playersList),
         season_id: state.season_id,
-        seasonName:  getSeasonName(state.season_id, state.data!.seasons)
+        seasonName:  getSeasonName(state.season_id!, state.data!.seasons)
     };
 };

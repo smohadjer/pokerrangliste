@@ -5,7 +5,7 @@
         {{#each seasons}}
           <option {{#ifEquals this._id ../season_id }}selected="selected"{{/ifEquals}} value="{{this._id}}">{{this.name}}</option>
         {{/each}}
-        <option {{#unless season_id}}selected="selected"{{/unless}} value="">All-Time</option>
+        <option {{#ifEquals season_id 'all-time'}}selected="selected"{{/ifEquals}} value="all-time">All-Time</option>
     </select>
   </div>
   <ul>

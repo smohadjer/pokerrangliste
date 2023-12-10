@@ -93,6 +93,13 @@ function fetchData() {
             alert(json.message);
         } else {
             state.data = json;
+
+            // if no season_id is set, set season to last season entered in database
+            if (!state.season_id) {
+                const id = json.seasons[json.seasons.length - 1]._id;
+                state.season_id = id;
+            }
+
             renderPage(state);
 
             // set event listener for season selector in nav
