@@ -1,3 +1,5 @@
+@import './nav.css';
+
 * {
     margin-bottom: 0;
 }
@@ -13,36 +15,6 @@ body {
     background-repeat: none;
     color: black;
     font-size: 16px;
-}
-
-nav {
-    margin: 1rem 0.5em;
-}
-
-nav ul {
-    margin: 1em 0 0;
-    padding: 0;
-    list-style: none;
-}
-
-nav ul li {
-    display: inline-block;
-    margin-bottom: 0.5rem;
-    margin-right: 0.5rem;
-}
-
-nav ul li a {
-    background: white;
-    display: inline-block;
-    padding: 10px;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: #1D5410;
-    line-height: 16px;
-}
-
-nav ul li a:hover {
-    background: #b9aa56;
 }
 
 .wrapper {
