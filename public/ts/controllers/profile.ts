@@ -1,5 +1,10 @@
 import { Tournament, PlayerDB, Profile, State } from '../lib/definitions';
-import { getPoints, getPlayers, getTournaments } from '../lib/utils';
+import {
+    getPoints,
+    getPlayers,
+    getTournaments,
+    getSeasonName
+} from '../lib/utils';
 
 export default (state: State) => {
     const tournaments: Tournament[] = getTournaments(state.data!.tournaments, state.season_id);
@@ -35,7 +40,8 @@ export default (state: State) => {
         rebuys: player?.rebuys,
         ranking: ranking,
         results: results,
-        season_id: state.season_id
+        season_id: state.season_id,
+        seasonName:  getSeasonName(state.season_id!, state.data!.seasons)
     };
 
     return profileData;

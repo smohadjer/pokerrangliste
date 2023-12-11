@@ -57,14 +57,27 @@ nav ul li a:hover {
     }
 }
 
-table {
+.wrapper table {
     font-family: Arial, Helvetica, sans-serif;
     background-color: #1d5410;
     color: white;
     border-collapse: collapse;
     width: 100%;
     max-width: 600px;
+
+    & tr:nth-child(even) td {
+        background: #36701e;
+    }
 }
+
+table.details {
+    margin: 1em;
+
+    & td {
+        padding: 0 1em 0 0;
+    }
+}
+
 
 h1 {
     font-size: 1.6rem;
@@ -98,10 +111,6 @@ td a {
 
 td a:visited {
     color: yellowgreen;
-}
-
-table tr:nth-child(even) td {
-    background: #36701e;
 }
 
 footer:first-child {
