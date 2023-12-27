@@ -2,7 +2,7 @@ import { PlayerDB, Season } from './lib/definitions';
 
 const countElm = document.querySelector('input[name=count]');
 const playersElm = document.querySelector('#players');
-const seasonDropdown = document.querySelector('#season_dropdown');
+const seasonDropdown: HTMLSelectElement = document.querySelector('#season_dropdown')!;
 const postTournamentForm = document.getElementById('post-tournament')!;
 
 let playersSelect = '';
@@ -16,6 +16,8 @@ const getPlayers = async () => {
 getPlayers();
 
 if (seasonDropdown) {
+    console.log('initiating seasons dropdown...', seasonDropdown);
+    seasonDropdown.closest('div')!.classList.add('loading');
     let seasonsOptions = '';
     const getSeasons = async () => {
         const response = await fetch('api/seasons');
@@ -25,6 +27,8 @@ if (seasonDropdown) {
         });
         console.log(seasonsOptions);
         seasonDropdown.innerHTML = seasonsOptions;
+        seasonDropdown.closest('div')!.classList.remove('loading');
+
     };
     getSeasons();
 }
