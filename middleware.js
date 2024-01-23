@@ -41,17 +41,20 @@ export default async function middleware(req) {
       console.log(payload);
       next();
     } catch(err) {
-      return Response.json(
-        { success: false, message: 'no jwt token or invalid jwt token' },
-        { status: 401 }
-      )
+      // return Response.json(
+      //   { success: false, message: 'no jwt token or invalid jwt token' },
+      //   { status: 401 }
+      // )
+      console.log('No jwt token or invalid jwt token, redirecting to login page');
+      url.pathname = '/login';
+      return Response.redirect(url, 302);
     }
   } else {
     // return Response.json(
     //   { success: false, message: 'authorization header not found' },
     //   { status: 403 }
     // )
-    console.log('redirecting to login page');
+    console.log('no authorization header or jwt cookie, redirecting to login page');
     url.pathname = '/login';
     return Response.redirect(url, 302);
   }
