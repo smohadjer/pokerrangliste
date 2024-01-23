@@ -1,8 +1,8 @@
 Express.js version hosted on Render:
-https://tournaments-express.myendpoint.de/
+https://tournament-gq5d.onrender.com/
 
 Serverless version hosted on Vercel:
-https://tournaments.myendpoint.de/
+https://tournaments.saeidmohadjer.com/
 
 # Run on localhost using Express server
 - git clone https://github.com/smohadjer/pokerrangliste.git

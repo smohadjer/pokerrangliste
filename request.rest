@@ -33,7 +33,7 @@ Content-Type: application/json
 
 ###
 
-POST https://tournaments.myendpoint.de/api/players
+POST https://tournaments.saeidmohadjer.com/api/players
 Content-Type: application/json
 
 {
