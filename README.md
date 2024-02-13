@@ -7,7 +7,7 @@ https://tournaments.saeidmohadjer.com/
 # Run on localhost using Express server
 - git clone https://github.com/smohadjer/pokerrangliste.git
 - npm install
-- npm run start-express
+- npm run dev
 
 # Run on localhost using Vercel serverless
 - vercel dev

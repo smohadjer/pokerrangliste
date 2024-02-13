@@ -21,7 +21,7 @@ export default async function middleware(req) {
   console.log('middleware: ', req.method, req.url);
   const url = new URL(req.url);
 
-  // only POST requests to api endpoints and access to admin page is restrigted
+  // only POST requests to api endpoints and access to admin page is restricted
   if (req.method === 'GET' && !url.pathname.startsWith('/admin')) {
     return next();
   }
@@ -29,10 +29,11 @@ export default async function middleware(req) {
   const cookies = new RequestCookies(req.headers)
   const jwt = cookies.get('jwt')?.value;
   const authHeader = req.headers.get('authorization');
+  const hasBearerAuthHeader = authHeader && authHeader.startsWith('Bearer ');
 
   // we check whether jwt token is sent using authorization header or cookie
-  if (authHeader || jwt) {
-    const token = authHeader ? authHeader.split(' ')[1] : jwt;
+  if (hasBearerAuthHeader || jwt) {
+    const token = hasBearerAuthHeader ? authHeader.split(' ')[1] : jwt;
     const secret = new TextEncoder().encode('mySecret');
     console.log({token});
 

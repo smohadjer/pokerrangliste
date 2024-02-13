@@ -69,6 +69,14 @@ const insertTournament = async (tournaments, req) => {
   return insertResponse.insertedId;
 };
 
+const validateData = (req) => {
+  if (!req.body.count) {
+    return false;
+  }
+
+  return true;
+};
+
 export default async (req, res) => {
   try {
     await client.connect();
@@ -87,6 +95,12 @@ export default async (req, res) => {
     }
 
     if (req.method === 'POST') {
+      const isValid = validateData(req);
+
+      if (!isValid) {
+        return res.sendStatus(400);
+      }
+
       const tournament_id = await insertTournament(tournaments, req);
       if (tournament_id) {
         res.status(200).send({
