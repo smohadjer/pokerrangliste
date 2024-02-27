@@ -149,9 +149,12 @@ export const renderPage = async (state: State, options?) => {
         options
     );
 
+    const view = state.view ? state.view : state.defaultView;
+    console.log(view);
+
     await render(
-        `views/${state.view}.hbs`,
-        controller[state.view](state),
+        `views/${view}.hbs`,
+        controller[view](state),
         document.getElementById('results'),
         options
     );

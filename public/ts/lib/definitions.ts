@@ -55,9 +55,10 @@ export interface Data {
 }
 
 export interface State {
-  season_id?: string
-  tournament_id?: string
-  player_id?: string
-  view: string
-  data?: Data,
+  season_id?: string;
+  tournament_id?: string;
+  player_id?: string;
+  view: string | null;
+  data?: Data;
+  defaultView: string;
 }
