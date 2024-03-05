@@ -25,6 +25,7 @@
     "@vercel/edge": "^1.1.0",
     "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
+    "handlebars": "^4.7.8",
     "jose": "^5.1.0",
     "mongodb": "^5.8.1",
     "typescript": "^5.2.2"

@@ -5,7 +5,9 @@ import {
     State
 } from './definitions';
 import { controller } from '../controllers/controller';
-declare const Handlebars: any;
+import * as Handlebars from './../../../node_modules/handlebars/dist/handlebars';
+
+// declare const Handlebars: any;
 
 // setting Handlebars helpers to help with compiling templates
 Handlebars.registerHelper("inc", function(value, options) {
