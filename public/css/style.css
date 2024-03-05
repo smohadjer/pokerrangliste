@@ -66,11 +66,18 @@ h1 + p {
 
 th {
     color: #ECE18F;
-}
-
-td, th {
     padding: 5px;
     text-align: left;
+}
+
+td {
+    padding: 0 5px;
+    text-align: left;
+}
+
+td a {
+    padding: 8px 0;
+    line-height: 2;
 }
 
 h1,
