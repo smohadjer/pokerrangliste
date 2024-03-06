@@ -65,7 +65,7 @@ h1 + p {
 }
 
 th {
-    color: #ECE18F;
+
     padding: 5px;
     text-align: left;
 }
@@ -73,11 +73,21 @@ th {
 td {
     padding: 0 5px;
     text-align: left;
+    font-size: 1.1em;
 }
 
 td a {
-    padding: 8px 0;
-    line-height: 2;
+    padding: 0.8em 1em 0.8em 0;
+    color: #ECE18F;
+    display: inline-block;
+
+    @media (min-width: 1024px) {
+        padding: 0.5em 0;
+    }
+}
+
+td a:visited {
+    color: yellowgreen;
 }
 
 h1,
@@ -85,13 +95,7 @@ td.name {
     text-transform: capitalize;
 }
 
-td a {
-    color: white;
-}
 
-td a:visited {
-    color: yellowgreen;
-}
 
 footer:first-child {
     margin-top: 0;
