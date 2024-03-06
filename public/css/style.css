@@ -20,7 +20,7 @@ body {
 
 .wrapper {
     width: 100%;
-    overflow-x: auto;
+    overflow: auto hidden; /* we need "hidden" to avoid vertical scrollbar showing due to space left between table element and div.wrapper */
 }
 
 @media (min-width: 768px) {
