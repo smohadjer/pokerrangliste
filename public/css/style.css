@@ -119,9 +119,28 @@ footer p {
     font-size: 14px;
 }
 
+@keyframes loadingspin {
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
 #results.empty {
-    background: url('../images/loader.svg') no-repeat left;
     min-height: 100px;
+
+    /* loader */
+    &::before {
+        content: "";
+        width: 2em;
+        height: 2em;
+        margin: auto;
+        border: 0.2em solid #555;
+        display: block;
+        border-top-color: transparent;
+        border-radius: 50%;
+        animation: loadingspin 1s linear infinite;
+        text-align: center;
+    }
 }
 
 @keyframes slideInLTR {
