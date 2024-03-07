@@ -26,10 +26,16 @@ const getRebuys = (players) => {
   return rebuys;
 };
 
+interface Player {
+  id: string;
+  rebuys: number;
+  ranking: number;
+}
+
 const insertTournament = async (tournaments, req) => {
   const count = Number(req.body.count);
-  const players = [];
-  const prizes = [];
+  const players: Player[] = [];
+  const prizes: number[] = [];
   const dataIsValid = () => {
     const totalprize = prizes.reduce((accumulator, currentValue) => {
       return accumulator + currentValue
@@ -42,7 +48,7 @@ const insertTournament = async (tournaments, req) => {
   };
 
   for (let i=0; i<count; i++) {
-    const player = {};
+    const player: Player = <Player>{};
     const prize = Number(sanitize(req.body[`players_${i}_prize`]));
     player.id = req.body[`players_${i}_id`];
     player.rebuys = Number(sanitize(req.body[`players_${i}_rebuys`]));
@@ -53,7 +59,7 @@ const insertTournament = async (tournaments, req) => {
     }
   }
 
-  if (!dataIsValid(req.body)) {
+  if (!dataIsValid()) {
     return;
   }
 
