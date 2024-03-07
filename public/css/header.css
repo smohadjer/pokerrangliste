@@ -1,5 +1,5 @@
 header {
-    margin: 0.5em;
+    margin: 1em 0.5em;
 
     select, option {
         font-size: 1em;
@@ -7,7 +7,7 @@ header {
 
     nav {
         display: inline-block;
-        margin-left: 1em;
+        margin-left: 0.5em;
 
         ul {
             margin: 1em 0 0;
