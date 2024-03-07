@@ -7,7 +7,7 @@
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment=jsdom",
     "bundle:index": "esbuild public/ts/index.ts --bundle --format=esm --sourcemap --outfile=public/js/index.js --minify",
     "bundle:admin": "esbuild public/ts/admin.ts --bundle --format=esm --sourcemap --outfile=public/js/admin.js --minify",
-    "bundle:api": "esbuild src/api/*.ts --format=esm --outdir=api --platform=node",
+    "bundle:api": "esbuild src/api/*.ts --format=esm --outdir=./api --platform=node",
     "bundle:middleware": "esbuild middlewares/ts/*.ts --format=esm --outdir=middlewares --platform=node",
     "build": "npm run bundle:api && npm run bundle:middleware && npm run bundle:index && npm run bundle:admin",
     "dev-express": "nodemon server.js",
