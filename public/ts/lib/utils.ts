@@ -44,14 +44,20 @@ const sortByDate = (tournaments) => {
     return tournaments;
 };
 
-const render = async (templateFile, templateData, container, options) => {
-    console.log(templateData);
-    const html = await getHTML(templateFile, templateData);
-    container.innerHTML = html;
-    container.classList.remove('empty');
+interface Args {
+    templateFile: string;
+    templateData: any;
+    container: HTMLElement;
+    options: any
+}
 
-    if (options) {
-        container.classList.add(options.animation);
+const render = async (args: Args) => {
+    const html = await getHTML(args.templateFile, args.templateData);
+    args.container.innerHTML = html;
+    args.container.classList.remove('empty');
+
+    if (args.options) {
+        args.container.classList.add(args.options.animation);
     }
 };
 
@@ -143,25 +149,24 @@ export const getTournaments = (tournaments, season_id) => {
 
 export const renderPage = async (state: State, options?) => {
     const view = state.view ? state.view : state.defaultView;
-
-    // render header
-    render(
-        'views/header.hbs',
-        {
+    const pageData = controller[view](state);
+    const headerOptions: Args = {
+        templateFile: 'views/header.hbs',
+        templateData: {
             season_id: state.season_id,
             seasons: state.data!.seasons,
             view: view
         },
-        document.querySelector('header'),
-        options
-    );
+        container: document.querySelector('header')!,
+        options: options
+    };
+    const mainOptions: Args = {
+        templateFile: `views/${view}.hbs`,
+        templateData: pageData,
+        container: document.getElementById('results')!,
+        options: options
+    }
 
-    const viewData = controller[view](state);
-    render(
-        `views/${view}.hbs`,
-        viewData,
-        document.getElementById('results'),
-        options
-    );
+    await Promise.all([render(headerOptions), render(mainOptions)]);
 };
 
