@@ -5,9 +5,11 @@ import {
     State
 } from './definitions';
 import { controller } from '../controllers/controller';
-import * as Handlebars from './../../../node_modules/handlebars/dist/handlebars';
 
-// declare const Handlebars: any;
+/* since importing from node_modules using a relative path throws error on Render.com
+I have copy/pasted dist/handlebars.min.js to ts/lib/ext and renamed it from .js to .cjs
+to avoid errors during build */
+import Handlebars from './ext/handlebars.min.cjs';
 
 // setting Handlebars helpers to help with compiling templates
 Handlebars.registerHelper("inc", function(value, options) {
