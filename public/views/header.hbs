@@ -1,21 +1,20 @@
-<header>
-  <label for="select-season">Season:</label>
-  <select id="select-season">
-      {{#each seasons}}
-        <option {{#ifEquals this._id ../season_id }}selected="selected"{{/ifEquals}} value="{{this._id}}">{{this.name}}</option>
-      {{/each}}
-      <option {{#ifEquals season_id 'all-time'}}selected="selected"{{/ifEquals}} value="all-time">All-Time</option>
-  </select>
-  <nav>
-    <ul>
-      {{#if season_id}}
-        <li><a {{#ifEquals view 'ranking'}}class="active"{{/ifEquals}} href="/?season_id={{season_id}}">Ranking</a></li>
-        <li><a {{#ifEquals view 'tournaments'}}class="active"{{/ifEquals}} href="/?view=tournaments&season_id={{season_id}}">Tournaments</a></li>
-      {{else}}
-        <li><a {{#ifEquals view 'ranking'}}class="active"{{/ifEquals}} href="/">Ranking</a></li>
-        <li><a {{#ifEquals view 'tournaments'}}class="active"{{/ifEquals}} href="/?view=tournaments">Tournaments</a></li>
-      {{/if}}
-    </ul>
-  </nav>
-</header>
+<label for="select-season">Season:</label>
+<select id="select-season">
+    {{#each seasons}}
+      <option {{#ifEquals this._id ../season_id }}selected="selected"{{/ifEquals}} value="{{this._id}}">{{this.name}}</option>
+    {{/each}}
+    <option {{#ifEquals season_id 'all-time'}}selected="selected"{{/ifEquals}} value="all-time">All-Time</option>
+</select>
+<nav>
+  <ul>
+    {{#if season_id}}
+      <li><a {{#ifEquals view 'ranking'}}class="active"{{/ifEquals}} href="/?season_id={{season_id}}">Ranking</a></li>
+      <li><a {{#ifEquals view 'tournaments'}}class="active"{{/ifEquals}} href="/?view=tournaments&season_id={{season_id}}">Tournaments</a></li>
+    {{else}}
+      <li><a {{#ifEquals view 'ranking'}}class="active"{{/ifEquals}} href="/">Ranking</a></li>
+      <li><a {{#ifEquals view 'tournaments'}}class="active"{{/ifEquals}} href="/?view=tournaments">Tournaments</a></li>
+    {{/if}}
+  </ul>
+</nav>
+
 
