@@ -1,0 +1,41 @@
+header {
+    margin: 1rem 0.5em;
+
+    select, option {
+        font-size: 1em;
+    }
+
+    nav {
+        display: inline-block;
+        margin-left: 1em;
+
+        ul {
+            margin: 1em 0 0;
+            padding: 0;
+            list-style: none;
+
+            li {
+                display: inline-block;
+                margin-bottom: 0.5rem;
+                margin-right: 0.5rem;
+            }
+
+            li a {
+                /* background: white; */
+                display: inline-block;
+                /* padding: 10px; */
+                text-transform: uppercase;
+                /* text-decoration: none; */
+                color: #1D5410;
+                line-height: 16px;
+                border: solid transparent;
+
+                &.active {
+                    text-decoration: none;
+                    color: black;
+                    cursor: default;
+                }
+            }
+        }
+    }
+}

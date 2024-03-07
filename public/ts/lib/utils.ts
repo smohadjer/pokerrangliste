@@ -19,7 +19,7 @@ Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
     return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
 
-export const getHTML = async (templateFile, templateData) => {
+const getHTML = async (templateFile, templateData) => {
     const response = await fetch(templateFile);
     const responseText = await response.text();
     const template = Handlebars.compile(responseText);
@@ -142,23 +142,24 @@ export const getTournaments = (tournaments, season_id) => {
 };
 
 export const renderPage = async (state: State, options?) => {
-    // render navigation
-    await render(
-        'views/nav.hbs',
+    const view = state.view ? state.view : state.defaultView;
+
+    // render header
+    render(
+        'views/header.hbs',
         {
             season_id: state.season_id,
-            seasons: state.data!.seasons
+            seasons: state.data!.seasons,
+            view: view
         },
-        document.querySelector('main nav'),
+        document.querySelector('header'),
         options
     );
 
-    const view = state.view ? state.view : state.defaultView;
-    console.log(view);
-
-    await render(
+    const viewData = controller[view](state);
+    render(
         `views/${view}.hbs`,
-        controller[view](state),
+        viewData,
         document.getElementById('results'),
         options
     );

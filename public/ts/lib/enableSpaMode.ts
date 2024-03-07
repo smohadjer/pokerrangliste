@@ -1,57 +1,66 @@
 import { renderPage } from './utils.js';
 import { State } from './definitions.js';
 
-export default function enableSpaMode(state: State, $main: HTMLElement) {
-    $main.addEventListener('click', async (e) => {
-        const link = e.target as HTMLAnchorElement;
-        if (link.nodeName === 'A') {
-            e.preventDefault();
+const clickHandler = async (e, state) => {
+    const link = e.target as HTMLAnchorElement;
+    if (link.nodeName !== 'A') {
+        return;
+    }
 
-            // replace existing history state with one that has scrolling position
-            const scrollPosition = document.documentElement.scrollTop;
-            const tempState = {...history.state, scroll: scrollPosition};
-            history.replaceState(tempState, '', window.location.search);
+    e.preventDefault();
 
-            const href = link.getAttribute('href')!;
-            const options: { animation?: string} = {};
-            const animationClass = link.getAttribute('data-animation');
-            if (animationClass) {
-                options.animation = animationClass;
-            }
+    // replace existing history state with one that has scrolling position
+    const scrollPosition = document.documentElement.scrollTop;
+    const tempState = {...history.state, scroll: scrollPosition};
+    history.replaceState(tempState, '', window.location.search);
 
-            // Do nothing when link to current page is clicked
-            if (link.search === window.location.search) {
-                return;
-            }
+    // const href = link.getAttribute('href')!;
+    const options: { animation?: string} = {};
+    const animationClass = link.getAttribute('data-animation');
+    if (animationClass) {
+        options.animation = animationClass;
+    }
 
-            const params = new URLSearchParams(link.search);
+    // Do nothing when link to current page is clicked
+    if (link.search === window.location.search) {
+        return;
+    }
 
-            // for browsers not supporting URLSearchParams's size property
-            const size = (params.size)
-                ? params.size
-                : params.toString().length;
+    const params = new URLSearchParams(link.search);
 
-            // update state
-            if (size > 0) {
-                for (const [key, value] of params) {
-                    state[key] = value;
-                }
-            }
+    // for browsers not supporting URLSearchParams's size property
+    const size = (params.size)
+        ? params.size
+        : params.toString().length;
 
-            if (!params.get('view')) {
-                state.view = state.defaultView;
-            }
-
-            let url = '/';
-            if (params.toString().length > 0) {
-              url = '/?' +  params.toString();
-            }
-
-            window.scrollTo(0, 0);
-            await renderPage(state, options);
-            window.history.pushState(state, '', url);
+    // update state
+    if (size > 0) {
+        for (const [key, value] of params) {
+            state[key] = value;
         }
-    });
+    }
+
+    if (!params.get('view')) {
+        state.view = state.defaultView;
+    }
+
+    let url = '/';
+    if (params.toString().length > 0) {
+        url = '/?' +  params.toString();
+    }
+
+    window.scrollTo(0, 0);
+    await renderPage(state, options);
+    window.history.pushState(state, '', url);
+};
+
+export default function enableSpaMode(state: State) {
+    const $main = document.querySelector('body > main');
+    const $header = document.querySelector('body > header');
+
+    [$main, $header].forEach(item => item!.addEventListener('click', (e) => {
+        clickHandler(e, state);
+    }));
 
     window.addEventListener("popstate", async (event) => {
         await renderPage(event.state);
