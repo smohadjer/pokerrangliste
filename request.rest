@@ -33,12 +33,8 @@ Content-Type: application/json
 
 ###
 
-POST https://tournaments.saeidmohadjer.com/api/players
+GET https://tournaments.saeidmohadjer.com/api/players
 Content-Type: application/json
-
-{
-  "name": "Tom"
-}
 
 
 ###
