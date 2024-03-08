@@ -1,5 +1,5 @@
 import client from './db.js';
-import { sanitize } from './sanitize.js';
+import { sanitize } from './_sanitize.js';
 import { ObjectId } from 'mongodb';
 
 const getTournaments = async (tournaments, req) => {
