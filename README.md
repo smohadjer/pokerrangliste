@@ -30,4 +30,9 @@ If in .env file development is set to true, you need to install and start a Mong
 mongod --config /usr/local/etc/mongod.conf
 ````
 
+# Deploy to Vercel
+````
+vercel --prod
+````
+
 
