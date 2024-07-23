@@ -10,7 +10,7 @@ import {
 } from '../lib/utils';
 
 export default (state: State) => {
-    const tournaments: Tournament[] = getTournaments(state.data!.tournaments, state.season_id);
+    const tournaments: Tournament[] = getTournaments(state.data!.tournaments, 'all-time');
     const playersList: PlayerDB[] = state.data!.players;
 
     const tournament = tournaments.find((item) => {
