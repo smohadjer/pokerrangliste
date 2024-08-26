@@ -5,6 +5,7 @@ import {
     State
 } from './definitions';
 import { controller } from '../controllers/controller';
+import drawChart from './drawChart';
 
 /* since importing from node_modules using a relative path throws error on Render.com
 I have copy/pasted dist/handlebars.min.js to ts/lib/ext and renamed it from .js to .cjs
@@ -168,5 +169,17 @@ export const renderPage = async (state: State, options?) => {
     }
 
     await Promise.all([render(headerOptions), render(mainOptions)]);
+
+    if (view === 'profile') {
+        const data = pageData.results.reverse();
+        data.forEach((item, index) => {
+            if (index === 0) {
+                item.sum = item.points;
+            } else {
+                item.sum = data[index-1].sum + item.points;
+            }
+        })
+        drawChart(document.getElementById('chart'), data);
+    }
 };
 

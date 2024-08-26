@@ -20,6 +20,11 @@ body {
     overflow: auto hidden; /* we need "hidden" to avoid vertical scrollbar showing due to space left between table element and div.wrapper */
 }
 
+.wrapper-chart {
+    margin: 1rem 0.5rem;
+    width: calc(100% - 1rem);
+}
+
 @media (min-width: 768px) {
     .wrapper {
         margin: 0 1rem;
