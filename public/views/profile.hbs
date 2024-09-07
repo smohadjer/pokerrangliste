@@ -1,8 +1,4 @@
-<h1>{{player_name}}
-  {{#ifEquals ranking 1}}🥇{{/ifEquals}}
-  {{#ifEquals ranking 2}}🥈{{/ifEquals}}
-  {{#ifEquals ranking 3}}🥉{{/ifEquals}}
-</h1>
+<h1 {{#ifEquals ranking 1}}class="first-place"{{/ifEquals}} {{#ifEquals ranking 2}}class="second-place"{{/ifEquals}} {{#ifEquals ranking 3}}class="third-place"{{/ifEquals}}>{{player_name}}</h1>
 <table class="details">
   <tr><td>{{seasonName}} ranking:</td><td>{{ranking}} </td></tr>
   <tr><td>Total points:</td><td>{{points}}</td></tr>

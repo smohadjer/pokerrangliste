@@ -58,6 +58,21 @@ h1 {
     font-size: 1.6rem;
 }
 
+.first-place:after {
+    content: '🥇';
+    display: inline-block;
+}
+
+.second-place:after {
+    content: '🥈';
+    display: inline-block;
+}
+
+.third-place:after {
+    content: '🥉';
+    display: inline-block;
+}
+
 h1, p {
     margin: 1rem;
 }

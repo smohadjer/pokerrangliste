@@ -13,15 +13,15 @@
           <td>{{inc @index}}</td>
           <td class="name">
             {{#if ../seasonId}}
-            <a data-animation="slideInRTL" href="/?view=profile&season={{../seasonId}}&player_id={{this.id}}">{{this.name}}</a>
-              {{#ifEquals @index 0 }}🥇{{/ifEquals}}
-              {{#ifEquals @index 1 }}🥈{{/ifEquals}}
-              {{#ifEquals @index 2 }}🥉{{/ifEquals}}
+              <a data-animation="slideInRTL" href="/?view=profile&season={{../seasonId}}&player_id={{this.id}}"><span
+              {{#ifEquals @index 0}}class="first-place"{{/ifEquals}}
+              {{#ifEquals @index 1}}class="second-place"{{/ifEquals}}
+              {{#ifEquals @index 2}}class="third-place"{{/ifEquals}}>{{this.name}}</span></a>
             {{else}}
-             <a data-animation="slideInRTL" href="/?view=profile&player_id={{this.id}}">{{this.name}}</a>
-              {{#ifEquals @index 0 }}🥇{{/ifEquals}}
-              {{#ifEquals @index 1 }}🥈{{/ifEquals}}
-              {{#ifEquals @index 2 }}🥉{{/ifEquals}}
+              <a data-animation="slideInRTL" href="/?view=profile&player_id={{this.id}}"><span
+              {{#ifEquals @index 0}}class="first-place"{{/ifEquals}}
+              {{#ifEquals @index 1}}class="second-place"{{/ifEquals}}
+              {{#ifEquals @index 2}}class="third-place"{{/ifEquals}}>{{this.name}}</span></a>
             {{/if}}
           </td>
           <td>{{this.points}}</td>
