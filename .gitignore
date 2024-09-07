@@ -3,7 +3,6 @@ node_modules
 .vercel
 public/js
 middlewares/*.js
-api/*.js
 
 
 

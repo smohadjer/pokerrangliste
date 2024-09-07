@@ -23,36 +23,13 @@ export default async (req, res) => {
     });
     */
 
-    if (res.cookie) {
-      setCookieExpressServer(res, token);
-    } else {
       setCookieServerless(res, token);
-    }
   } else {
     console.log('wrong credentials');
     res.setHeader('Location', '/login');
     res.status(302).end();
     //res.status(403).end();
   }
-}
-
-function setCookieExpressServer(res, token) {
-  // use secure on production so cookie is sent only over https
-  const secure = process.env.development ? false : true;
-
-  // set access token in a httpOnly cookie
-  res.cookie('jwt', token, {
-    secure: secure,
-    httpOnly: true,
-    expires: new Date(Date.now() + 60 * 60 * 1000) // expires in 1h
-  });
-
-  // redirect to admin page
-  res.writeHead(302, {
-    'Location': '/admin'
-    //add other headers here...
-  });
-  res.end();
 }
 
 function setCookieServerless(res, token) {

@@ -1,19 +1,9 @@
-Express.js version hosted on Render:
-https://tournament-gq5d.onrender.com/
-
-Serverless version hosted on Vercel:
 https://tournaments.saeidmohadjer.com/
 
-# Run on localhost using Express server
+# Run on localhost using Vercel serverless
 - git clone https://github.com/smohadjer/pokerrangliste.git
 - npm install
-- npm run dev
-
-# Run on localhost using Vercel serverless
 - vercel dev
-
-This will start an express server on port 3000 which is watched by nodemon for server/api changes. Typescript files are watched and bundled via esbuild.
-
 - Open http://localhost:3000 in browser
 
 You also need to create a .env file in root and add followings values there:
@@ -35,7 +25,7 @@ mongod --config /usr/local/etc/mongod.conf
 vercel --prod
 ````
 
-Deploy is needed otherwise typescript api files won't be available.
+Typescript files are watched and bundled via esbuild.
 
 
 

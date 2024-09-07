@@ -1,37 +1,27 @@
 {
   "name": "tournament-organizer",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "",
   "type": "module",
   "scripts": {
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testEnvironment=jsdom",
     "bundle:index": "esbuild public/ts/index.ts --bundle --format=esm --sourcemap --outfile=public/js/index.js --minify",
     "bundle:admin": "esbuild public/ts/admin.ts --bundle --format=esm --sourcemap --outfile=public/js/admin.js --minify",
-    "bundle:api": "esbuild api/ts/*.ts --format=esm --outdir=api --platform=node",
-    "bundle:middleware": "esbuild middlewares/ts/*.ts --format=esm --outdir=middlewares --platform=node",
-    "build": "npm run bundle:api && npm run bundle:middleware && npm run bundle:index && npm run bundle:admin",
-    "dev-express": "nodemon server.js",
-    "dev": "npm run bundle:api -- --watch=forever & npm run bundle:middleware -- --watch=forever & npm run bundle:index -- --watch=forever & npm run bundle:admin -- --watch=forever & npm run dev-express"
+    "build": "npm run bundle:index && npm run bundle:admin"
   },
   "author": "Saeid Mohadjer",
   "license": "ISC",
   "devDependencies": {
-    "esbuild": "0.18.20",
-    "express": "^4.18.2",
-    "jest": "^29.7.0",
-    "jest-environment-jsdom": "^29.7.0",
-    "nodemon": "^3.0.1"
+    "esbuild": "0.19.12"
   },
   "dependencies": {
+    "@types/node": "^22.4.2",
     "@edge-runtime/cookies": "^4.0.2",
     "@vercel/edge": "^1.1.0",
     "chart.js": "^4.4.4",
-    "cookie-parser": "^1.4.6",
     "dotenv": "^16.0.3",
     "handlebars": "^4.7.8",
     "jose": "^5.1.0",
-    "mongodb": "^5.8.1",
-    "typescript": "^5.2.2"
+    "mongodb": "^5.8.1"
   },
   "engines": {
     "node": ">=18.18.0"

@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "target": "es6",
+        "lib": [
+            "es2019",
+            "dom",
+            "dom.iterable"
+        ]
+    },
+    "exclude": [
+        "node_modules"
+    ]
+}
