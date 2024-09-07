@@ -1,5 +1,5 @@
 import { getRebuys, getTournaments, getSeasonName } from '../lib/utils';
-import { State } from '../lib/definitions';
+import { State } from '../lib/types';
 
 export default (state: State) => {
     const tournaments = getTournaments(state.data!.tournaments, state.season_id);

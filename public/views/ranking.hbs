@@ -1,12 +1,12 @@
-<h1>{{seasonName}} Ranking</h1>
+<h1>Ranking {{seasonName}}</h1>
 <div class="wrapper">
   <table>
     <tr>
         <th>Rank</th>
-        <th>Name</th>
+        <th>Player</th>
         <th>Points</th>
-        <th>Tournaments</th>
-        <th>Rebuys</th>
+        <th>Games</th>
+        <!--<th>Rebuys</th>-->
     </tr>
     {{#each players}}
       <tr>
@@ -14,13 +14,19 @@
           <td class="name">
             {{#if ../seasonId}}
             <a data-animation="slideInRTL" href="/?view=profile&season={{../seasonId}}&player_id={{this.id}}">{{this.name}}</a>
+              {{#ifEquals @index 0 }}🥇{{/ifEquals}}
+              {{#ifEquals @index 1 }}🥈{{/ifEquals}}
+              {{#ifEquals @index 2 }}🥉{{/ifEquals}}
             {{else}}
              <a data-animation="slideInRTL" href="/?view=profile&player_id={{this.id}}">{{this.name}}</a>
+              {{#ifEquals @index 0 }}🥇{{/ifEquals}}
+              {{#ifEquals @index 1 }}🥈{{/ifEquals}}
+              {{#ifEquals @index 2 }}🥉{{/ifEquals}}
             {{/if}}
           </td>
           <td>{{this.points}}</td>
           <td>{{this.games}}</td>
-          <td>{{this.rebuys}}</td>
+          <!--<td>{{this.rebuys}}</td>-->
       </tr>
     {{/each}}
   </table>

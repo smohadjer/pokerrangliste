@@ -1,4 +1,4 @@
-import { State } from './definitions';
+import { State } from './types.js';
 import { renderPage } from './utils.js';
 
 export const onChangeEventHandler = (

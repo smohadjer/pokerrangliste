@@ -1,4 +1,4 @@
-import { State } from './lib/definitions.js';
+import { State } from './lib/types.js';
 import enableSpaMode from './lib/enableSpaMode.js';
 import fetchData from './lib/fetchData.js';
 

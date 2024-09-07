@@ -3,7 +3,7 @@ import {
     PlayerDB, Player,
     Season,
     State
-} from './definitions';
+} from './types';
 import { controller } from '../controllers/controller';
 import drawChart from './drawChart';
 

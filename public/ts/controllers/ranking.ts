@@ -3,7 +3,7 @@ import {
     getTournaments,
     getSeasonName
 } from '../lib/utils';
-import { PlayerDB, State } from '../lib/definitions';
+import { PlayerDB, State } from '../lib/types';
 
 export default (state: State) => {
     const tournaments = getTournaments(state.data!.tournaments, state.season_id);

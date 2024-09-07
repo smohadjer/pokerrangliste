@@ -1,8 +1,13 @@
-<h1>{{player_name}}</h1>
+<h1>{{player_name}}
+  {{#ifEquals ranking 1}}🥇{{/ifEquals}}
+  {{#ifEquals ranking 2}}🥈{{/ifEquals}}
+  {{#ifEquals ranking 3}}🥉{{/ifEquals}}
+</h1>
 <table class="details">
   <tr><td>{{seasonName}} ranking:</td><td>{{ranking}} </td></tr>
   <tr><td>Total points:</td><td>{{points}}</td></tr>
   <tr><td>Total rebuys:</td><td>{{rebuys}}</td></tr>
+  <tr><td>Total games:</td><td>{{gamesCount}}</td></tr>
 </table>
 <div class="wrapper-chart">
     <canvas id="chart"></canvas>
@@ -10,10 +15,10 @@
 <div class="wrapper">
   <table>
     <tr>
-      <th>Tournament</th>
+      <th>Game</th>
       <th>Points</th>
-      <th>Rank</th>
-      <th>Players</th>
+      <th>Ranking</th>
+      <!--<th>Players</th>-->
       <th>Rebuys</th>
     </tr>
     {{#each results}}
@@ -21,7 +26,7 @@
         <td><a data-animation="slideInRTL" href="/?view=tournament&tournament_id={{this._id}}">{{this.date}}</a></td>
         <td>{{this.points}}</td>
         <td>{{this.ranking}}</td>
-        <td>{{this.players}}</td>
+        <!--<td>{{this.players}}</td>-->
         <td>{{this.rebuys}}</td>
       </tr>
     {{/each}}

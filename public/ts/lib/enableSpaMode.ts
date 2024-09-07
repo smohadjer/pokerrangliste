@@ -1,5 +1,5 @@
 import { renderPage } from './utils.js';
-import { State } from './definitions.js';
+import { State } from './types.js';
 
 const clickHandler = async (e, state) => {
     const link = e.target as HTMLAnchorElement;

@@ -54,7 +54,7 @@ export interface Data {
   message?: string
 }
 
-export interface State {
+export type State = {
   season_id?: string;
   tournament_id?: string;
   player_id?: string;

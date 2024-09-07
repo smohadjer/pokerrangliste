@@ -1,4 +1,4 @@
-import { Tournament, PlayerDB, Profile, State } from '../lib/definitions';
+import { Tournament, PlayerDB, Profile, State } from '../lib/types';
 import {
     getPoints,
     getPlayers,
@@ -37,6 +37,7 @@ export default (state: State) => {
     const profileData = {
         player_name: player?.name,
         points: player?.points,
+        gamesCount: playerTournaments.length,
         rebuys: player?.rebuys,
         ranking: ranking,
         results: results,

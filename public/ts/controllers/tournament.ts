@@ -1,4 +1,4 @@
-import { Tournament, Player, State, PlayerDB } from '../lib/definitions';
+import { Tournament, Player, State, PlayerDB } from '../lib/types';
 import {
     deepClone,
     getPrize,
@@ -19,6 +19,7 @@ export default (state: State) => {
     if (!tournament) return;
 
     const cloneTournament = deepClone(tournament);
+    console.log(cloneTournament);
 
     // if players have same points, list them sorted by their ranking
     cloneTournament.players.sort((item1, item2) => {
@@ -39,7 +40,8 @@ export default (state: State) => {
         buyin: cloneTournament.buyin,
         rebuys: getRebuys(cloneTournament),
         players: players,
-        season_id: state.season_id
+        season_id: state.season_id,
+        hasBounty: cloneTournament.bounties ? 'Yes' : 'No'
     }
 
     return tournamentData;

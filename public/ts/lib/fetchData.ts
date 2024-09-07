@@ -1,4 +1,4 @@
-import { Data, State } from './definitions.js';
+import { Data, State } from './types.js';
 import { renderPage } from './utils.js';
 import { onChangeEventHandler } from './nav.js';
 
