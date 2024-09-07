@@ -35,4 +35,7 @@ mongod --config /usr/local/etc/mongod.conf
 vercel --prod
 ````
 
+Deploy is needed otherwise typescript api files won't be available.
+
+
 
