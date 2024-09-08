@@ -1,5 +1,6 @@
 header {
     margin: 0.75em;
+    text-align: right;
 
     select, option {
         font-size: 1em;

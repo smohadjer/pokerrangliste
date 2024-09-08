@@ -161,6 +161,15 @@ export const renderPage = async (state: State, options?) => {
         container: document.querySelector('header')!,
         options: options
     };
+    const footerOptions = {
+        templateFile: 'views/footer.hbs',
+        templateData: {
+            season_id: state.season_id,
+            view: view
+        },
+        container: document.querySelector('footer')!,
+        options: options
+    };
     const mainOptions: Args = {
         templateFile: `views/${view}.hbs`,
         templateData: pageData,
@@ -168,7 +177,11 @@ export const renderPage = async (state: State, options?) => {
         options: options
     }
 
-    await Promise.all([render(headerOptions), render(mainOptions)]);
+    await Promise.all([
+        render(headerOptions),
+        render(footerOptions),
+        render(mainOptions)
+    ]);
 
     if (view === 'profile') {
         const data = pageData.results.reverse();

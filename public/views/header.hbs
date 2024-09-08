@@ -5,16 +5,5 @@
     {{/each}}
     <option {{#ifEquals season_id 'all-time'}}selected="selected"{{/ifEquals}} value="all-time">All-Time</option>
 </select>
-<nav>
-  <ul>
-    {{#if season_id}}
-      <li><a {{#ifEquals view 'ranking'}}class="active"{{/ifEquals}} href="/?season_id={{season_id}}">Ranking</a></li>
-      <li><a {{#ifEquals view 'tournaments'}}class="active"{{/ifEquals}} href="/?view=tournaments&season_id={{season_id}}">Games</a></li>
-    {{else}}
-      <li><a {{#ifEquals view 'ranking'}}class="active"{{/ifEquals}} href="/">Ranking</a></li>
-      <li><a {{#ifEquals view 'tournaments'}}class="active"{{/ifEquals}} href="/?view=tournaments">Games</a></li>
-    {{/if}}
-  </ul>
-</nav>
 
 
