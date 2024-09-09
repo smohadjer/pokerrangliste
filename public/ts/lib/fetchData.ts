@@ -26,7 +26,7 @@ export default function fetchData(state: State) {
             renderPage(state);
 
             // set event listener for season selector in nav
-            document.querySelector('header')?.addEventListener('change', (event) => {
+            document.addEventListener('change', (event) => {
                 if (event.target instanceof HTMLSelectElement) {
                     onChangeEventHandler(event.target, state);
                 }

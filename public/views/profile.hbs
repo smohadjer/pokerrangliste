@@ -1,4 +1,8 @@
-<h1 {{#ifEquals ranking 1}}class="first-place"{{/ifEquals}} {{#ifEquals ranking 2}}class="second-place"{{/ifEquals}} {{#ifEquals ranking 3}}class="third-place"{{/ifEquals}}>{{player_name}}</h1>
+
+<header>
+  <h1 {{#ifEquals ranking 1}}class="first-place"{{/ifEquals}} {{#ifEquals ranking 2}}class="second-place"{{/ifEquals}} {{#ifEquals ranking 3}}class="third-place"{{/ifEquals}}>{{player_name}}</h1>
+  {{> seasonSelector seasons=seasons season_id=season_id }}
+</header>
 <table class="details">
   <tr><td>{{seasonName}} ranking:</td><td>{{ranking}} </td></tr>
   <tr><td>Total points:</td><td>{{points}}</td></tr>

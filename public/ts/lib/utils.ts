@@ -20,6 +20,13 @@ Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
     return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
 });
 
+(async() => {
+    const response = await fetch('/views/seasons.hbs');
+    const responseText = await response.text();
+    const template = Handlebars.compile(responseText);
+    Handlebars.registerPartial('seasonSelector', template);
+})();
+
 const getHTML = async (templateFile, templateData) => {
     const response = await fetch(templateFile);
     const responseText = await response.text();
@@ -49,7 +56,7 @@ interface Args {
     templateFile: string;
     templateData: any;
     container: HTMLElement;
-    options: any
+    options: any;
 }
 
 const render = async (args: Args) => {
@@ -151,16 +158,16 @@ export const getTournaments = (tournaments, season_id) => {
 export const renderPage = async (state: State, options?) => {
     const view = state.view ? state.view : state.defaultView;
     const pageData = controller[view](state);
-    const headerOptions: Args = {
-        templateFile: 'views/header.hbs',
-        templateData: {
-            season_id: state.season_id,
-            seasons: state.data!.seasons,
-            view: view
-        },
-        container: document.querySelector('header')!,
-        options: options
-    };
+    // const headerOptions: Args = {
+    //     templateFile: 'views/header.hbs',
+    //     templateData: {
+    //         season_id: state.season_id,
+    //         seasons: state.data!.seasons,
+    //         view: view
+    //     },
+    //     container: document.querySelector('#season-selector')!,
+    //     options: options
+    // };
     const footerOptions = {
         templateFile: 'views/footer.hbs',
         templateData: {
@@ -178,7 +185,7 @@ export const renderPage = async (state: State, options?) => {
     }
 
     await Promise.all([
-        render(headerOptions),
+        //render(headerOptions),
         render(footerOptions),
         render(mainOptions)
     ]);

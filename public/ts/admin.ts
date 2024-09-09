@@ -1,4 +1,4 @@
-import { PlayerDB, Season } from './lib/definitions';
+import { PlayerDB, Season } from './lib/types';
 
 const countElm = document.querySelector('input[name=count]');
 const playersElm = document.querySelector('#players');

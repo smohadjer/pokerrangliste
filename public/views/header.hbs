@@ -1,9 +1,0 @@
-<label for="select-season">Season:</label>
-<select id="select-season">
-    {{#each seasons}}
-      <option {{#ifEquals this._id ../season_id }}selected="selected"{{/ifEquals}} value="{{this._id}}">{{this.name}}</option>
-    {{/each}}
-    <option {{#ifEquals season_id 'all-time'}}selected="selected"{{/ifEquals}} value="all-time">All-Time</option>
-</select>
-
-
