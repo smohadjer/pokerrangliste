@@ -57,8 +57,9 @@ const clickHandler = async (e, state) => {
 export default function enableSpaMode(state: State) {
     const $main = document.querySelector('body > main');
     const $header = document.querySelector('body > header');
+    const $footer = document.querySelector('body > footer');
 
-    [$main, $header].forEach(item => item!.addEventListener('click', (e) => {
+    [$main, $header, $footer].forEach(item => item!.addEventListener('click', (e) => {
         clickHandler(e, state);
     }));
 
