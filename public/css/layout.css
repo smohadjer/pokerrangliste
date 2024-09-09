@@ -11,4 +11,9 @@ body {
 
 body > main {
     overflow-y: auto;
+    flex-grow: 1;
+}
+
+header, footer {
+    flex-grow: 0;
 }
