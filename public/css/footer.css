@@ -2,6 +2,9 @@ footer {
     margin: 0;
     background: white;
     border-top: solid 1px #ccc;
+    font-size: 14px;
+    background:
+    radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 100%);
 }
 
 footer ul {
@@ -29,6 +32,10 @@ footer li a {
     display: inline-block;
     text-align: center;
     font-weight: bold;
+}
+
+footer li a.active {
+    filter: invert(10%) sepia(76%) saturate(500%) hue-rotate(72deg) brightness(85%) contrast(104%);
 }
 
 footer li.ranking a {

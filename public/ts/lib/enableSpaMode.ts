@@ -3,7 +3,7 @@ import { State } from './types.js';
 
 const clickHandler = async (e, state) => {
     const link = e.target as HTMLAnchorElement;
-    if (link.nodeName !== 'A') {
+    if (link.nodeName !== 'A' || link.classList.contains('no-ajax')) {
         return;
     }
 
