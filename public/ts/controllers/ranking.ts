@@ -13,6 +13,7 @@ export default (state: State) => {
         players: getPlayers(tournaments, playersList),
         season_id: state.season_id,
         seasonName:  getSeasonName(state.season_id!, state.data!.seasons),
-        seasons: state.data!.seasons
+        seasons: state.data!.seasons,
+        view: 'ranking'
     };
 };

@@ -3,17 +3,17 @@
   <h1 {{#ifEquals ranking 1}}class="first-place"{{/ifEquals}} {{#ifEquals ranking 2}}class="second-place"{{/ifEquals}} {{#ifEquals ranking 3}}class="third-place"{{/ifEquals}}>{{player_name}}</h1>
   {{> seasonSelector seasons=seasons season_id=season_id }}
 </header>
-<table class="details">
-  <tr><td>{{seasonName}} ranking:</td><td>{{ranking}} </td></tr>
-  <tr><td>Total points:</td><td>{{points}}</td></tr>
-  <tr><td>Total rebuys:</td><td>{{rebuys}}</td></tr>
-  <tr><td>Total games:</td><td>{{gamesCount}}</td></tr>
-</table>
-<div class="wrapper-chart">
-    <canvas id="chart"></canvas>
-</div>
 <div class="wrapper">
-  <table>
+  <table class="details">
+    <tr><td>{{seasonName}} ranking:</td><td>{{ranking}} </td></tr>
+    <tr><td>Total points:</td><td>{{points}}</td></tr>
+    <tr><td>Total rebuys:</td><td>{{rebuys}}</td></tr>
+    <tr><td>Total games:</td><td>{{gamesCount}}</td></tr>
+  </table>
+  <div class="wrapper-chart">
+      <canvas id="chart"></canvas>
+  </div>
+  <table class="table-results">
     <tr>
       <th>Game</th>
       <th>Points</th>
@@ -32,3 +32,6 @@
     {{/each}}
   </table>
 </div>
+<footer>
+  {{> footer season_id=season_id view=view}}
+</footer>

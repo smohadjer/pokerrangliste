@@ -1,17 +1,18 @@
-html {
-    height: 100%;
-}
-
-body {
-    display: flex;
+html, body {
     height: 100%;
     margin: 0;
-    flex-direction: column;
 }
 
-body > main {
+#results {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#results > .wrapper {
     overflow-y: auto;
     flex-grow: 1;
+    background-color: #f4efc0;
 }
 
 header, footer {

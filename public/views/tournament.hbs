@@ -1,16 +1,15 @@
 
 <header>
-  <h1>Game</h1>
+  <h1>Game at {{date}}</h1>
 </header>
-<table class="details">
-  <tr><td>Date:</td><td> {{date}}</td></tr>
-  <tr><td>Total players:</td><td>{{playersCount}}</td></tr>
-  <tr><td>Total rebuys:</td><td>{{rebuys}}</td></tr>
-  <tr><td>Buyin:</td><td>{{buyin}}</td></tr>
-  <tr><td>Bounty:</td><td>{{hasBounty}}</td></tr>
-</table>
 <div class="wrapper">
-  <table>
+  <table class="details">
+    <tr><td>Total players:</td><td>{{playersCount}}</td></tr>
+    <tr><td>Total rebuys:</td><td>{{rebuys}}</td></tr>
+    <tr><td>Buyin:</td><td>{{buyin}}</td></tr>
+    <tr><td>Bounty:</td><td>{{hasBounty}}</td></tr>
+  </table>
+  <table class="table-results">
     <tr>
       <th>Rank</th>
       <th>Player</th>
@@ -36,3 +35,6 @@
     {{/each}}
   </table>
 </div>
+<footer>
+  {{> footer season_id=season_id view=view}}
+</footer>

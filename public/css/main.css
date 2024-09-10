@@ -8,14 +8,7 @@ html {
 
 body {
     margin: 0;
-    background:
-    radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 33%, #aa832a 66%, #5d4a1f 100%);
-    background-repeat: none;
-    color: black;
     font-size: 16px;
-    background:
-    radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 100%);
-    background: #f9f8d9;
 }
 
 header {
@@ -52,21 +45,9 @@ header {
     }
 }
 
-.wrapper table {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #1d5410;
-    color: white;
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 600px;
-
-    & tr:nth-child(even) td {
-        background: #36701e;
-    }
-}
-
 table.details {
     margin: 1em;
+    font-size: 18px;
 
     & td {
         padding: 0 1em 0 0;
@@ -99,39 +80,51 @@ p {
     margin: 1rem;
 }
 
-th {
-    padding: 10px 10px 10px 0;
-    text-align: left;
-}
+.table-results {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #1d5410;
+    color: white;
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 600px;
 
-td {
-    padding: 0 10px 0 0;
-    text-align: left;
-    font-size: 1.1em;
-}
-
-td:first-child,
-th:first-child {
-    padding-left: 10px;
-}
-
-td a {
-    padding: 0.8em 1em 0.8em 0;
-    color: #ECE18F;
-    display: inline-block;
-
-    @media (min-width: 1024px) {
-        padding: 0.5em 0;
+    & tr:nth-child(even) td {
+        background: #36701e;
     }
-}
 
-td a:visited {
-    color: yellowgreen;
-}
+    th {
+        padding: 10px 10px 10px 0;
+        text-align: left;
+    }
 
-h1,
-td.name {
-    text-transform: capitalize;
+    td {
+        padding: 0 10px 0 0;
+        text-align: left;
+        font-size: 1.1em;
+    }
+
+    td:first-child,
+    th:first-child {
+        padding-left: 10px;
+    }
+
+    td a {
+        padding: 0.8em 1em 0.8em 0;
+        color: #ECE18F;
+        display: inline-block;
+
+        @media (min-width: 1024px) {
+            padding: 0.5em 0;
+        }
+    }
+
+    td a:visited {
+        color: yellowgreen;
+    }
+
+    td.name {
+        text-transform: capitalize;
+    }
 }
 
 ul {

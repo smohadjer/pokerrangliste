@@ -3,7 +3,7 @@
   {{> seasonSelector seasons=seasons season_id=season_id }}
 </header>
 <div class="wrapper">
-  <table>
+  <table class="table-results">
     <tr>
         <th>Rank</th>
         <th>Player</th>
@@ -34,3 +34,6 @@
     {{/each}}
   </table>
 </div>
+<footer>
+  {{> footer season_id=season_id view=view}}
+</footer>

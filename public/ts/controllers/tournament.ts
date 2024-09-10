@@ -41,7 +41,8 @@ export default (state: State) => {
         rebuys: getRebuys(cloneTournament),
         players: players,
         season_id: state.season_id,
-        hasBounty: cloneTournament.bounties ? 'Yes' : 'No'
+        hasBounty: cloneTournament.bounties ? 'Yes' : 'No',
+        view: 'tournament'
     }
 
     return tournamentData;

@@ -14,7 +14,8 @@ export default (state: State) => {
         tournaments: optimizedData,
         season_id: state.season_id,
         seasonName: getSeasonName(state.season_id, state.data!.seasons),
-        seasons: state.data!.seasons
+        seasons: state.data!.seasons,
+        view: 'tournaments'
     }
 
     return tournamentsData;

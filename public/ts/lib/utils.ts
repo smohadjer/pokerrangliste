@@ -25,6 +25,11 @@ export const setHandlebars = async() => {
     const responseText = await response.text();
     const template = Handlebars.compile(responseText);
     Handlebars.registerPartial('seasonSelector', template);
+
+    const responseFooter = await fetch('/views/footer.hbs');
+    const responseFooterText = await responseFooter.text();
+    const templateFooter = Handlebars.compile(responseFooterText);
+    Handlebars.registerPartial('footer', templateFooter);
 };
 
 const getHTML = async (templateFile, templateData) => {
@@ -168,15 +173,15 @@ export const renderPage = async (state: State, options?) => {
     //     container: document.querySelector('#season-selector')!,
     //     options: options
     // };
-    const footerOptions = {
-        templateFile: 'views/footer.hbs',
-        templateData: {
-            season_id: state.season_id,
-            view: view
-        },
-        container: document.querySelector('footer')!,
-        options: options
-    };
+    // const footerOptions = {
+    //     templateFile: 'views/footer.hbs',
+    //     templateData: {
+    //         season_id: state.season_id,
+    //         view: view
+    //     },
+    //     container: document.querySelector('footer')!,
+    //     options: options
+    // };
     const mainOptions: Args = {
         templateFile: `views/${view}.hbs`,
         templateData: pageData,
@@ -184,11 +189,7 @@ export const renderPage = async (state: State, options?) => {
         options: options
     }
 
-    await Promise.all([
-        //render(headerOptions),
-        render(footerOptions),
-        render(mainOptions)
-    ]);
+    await render(mainOptions);
 
     if (view === 'profile') {
         const data = pageData.results.reverse();
