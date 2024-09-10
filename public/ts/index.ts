@@ -1,6 +1,7 @@
 import { State } from './lib/types.js';
 import enableSpaMode from './lib/enableSpaMode.js';
 import fetchData from './lib/fetchData.js';
+import { setHandlebars } from './lib/utils.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const state: State = {
@@ -11,6 +12,13 @@ const state: State = {
     defaultView: 'ranking'
 };
 
-enableSpaMode(state);
-fetchData(state);
+(async () => {
+    await setHandlebars();
+    enableSpaMode(state);
+    fetchData(state);
+})();
+
+
+
+
 

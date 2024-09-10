@@ -12,20 +12,20 @@ I have copy/pasted dist/handlebars.min.js to ts/lib/ext and renamed it from .js 
 to avoid errors during build */
 import Handlebars from './ext/handlebars.min.cjs';
 
-// setting Handlebars helpers to help with compiling templates
-Handlebars.registerHelper("inc", function(value, options) {
-    return parseInt(value) + 1;
-});
-Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
-    return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-});
+export const setHandlebars = async() => {
+    // setting Handlebars helpers to help with compiling templates
+    Handlebars.registerHelper("inc", function(value, options) {
+        return parseInt(value) + 1;
+    });
+    Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+        return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
+    });
 
-(async() => {
     const response = await fetch('/views/seasons.hbs');
     const responseText = await response.text();
     const template = Handlebars.compile(responseText);
     Handlebars.registerPartial('seasonSelector', template);
-})();
+};
 
 const getHTML = async (templateFile, templateData) => {
     const response = await fetch(templateFile);

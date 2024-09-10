@@ -154,7 +154,8 @@ ul {
 }
 
 #results.empty {
-    min-height: 100px;
+    min-height: 100%;
+    display: flex;
 
     /* loader */
     &::before {
