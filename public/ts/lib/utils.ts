@@ -2,7 +2,10 @@ import {
     Tournament,
     PlayerDB, Player,
     Season,
-    State
+    State,
+    RenderOptions,
+    Profile,
+    CharData,
 } from './types';
 import { controller } from '../controllers/controller';
 import drawChart from './drawChart';
@@ -12,12 +15,19 @@ I have copy/pasted dist/handlebars.min.js to ts/lib/ext and renamed it from .js 
 to avoid errors during build */
 import Handlebars from './ext/handlebars.min.cjs';
 
+type Args = {
+    view: string;
+    templateData: any;
+    container: HTMLElement;
+    options: any;
+}
+
 export const setHandlebars = async() => {
     // setting Handlebars helpers to help with compiling templates
-    Handlebars.registerHelper("inc", function(value, options) {
+    Handlebars.registerHelper("inc", function(value: string, options) {
         return parseInt(value) + 1;
     });
-    Handlebars.registerHelper('ifEquals', function(arg1, arg2, options) {
+    Handlebars.registerHelper('ifEquals', function(arg1: string, arg2: string, options) {
         return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
     });
 
@@ -32,7 +42,7 @@ export const setHandlebars = async() => {
     Handlebars.registerPartial('footer', templateFooter);
 };
 
-const getHTML = async (templateFile, templateData) => {
+const getHTML = async (templateFile: string, templateData) => {
     const response = await fetch(templateFile);
     const responseText = await response.text();
     const template = Handlebars.compile(responseText);
@@ -48,7 +58,7 @@ export const getSeasonName = (season_id: string, seasons: Season[]) => {
     }
 }
 
-const sortByDate = (tournaments) => {
+const sortByDate = (tournaments: Tournament[]) => {
     tournaments.sort((item1, item2) => {
       const date1 = new Date(item1.date).valueOf();
       const date2 = new Date(item2.date).valueOf();
@@ -57,24 +67,30 @@ const sortByDate = (tournaments) => {
     return tournaments;
 };
 
-interface Args {
-    templateFile: string;
-    templateData: any;
-    container: HTMLElement;
-    options: any;
-}
-
 const render = async (args: Args) => {
-    const html = await getHTML(args.templateFile, args.templateData);
+    const templateFile = `views/${args.view}.hbs`;
+    const html = await getHTML(templateFile, args.templateData);
     args.container.innerHTML = html;
     args.container.classList.remove('empty');
 
     if (args.options) {
         args.container.classList.add(args.options.animation);
     }
+
+    if (args.view === 'profile') {
+        const chartData: CharData[] = args.templateData.results.reverse();
+        chartData.forEach((item, index) => {
+            if (index === 0) {
+                item.sum = item.points;
+            } else {
+                item.sum = chartData[index-1].sum + item.points;
+            }
+        })
+        drawChart(document.getElementById('chart'), chartData);
+    }
 };
 
-export const getRebuys = (tournament) => {
+export const getRebuys = (tournament: Tournament) => {
     let rebuys = 0;
     tournament.players.forEach((player) => {
         rebuys += player.rebuys;
@@ -82,7 +98,7 @@ export const getRebuys = (tournament) => {
     return rebuys;
 };
 
-export const getPoints = (player, tournament: Tournament) => {
+export const getPoints = (player: Player, tournament: Tournament) => {
     const rebuys = player.rebuys * tournament.buyin;
     const prize = getPrize(player, tournament);
     const bounty = getBounty(player, tournament);
@@ -90,7 +106,7 @@ export const getPoints = (player, tournament: Tournament) => {
     return points;
 };
 
-export const getPrize = (player, tournament) => {
+export const getPrize = (player: Player, tournament: Tournament) => {
     const prize = (player.ranking <= tournament.prizes.length)
     ? tournament.prizes[player.ranking - 1] : 0;
     return prize;
@@ -119,7 +135,7 @@ export const deepClone = (arrayOrObject) => {
     }
  }
 
-export const getPlayers = (tournaments: Tournament[], playersList) => {
+export const getPlayers = (tournaments: Tournament[], playersList: PlayerDB[]) => {
     const players: Player[] = [];
     tournaments.forEach((tournament) => {
         tournament.players.forEach((item) => {
@@ -137,7 +153,9 @@ export const getPlayers = (tournaments: Tournament[], playersList) => {
                 foundPlayer.bounty += clone.bounty;
                 foundPlayer.prize += clone.prize;
                 foundPlayer.rebuys += clone.rebuys;
-                foundPlayer.games += clone.games;
+                if (foundPlayer.games !== undefined) {
+                    foundPlayer.games += clone.games;
+                }
             } else {
                 players.push(clone);
             }
@@ -149,7 +167,7 @@ export const getPlayers = (tournaments: Tournament[], playersList) => {
     return players;
 };
 
-export const getTournaments = (tournaments, season_id) => {
+export const getTournaments = (tournaments: Tournament[], season_id: string) => {
     let clone: Tournament[] = deepClone(tournaments);
     if (season_id !== 'all-time') {
         clone = clone.filter((tour) => {
@@ -160,47 +178,23 @@ export const getTournaments = (tournaments, season_id) => {
     return clone;
 };
 
-export const renderPage = async (state: State, options?) => {
-    const view = state.view ? state.view : state.defaultView;
-    const pageData = controller[view](state);
-    // const headerOptions: Args = {
-    //     templateFile: 'views/header.hbs',
-    //     templateData: {
-    //         season_id: state.season_id,
-    //         seasons: state.data!.seasons,
-    //         view: view
-    //     },
-    //     container: document.querySelector('#season-selector')!,
-    //     options: options
-    // };
-    // const footerOptions = {
-    //     templateFile: 'views/footer.hbs',
-    //     templateData: {
-    //         season_id: state.season_id,
-    //         view: view
-    //     },
-    //     container: document.querySelector('footer')!,
-    //     options: options
-    // };
+export const renderPage = async (state: State, options?: RenderOptions) => {
+    const view = state.view;
+    const fetchData = controller.hasOwnProperty(view) ? controller[view] : null;
+    const pageData = (typeof fetchData === 'function') ? fetchData(state) : null;
+
+    if (!pageData) {
+        console.error(`No data found for view ${view}!`);
+        return;
+    }
+
     const mainOptions: Args = {
-        templateFile: `views/${view}.hbs`,
+        view,
         templateData: pageData,
         container: document.getElementById('results')!,
-        options: options
+        options: options,
     }
 
-    await render(mainOptions);
-
-    if (view === 'profile') {
-        const data = pageData.results.reverse();
-        data.forEach((item, index) => {
-            if (index === 0) {
-                item.sum = item.points;
-            } else {
-                item.sum = data[index-1].sum + item.points;
-            }
-        })
-        drawChart(document.getElementById('chart'), data);
-    }
+    render(mainOptions);
 };
 

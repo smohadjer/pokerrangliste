@@ -13,7 +13,7 @@ export default function fetchData(state: State) {
     .then((response) => response.json())
     .then(async (json: Data) => {
         if (json.error) {
-            alert(json.message);
+            console.error(json.message);
         } else {
             state.data = json;
 

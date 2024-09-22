@@ -18,15 +18,14 @@ export default (state: State) => {
     })
     if (!tournament) return;
 
-    const cloneTournament = deepClone(tournament);
-    console.log(cloneTournament);
+    const cloneTournament: Tournament = deepClone(tournament);
 
     // if players have same points, list them sorted by their ranking
-    cloneTournament.players.sort((item1, item2) => {
-        return item1.ranking - item2.ranking;
+    cloneTournament.players.sort((player1: Player, player2: Player) => {
+        return player1.ranking - player2.ranking;
     });
 
-    const players: Player[] = cloneTournament.players.map((player) => {
+    const players: Player[] = cloneTournament.players.map((player: Player) => {
         player.prize = getPrize(player, cloneTournament);
         player.bounty = getBounty(player, cloneTournament);
         player.points = getPoints(player, cloneTournament);

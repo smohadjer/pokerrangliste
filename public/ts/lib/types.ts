@@ -6,7 +6,7 @@ export interface Player {
   points: number,
   bounty: number,
   prize: number,
-  games: number
+  games?: number
 }
 
 export interface PlayerDB {
@@ -32,13 +32,17 @@ export interface Tournament {
   hasBounty?: string;
 }
 
-export interface Profile {
-  date: string,
-  _id: {},
-  ranking: number,
-  rebuys: number,
-  players: number,
-  points: number
+export type Profile = {
+  date: string;
+  _id: {};
+  ranking: number;
+  rebuys: number;
+  players: number;
+  points: number;
+}
+
+export type CharData = Profile & {
+  sum: number;
 }
 
 export interface Season {
@@ -58,7 +62,10 @@ export type State = {
   season_id?: string;
   tournament_id?: string;
   player_id?: string;
-  view: string | null;
+  view: string;
   data?: Data;
-  defaultView: string;
+}
+
+export type RenderOptions =  {
+  animation?: string;
 }

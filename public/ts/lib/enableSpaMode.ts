@@ -1,13 +1,13 @@
 import { renderPage } from './utils.js';
-import { State } from './types.js';
+import { State, RenderOptions } from './types.js';
 
-const clickHandler = async (e, state) => {
-    const link = e.target as HTMLAnchorElement;
+const clickHandler = async (event: MouseEvent, state: State) => {
+    const link = event.target as HTMLAnchorElement;
     if (link.nodeName !== 'A' || link.classList.contains('no-ajax')) {
         return;
     }
 
-    e.preventDefault();
+    event.preventDefault();
 
     // replace existing history state with one that has scrolling position
     const scrollPosition = document.documentElement.scrollTop;
@@ -15,7 +15,7 @@ const clickHandler = async (e, state) => {
     history.replaceState(tempState, '', window.location.search);
 
     // const href = link.getAttribute('href')!;
-    const options: { animation?: string} = {};
+    const options: RenderOptions = {};
     const animationClass = link.getAttribute('data-animation');
     if (animationClass) {
         options.animation = animationClass;
@@ -36,12 +36,10 @@ const clickHandler = async (e, state) => {
     // update state
     if (size > 0) {
         for (const [key, value] of params) {
-            state[key] = value;
+            if (state.hasOwnProperty(key)) {
+                state[key] = value;
+            }
         }
-    }
-
-    if (!params.get('view')) {
-        state.view = state.defaultView;
     }
 
     let url = '/';

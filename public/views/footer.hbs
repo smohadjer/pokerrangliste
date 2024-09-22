@@ -1,10 +1,10 @@
 <nav>
   <ul>
     {{#if season_id}}
-      <li class="ranking"><a {{#ifEquals view 'ranking'}}class="active"{{/ifEquals}} href="/?season_id={{season_id}}">Ranking</a></li>
+      <li class="ranking"><a {{#ifEquals view 'ranking'}}class="active"{{/ifEquals}} href="/?view=ranking&season_id={{season_id}}">Ranking</a></li>
       <li class="games"><a {{#ifEquals view 'tournaments'}}class="active"{{/ifEquals}} href="/?view=tournaments&season_id={{season_id}}">Games</a></li>
     {{else}}
-      <li class="ranking"><a {{#ifEquals view 'ranking'}}class="active"{{/ifEquals}} href="/">Ranking</a></li>
+      <li class="ranking"><a {{#ifEquals view 'ranking'}}class="active"{{/ifEquals}} href="/?view=ranking">Ranking</a></li>
       <li class="games"><a {{#ifEquals view 'tournaments'}}class="active"{{/ifEquals}} href="/?view=tournaments">Games</a></li>
     {{/if}}
     <li class="admin"><a class="no-ajax" href="/admin.html">Admin</a></li>
