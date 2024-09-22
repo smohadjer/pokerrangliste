@@ -1,7 +1,12 @@
 import { renderPage } from './renderPage.js';
-import { State, RenderOptions } from './types.js';
+import { RenderOptions } from './types.js';
+import { store } from './store.js';
 
-const clickHandler = async (event: MouseEvent, state: State) => {
+type Payload = {
+    [key: string]: string;
+};
+
+const clickHandler = async (event: MouseEvent) => {
     const link = event.target as HTMLAnchorElement;
     if (link.nodeName !== 'A' || link.classList.contains('no-ajax')) {
         return;
@@ -33,13 +38,16 @@ const clickHandler = async (event: MouseEvent, state: State) => {
         ? params.size
         : params.toString().length;
 
-    // update state
+    const payload: Payload = {}
+    const state = store.getState();
+
     if (size > 0) {
         for (const [key, value] of params) {
             if (state.hasOwnProperty(key)) {
-                state[key] = value;
+                payload[key] = value;
             }
         }
+        store.setState({ payload });
     }
 
     let url = '/';
@@ -48,17 +56,21 @@ const clickHandler = async (event: MouseEvent, state: State) => {
     }
 
     window.scrollTo(0, 0);
-    await renderPage(state, options);
-    window.history.pushState(state, '', url);
+    await renderPage(options);
+    window.history.pushState(store.getState(), '', url);
 };
 
-export default function enableSpaMode(state: State) {
-    document.addEventListener('click', (e) => {
-        clickHandler(e, state);
+export default function enableSpaMode() {
+    document.addEventListener('click', (event) => {
+        clickHandler(event);
     });
 
+
     window.addEventListener("popstate", async (event) => {
-        await renderPage(event.state);
+        store.setState({
+            payload: event.state
+        });
+        await renderPage();
         if (event.state.scroll) {
             window.scrollTo(0, event.state.scroll);
         }

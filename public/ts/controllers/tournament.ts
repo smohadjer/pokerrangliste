@@ -1,4 +1,4 @@
-import { Tournament, Player, State, PlayerDB } from '../lib/types';
+import { Tournament, Player, PlayerDB } from '../lib/types';
 import {
     deepClone,
     getPrize,
@@ -8,8 +8,10 @@ import {
     getRebuys,
     getTournaments,
 } from '../lib/utils';
+import { store } from '../lib/store';
 
-export default (state: State) => {
+export default () => {
+    const state = store.getState();
     const tournaments: Tournament[] = getTournaments(state.data!.tournaments, 'all-time');
     const playersList: PlayerDB[] = state.data!.players;
 

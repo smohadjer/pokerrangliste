@@ -1,8 +1,9 @@
 import { getRebuys, getTournaments, getSeasonName } from '../lib/utils';
-import { State } from '../lib/types';
+import { store } from '../lib/store';
 
-export default (state: State) => {
-    const tournaments = getTournaments(state.data!.tournaments, state.season_id);
+export default () => {
+    const state = store.getState();
+    const tournaments = getTournaments(state.data!.tournaments, state.season_id!);
 
     const optimizedData = tournaments.map((item) => {
         item.rebuys = getRebuys(item);

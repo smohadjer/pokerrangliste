@@ -1,13 +1,15 @@
-import { Tournament, PlayerDB, Profile, State } from '../lib/types';
+import { Tournament, PlayerDB, Profile } from '../lib/types';
 import {
     getPoints,
     getPlayers,
     getTournaments,
     getSeasonName
 } from '../lib/utils';
+import { store } from '../lib/store';
 
-export default (state: State) => {
-    const tournaments: Tournament[] = getTournaments(state.data!.tournaments, state.season_id);
+export default () => {
+    const state = store.getState();
+    const tournaments: Tournament[] = getTournaments(state.data!.tournaments, state.season_id!);
     const playersList: PlayerDB[] = state.data!.players;
 
     if (!state.player_id) return;

@@ -6,6 +6,7 @@ import {
 import drawChart from './drawChart';
 import { controller } from '../controllers/controller';
 import Handlebars from './ext/handlebars.min.cjs';
+import { store } from './store';
 
 type Args = {
     view: string;
@@ -48,15 +49,16 @@ const render = async (args: Args) => {
     }
 };
 
-export const renderPage = async (state: State, options?: RenderOptions) => {
-    const view = state.view;
+export const renderPage = async (options?: RenderOptions) => {
+    const view = store.getState().view;
     const fetchData = controller.hasOwnProperty(view) ? controller[view] : null;
-    const pageData = (typeof fetchData === 'function') ? fetchData(state) : null;
+    const pageData = (typeof fetchData === 'function') ? fetchData() : null;
 
     if (!pageData) {
         console.error(`No data found for view ${view}!`);
         return;
     }
+
 
     render({
         view,
