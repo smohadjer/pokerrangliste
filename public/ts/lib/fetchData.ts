@@ -1,5 +1,5 @@
 import { Data, State } from './types.js';
-import { renderPage } from './utils.js';
+import { renderPage } from './renderPage.js';
 import { onChangeEventHandler } from './nav.js';
 
 export default function fetchData(state: State) {

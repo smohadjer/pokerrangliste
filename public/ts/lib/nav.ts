@@ -1,5 +1,5 @@
 import { State } from './types.js';
-import { renderPage } from './utils.js';
+import { renderPage } from './renderPage.js';
 
 export const onChangeEventHandler = (
     target: HTMLSelectElement,

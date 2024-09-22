@@ -1,4 +1,4 @@
-import { renderPage } from './utils.js';
+import { renderPage } from './renderPage.js';
 import { State, RenderOptions } from './types.js';
 
 const clickHandler = async (event: MouseEvent, state: State) => {

@@ -2,25 +2,12 @@ import {
     Tournament,
     PlayerDB, Player,
     Season,
-    State,
-    RenderOptions,
-    Profile,
-    CharData,
 } from './types';
-import { controller } from '../controllers/controller';
-import drawChart from './drawChart';
 
 /* since importing from node_modules using a relative path throws error on Render.com
 I have copy/pasted dist/handlebars.min.js to ts/lib/ext and renamed it from .js to .cjs
 to avoid errors during build */
 import Handlebars from './ext/handlebars.min.cjs';
-
-type Args = {
-    view: string;
-    templateData: any;
-    container: HTMLElement;
-    options: any;
-}
 
 export const setHandlebars = async() => {
     // setting Handlebars helpers to help with compiling templates
@@ -42,14 +29,6 @@ export const setHandlebars = async() => {
     Handlebars.registerPartial('footer', templateFooter);
 };
 
-const getHTML = async (templateFile: string, templateData) => {
-    const response = await fetch(templateFile);
-    const responseText = await response.text();
-    const template = Handlebars.compile(responseText);
-    const html = template(templateData);
-    return html;
-};
-
 export const getSeasonName = (season_id: string, seasons: Season[]) => {
     if (season_id === 'all-time') {
         return 'All-Time';
@@ -65,29 +44,6 @@ const sortByDate = (tournaments: Tournament[]) => {
       return date2 - date1;
     });
     return tournaments;
-};
-
-const render = async (args: Args) => {
-    const templateFile = `views/${args.view}.hbs`;
-    const html = await getHTML(templateFile, args.templateData);
-    args.container.innerHTML = html;
-    args.container.classList.remove('empty');
-
-    if (args.options) {
-        args.container.classList.add(args.options.animation);
-    }
-
-    if (args.view === 'profile') {
-        const chartData: CharData[] = args.templateData.results.reverse();
-        chartData.forEach((item, index) => {
-            if (index === 0) {
-                item.sum = item.points;
-            } else {
-                item.sum = chartData[index-1].sum + item.points;
-            }
-        })
-        drawChart(document.getElementById('chart'), chartData);
-    }
 };
 
 export const getRebuys = (tournament: Tournament) => {
@@ -177,24 +133,3 @@ export const getTournaments = (tournaments: Tournament[], season_id: string) => 
     clone = sortByDate(clone);
     return clone;
 };
-
-export const renderPage = async (state: State, options?: RenderOptions) => {
-    const view = state.view;
-    const fetchData = controller.hasOwnProperty(view) ? controller[view] : null;
-    const pageData = (typeof fetchData === 'function') ? fetchData(state) : null;
-
-    if (!pageData) {
-        console.error(`No data found for view ${view}!`);
-        return;
-    }
-
-    const mainOptions: Args = {
-        view,
-        templateData: pageData,
-        container: document.getElementById('results')!,
-        options: options,
-    }
-
-    render(mainOptions);
-};
-
