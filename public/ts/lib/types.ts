@@ -41,7 +41,7 @@ export type Profile = {
   points: number;
 }
 
-export type CharData = Profile & {
+export type ChartData = Profile & {
   sum: number;
 }
 

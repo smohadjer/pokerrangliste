@@ -1,6 +1,7 @@
 import Chart from 'chart.js/auto';
+import { ChartData } from './types.js';
 
-export default function drawChart(element, data) {
+const drawChart = (element: HTMLElement, data: ChartData[]) => {
     Chart.defaults.color = '#000';
 
     new Chart(element, {
@@ -27,4 +28,20 @@ export default function drawChart(element, data) {
           ]
         }
     });
-}
+};
+
+export const renderChart = (templateData) => {
+  const chartData: ChartData[] = templateData.results.reverse();
+  chartData.forEach((item, index) => {
+      if (index === 0) {
+          item.sum = item.points;
+      } else {
+          item.sum = chartData[index-1].sum + item.points;
+      }
+  })
+
+  const chartElement = document.getElementById('chart');
+  if (chartElement) {
+      drawChart(chartElement, chartData);
+  }
+};

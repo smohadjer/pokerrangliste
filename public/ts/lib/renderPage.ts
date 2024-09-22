@@ -1,9 +1,5 @@
-import {
-    State,
-    RenderOptions,
-    CharData,
-} from './types';
-import drawChart from './drawChart';
+import { RenderOptions } from './types';
+import { renderChart } from './drawChart';
 import { controller } from '../controllers/controller';
 import Handlebars from './ext/handlebars.min.cjs';
 import { store } from './store';
@@ -35,17 +31,8 @@ const render = async (args: Args) => {
         }
     }
 
-    // add chart on profile page
     if (args.view === 'profile') {
-        const chartData: CharData[] = args.templateData.results.reverse();
-        chartData.forEach((item, index) => {
-            if (index === 0) {
-                item.sum = item.points;
-            } else {
-                item.sum = chartData[index-1].sum + item.points;
-            }
-        })
-        drawChart(document.getElementById('chart'), chartData);
+        renderChart(args.templateData);
     }
 };
 
@@ -59,8 +46,7 @@ export const renderPage = async (options?: RenderOptions) => {
         return;
     }
 
-
-    render({
+    await render({
         view,
         templateData: pageData,
         options: options,

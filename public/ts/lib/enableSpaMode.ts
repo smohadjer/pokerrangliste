@@ -6,6 +6,8 @@ type Payload = {
     [key: string]: string;
 };
 
+const results = document.querySelector('#results');
+
 const clickHandler = async (event: MouseEvent) => {
     const link = event.target as HTMLAnchorElement;
     if (link.nodeName !== 'A' || link.classList.contains('no-ajax')) {
@@ -15,7 +17,7 @@ const clickHandler = async (event: MouseEvent) => {
     event.preventDefault();
 
     // replace existing history state with one that has scrolling position
-    const scrollPosition = document.documentElement.scrollTop;
+    const scrollPosition = results?.querySelector('.wrapper')!.scrollTop;
     const tempState = {...history.state, scroll: scrollPosition};
     history.replaceState(tempState, '', window.location.search);
 
@@ -72,7 +74,7 @@ export default function enableSpaMode() {
         });
         await renderPage();
         if (event.state.scroll) {
-            window.scrollTo(0, event.state.scroll);
+            results?.querySelector('.wrapper')!.scrollTo(0, event.state.scroll);
         }
     });
 }
