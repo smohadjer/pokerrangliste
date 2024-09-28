@@ -34,7 +34,7 @@ export default async function middleware(req) {
   // we check whether jwt token is sent using authorization header or cookie
   if (hasBearerAuthHeader || jwt) {
     const token = hasBearerAuthHeader ? authHeader.split(' ')[1] : jwt;
-    const secret = new TextEncoder().encode('mySecret');
+    const secret = new TextEncoder().encode(process.env.jwtSecret);
     console.log({token});
 
     try {
