@@ -1,3 +1,14 @@
-<div>
-Placeholder for login
+
+<header>
+  <h1>Login</h1>
+</header>
+<div class="wrapper">
+    <form id="login" method="POST" action="/api/authenticate">
+        <p><label>Username: <input required name="username"></label></p>
+        <p><label>Password: <input required name="password" type="password"></label></p>
+        <p><button>Login</button></p>
+    </form>
 </div>
+<footer>
+  {{> footer season_id=season_id view="login"}}
+</footer>

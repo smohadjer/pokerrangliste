@@ -35,7 +35,7 @@ footer li a {
 }
 
 footer li a.active {
-    filter: invert(10%) sepia(76%) saturate(500%) hue-rotate(72deg) brightness(85%) contrast(104%);
+    filter: invert(9%) sepia(97%) saturate(7423%) hue-rotate(85deg) brightness(89%) contrast(87%);
 }
 
 footer li.ranking a {

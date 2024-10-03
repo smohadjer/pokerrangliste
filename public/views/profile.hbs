@@ -23,7 +23,7 @@
     </tr>
     {{#each results}}
       <tr>
-        <td><a data-animation="slideInRTL" href="/?view=tournament&tournament_id={{this._id}}">{{this.date}}</a></td>
+        <td><a data-animation="slideInRTL" href="/tournament?tournament_id={{this._id}}">{{this.date}}</a></td>
         <td>{{this.points}}</td>
         <td>{{this.ranking}}</td>
         <!--<td>{{this.players}}</td>-->
@@ -33,5 +33,5 @@
   </table>
 </div>
 <footer>
-  {{> footer season_id=season_id view=view}}
+  {{> footer season_id=season_id view="profile"}}
 </footer>

@@ -1,8 +1,10 @@
 import { RenderOptions } from './types';
 import { renderChart } from './drawChart';
+import { initAdmin } from './admin.js';
 import { controller } from '../controllers/controller';
 import Handlebars from './ext/handlebars.min.cjs';
 import { store } from './store';
+import { onChangeEventHandler } from './nav.js';
 
 type Args = {
     view: string;
@@ -29,10 +31,31 @@ const render = async (args: Args) => {
         if (args.options) {
             container.classList.add(args.options.animation);
         }
-    }
 
-    if (args.view === 'profile') {
-        renderChart(args.templateData);
+        if (args.view === 'profile') {
+            renderChart(args.templateData);
+        }
+
+        if (args.view === 'admin') {
+            initAdmin(container);
+        }
+
+        const seasonSelector =  document.querySelector('#season-selector');
+        if (seasonSelector) {
+            seasonSelector.addEventListener('change', (event) => {
+                if (event.target instanceof HTMLSelectElement) {
+                    onChangeEventHandler(event.target);
+                }
+            });
+        }
+
+        document.getElementById('results')?.addEventListener('animationend', (event) => {
+            console.log('animaiton end');
+            const container = event.target as HTMLElement;
+            container.classList.remove('slideInRTL');
+            container.classList.remove('slideInLTR');
+            container.classList.remove('fadeIn');
+        })
     }
 };
 
@@ -42,8 +65,7 @@ export const renderPage = async (options?: RenderOptions) => {
     const pageData = (typeof fetchData === 'function') ? fetchData() : null;
 
     if (!pageData) {
-        console.error(`No data found for view ${view}!`);
-        return;
+        console.warn(`No data found for view ${view}!`);
     }
 
     await render({

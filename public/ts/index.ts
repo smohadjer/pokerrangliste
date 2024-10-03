@@ -2,13 +2,16 @@ import enableSpaMode from './lib/enableSpaMode.js';
 import fetchData from './lib/fetchData.js';
 import { setHandlebars } from './lib/utils.js';
 import { store } from './lib/store.js';
-import { onChangeEventHandler } from './lib/nav.js';
 
 const init = async() => {
-    const defaultView = 'ranking'
+    console.log('init', window.location.search);
     const urlParams = new URLSearchParams(window.location.search);
+    //const redirect = urlParams.get('redirect');
+    const view = window.location.pathname === '/' ? 'ranking' : window.location.pathname.substring(1);
+    console.log({view});
+
     const payload = {
-        view: urlParams.get('view') || defaultView,
+        view,
         season_id: urlParams.get('season_id') || undefined,
         tournament_id: urlParams.get('tournament_id') || undefined,
         player_id: urlParams.get('player_id') || undefined,
@@ -18,21 +21,6 @@ const init = async() => {
     await setHandlebars();
     enableSpaMode();
     await fetchData();
-
-    // set event listener for season selector in nav
-    document.addEventListener('change', (event) => {
-        if (event.target instanceof HTMLSelectElement) {
-            onChangeEventHandler(event.target);
-        }
-    });
-
-    document.getElementById('results')?.addEventListener('animationend', (event) => {
-        console.log('animaiton end');
-        const container = event.target as HTMLElement;
-        container.classList.remove('slideInRTL');
-        container.classList.remove('slideInLTR');
-        container.classList.remove('fadeIn');
-    })
 
     // When the app loads from server we need to update browser history
     // by adding state to it, so when user returns to entry page via

@@ -1,0 +1,74 @@
+
+<header>
+  <h1>Admin</h1>
+  <a class="no-ajax" href="/api/logout">Logout</a>
+</header>
+<div class="wrapper">
+    <main class="admin">
+        <section>
+            <form id="post-tournament" method="POST" action="/api/tournament">
+                <h1>Add Tournament</h1>
+                <div>
+                    <label>Season *</label>
+                    <select id="season_dropdown" required name="season_id">
+                    </select>
+                </div>
+                <div>
+                    <label>Date *</label>
+                    <input required name="date" type="date" />
+                </div>
+                <div>
+                    <label>Round *</label>
+                    <select required name="round">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div>
+                    <label>Buyin *</label>
+                    <input required name="buyin" type="number" value="10"/>
+                </div>
+                <div>
+                    <label>Bounty Winner</label>
+                    <input name="bounty_winner">
+                </div>
+                <div>
+                    <label>Bounty Prize</label>
+                    <input name="bountry_prize" type="number">
+                </div>
+                <div>
+                    <label>Players count *</label>
+                    <input name="count" type="number" />
+                </div>
+                <div id="players"></div>
+                <button>Submit</button>
+            </form>
+        </section>
+        <section>
+            <form method="POST" action="/api/seasons">
+                <h1>Add Season</h1>
+                <div>
+                    <label>Season *</label>
+                    <input required name="name">
+                </div>
+                <button>Submit</button>
+            </form>
+        </section>
+        <section>
+            <form method="POST" action="/api/players">
+                <h1>Add Player</h1>
+                <div>
+                    <label>Player *</label>
+                    <input required name="name">
+                </div>
+                <button>Submit</button>
+            </form>
+        </section>
+    </main>
+</div>
+<footer>
+  {{> footer season_id=season_id view="admin"}}
+</footer>

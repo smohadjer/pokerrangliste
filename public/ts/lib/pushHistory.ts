@@ -11,9 +11,9 @@ export const pushHistory = () => {
     urlParams.delete('season_id');
   }
 
-  let url = '/';
+  let url = state.view;
   if (urlParams.toString().length > 0) {
-    url = '/?' +  urlParams.toString();
+    url += '?' + urlParams.toString();
   }
 
   window.history.pushState(state, '', url);

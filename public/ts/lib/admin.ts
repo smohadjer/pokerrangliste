@@ -1,13 +1,11 @@
-import { PlayerDB, Season } from './lib/types';
+import { PlayerDB, Season } from './types';
 
-const countElm = document.querySelector('input[name=count]');
-const playersElm = document.querySelector('#players');
-const seasonDropdown: HTMLSelectElement = document.querySelector('#season_dropdown')!;
-const postTournamentForm = document.getElementById('post-tournament')!;
+export const initAdmin = async (container: HTMLElement) => {
+    const seasonDropdown: HTMLSelectElement = container.querySelector('#season_dropdown')!;
+    const countElm = container.querySelector('input[name=count]');
+    const playersElm = container.querySelector('#players');
+    const postTournamentForm = container.querySelector('#post-tournament')!;
 
-init();
-
-async function init() {
     let playersSelect = '';
     console.log('initiating seasons dropdown...', seasonDropdown);
     seasonDropdown.closest('div')!.classList.add('loading');

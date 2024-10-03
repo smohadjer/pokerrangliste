@@ -1,3 +1,29 @@
 {
-    "cleanUrls": true
+    "cleanUrls": true,
+    "rewrites": [
+        {
+            "source": "/login",
+            "destination": "/"
+        },
+        {
+            "source": "/admin",
+            "destination": "/"
+        },
+        {
+            "source": "/ranking:path*",
+            "destination": "/:path*"
+        },
+        {
+            "source": "/tournaments:path*",
+            "destination": "/:path*"
+        },
+        {
+            "source": "/tournament:path*",
+            "destination": "/:path*"
+        },
+        {
+            "source": "/profile:path*",
+            "destination": "/:path*"
+        }
+      ]
 }

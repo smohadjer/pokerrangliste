@@ -18,8 +18,8 @@ const clickHandler = async (event: MouseEvent) => {
 
     // replace existing history state with one that has scrolling position
     const scrollPosition = results?.querySelector('.wrapper')!.scrollTop;
-    const tempState = {...history.state, scroll: scrollPosition};
-    history.replaceState(tempState, '', window.location.search);
+    const tempState = {...window.history.state, scroll: scrollPosition};
+    window.history.replaceState(tempState, '');
 
     // const href = link.getAttribute('href')!;
     const options: RenderOptions = {};
@@ -29,7 +29,7 @@ const clickHandler = async (event: MouseEvent) => {
     }
 
     // Do nothing when link to current page is clicked
-    if (link.search === window.location.search) {
+    if (link.href === window.location.href) {
         return;
     }
 
@@ -49,17 +49,19 @@ const clickHandler = async (event: MouseEvent) => {
                 payload[key] = value;
             }
         }
-        store.setState({ payload });
     }
 
-    let url = '/';
-    if (params.toString().length > 0) {
-        url = '/?' +  params.toString();
-    }
+    payload.view = link.pathname.substring(1);
+    store.setState({ payload });
+
+    // let url = '/';
+    // if (params.toString().length > 0) {
+    //     url = '/?' +  params.toString();
+    // }
 
     window.scrollTo(0, 0);
     await renderPage(options);
-    window.history.pushState(store.getState(), '', url);
+    window.history.pushState(store.getState(), '', link.href);
 };
 
 export default function enableSpaMode() {
