@@ -76,7 +76,7 @@ async function getSeasons() {
     return seasons;
 };
 
-function getPlayersList(count, playersSelect) {
+function getPlayersList(count: number, playersSelect: string) {
     let html = '';
     for (let i = 0; i<count; i++) {
         html += `<div>
