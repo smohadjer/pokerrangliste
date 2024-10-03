@@ -89,6 +89,17 @@ p {
         text-align: left;
     }
 
+    tr:first-child {
+        position: sticky;
+        top: 0;
+        background-color: #1d5410;
+    }
+
+    th {
+        padding-top: 1em;
+        padding-bottom: 1em;
+    }
+
     td {
         padding: 0 10px 0 0;
         text-align: left;
