@@ -59,9 +59,26 @@
         </section>
         <section>
             <form method="POST" action="/api/players">
+                <input type="hidden" name="_method" value="PUT">
                 <h1>Add Player</h1>
                 <div>
                     <label>Player *</label>
+                    <input required name="name">
+                </div>
+                <button>Submit</button>
+            </form>
+        </section>
+        <section>
+            <form method="POST" action="/api/players">
+                <h1>Edit Player</h1>
+                <div class="loading">
+                    <label>Players</label>
+                    <select id="player_edit_dropdown" name="player_id">
+                        <option value="">Select player</option>
+                    </select>
+                </div>
+                <div>
+                    <label>New name *</label>
                     <input required name="name">
                 </div>
                 <button>Submit</button>

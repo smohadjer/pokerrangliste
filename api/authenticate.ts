@@ -12,7 +12,7 @@ export default async (req, res) => {
     const alg = 'HS256';
     const token = await new SignJWT({ 'username': username })
       .setProtectedHeader({ alg })
-      .setExpirationTime('1h')
+      .setExpirationTime('10w')
       .sign(secret);
 
     /*

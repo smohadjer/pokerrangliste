@@ -6,21 +6,23 @@ export const initAdmin = async (container: HTMLElement) => {
     const playersElm = container.querySelector('#players');
     const postTournamentForm = container.querySelector('#post-tournament')!;
 
-    let playersSelect = '';
     console.log('initiating seasons dropdown...', seasonDropdown);
     seasonDropdown.closest('div')!.classList.add('loading');
     let seasonsOptions = '';
-
-    const players = await getPlayers();
     const seasons = await getSeasons();
-    players.forEach(element => {
-        playersSelect += `<option value="${element._id}">${element.name}</option>`
-    });
     seasons.forEach(element => {
         seasonsOptions += `<option value="${element._id}">${element.name}</option>`
     });
     seasonDropdown.innerHTML = seasonsOptions;
     seasonDropdown.closest('div')!.classList.remove('loading');
+
+    let playersSelect = '';
+    const players = await getPlayers();
+    players.forEach(element => {
+        playersSelect += `<option value="${element._id}">${element.name}</option>`
+    });
+
+    initEditPlayer('#player_edit_dropdown', playersSelect);
 
     if (countElm) {
         countElm.addEventListener('change', (event) => {
@@ -63,18 +65,17 @@ export const initAdmin = async (container: HTMLElement) => {
     };
 }
 
-
 async function getPlayers() {
     const response = await fetch('api/players');
     const players: Array<PlayerDB> = await response.json();
     return players;
-};
+}
 
 async function getSeasons() {
     const response = await fetch('api/seasons');
     const seasons: Array<Season> = await response.json();
     return seasons;
-};
+}
 
 function getPlayersList(count: number, playersSelect: string) {
     let html = '';
@@ -94,4 +95,14 @@ function getPlayersList(count: number, playersSelect: string) {
         </div>`;
     }
     return html;
-};
+}
+
+function initEditPlayer(selector: string, players: string) {
+    const select = document.querySelector(selector);
+    select?.parentElement?.classList.remove('loading');
+    const myHtmlElement = new DOMParser().parseFromString(players,
+        'text/html').body.children;
+    if (select) {
+        select.append(...myHtmlElement);
+    }
+}

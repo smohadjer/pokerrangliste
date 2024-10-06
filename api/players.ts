@@ -1,4 +1,30 @@
 import client from './db.js';
+import { ObjectId } from 'mongodb';
+
+const addNewPlayer = async (collection, doc, res) => {
+  if (!doc) {
+    const insertResponse = await collection.insertOne({'name': name});
+    res.json({'id': insertResponse.insertedId});
+  } else {
+    res.status(500).json({'error': 'Invalid name!'});
+  }
+};
+
+const editPlayerName = async (playerId, collection, doc, res) => {
+  if (doc) {
+    res.status(500).json({'error': 'Name already taken'});
+  } else {
+    await collection.updateOne(
+      { _id: playerId },
+      {
+        $set: {
+          name: name
+        }
+      }
+    );
+    res.json({'id': playerId});
+  }
+};
 
 export default async (req, res) => {
   try {
@@ -15,11 +41,11 @@ export default async (req, res) => {
       const name = req.body.name;
       const doc = await collection.findOne({'name': name});
 
-      if (!doc) {
-        const insertResponse = await collection.insertOne({'name': name});
-        res.json({'id': insertResponse.insertedId});
+      if (req.body._method === 'PUT') {
+        addNewPlayer(collection, doc, res);
       } else {
-        res.status(500).json({'error': 'Invalid name!'});
+        const playerId = new ObjectId(req.body.player_id);
+        editPlayerName(playerId, collection, doc, res);
       }
     }
   } catch (e) {
