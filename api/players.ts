@@ -42,10 +42,10 @@ export default async (req, res) => {
       const doc = await collection.findOne({'name': name});
 
       if (req.body._method === 'PUT') {
-        addNewPlayer(name, collection, doc, res);
+        await addNewPlayer(name, collection, doc, res);
       } else {
         const playerId = new ObjectId(req.body.player_id);
-        editPlayerName(name, playerId, collection, doc, res);
+        await editPlayerName(name, playerId, collection, doc, res);
       }
     }
   } catch (e) {
