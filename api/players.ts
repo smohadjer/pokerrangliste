@@ -1,7 +1,7 @@
 import client from './db.js';
 import { ObjectId } from 'mongodb';
 
-const addNewPlayer = async (collection, doc, res) => {
+const addNewPlayer = async (name, collection, doc, res) => {
   if (!doc) {
     const insertResponse = await collection.insertOne({'name': name});
     res.json({'id': insertResponse.insertedId});
@@ -10,7 +10,7 @@ const addNewPlayer = async (collection, doc, res) => {
   }
 };
 
-const editPlayerName = async (playerId, collection, doc, res) => {
+const editPlayerName = async (name, playerId, collection, doc, res) => {
   if (doc) {
     res.status(500).json({'error': 'Name already taken'});
   } else {
@@ -42,10 +42,10 @@ export default async (req, res) => {
       const doc = await collection.findOne({'name': name});
 
       if (req.body._method === 'PUT') {
-        addNewPlayer(collection, doc, res);
+        addNewPlayer(name, collection, doc, res);
       } else {
         const playerId = new ObjectId(req.body.player_id);
-        editPlayerName(playerId, collection, doc, res);
+        editPlayerName(name, playerId, collection, doc, res);
       }
     }
   } catch (e) {
