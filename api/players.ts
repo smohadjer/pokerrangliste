@@ -1,31 +1,6 @@
 import client from './db.js';
 import { ObjectId } from 'mongodb';
 
-const addNewPlayer = async (name, collection, doc, res) => {
-  if (!doc) {
-    const insertResponse = await collection.insertOne({'name': name});
-    res.json({'id': insertResponse.insertedId});
-  } else {
-    res.status(500).json({'error': 'Invalid name!'});
-  }
-};
-
-const editPlayerName = async (name, playerId, collection, doc, res) => {
-  if (doc) {
-    res.status(500).json({'error': 'Name already taken'});
-  } else {
-    await collection.updateOne(
-      { _id: playerId },
-      {
-        $set: {
-          name: name
-        }
-      }
-    );
-    res.json({'id': playerId});
-  }
-};
-
 export default async (req, res) => {
   try {
     await client.connect();
@@ -33,19 +8,54 @@ export default async (req, res) => {
     const collection = database.collection('players');
 
     if (req.method === 'GET') {
-      const docs = await collection.find().sort({'name': 1}).toArray()
-      res.json(docs);
+      const id = req.query.id;
+      const name = req.query?.name;
+      if (id || name) {
+        const query = id ? { _id: new ObjectId(id)} : { name: name };
+        const doc = await collection.findOne(query);
+        if (doc) {
+          res.json(doc);
+        } else {
+          res.status(404).end();
+        }
+      } else {
+        const docs = await collection.find()
+          // using collation so sort is case insensitive
+          .collation({ locale: 'en' })
+          .sort({ name: 1 })
+          .toArray();
+        res.json(docs);
+      }
     }
 
     if (req.method === 'POST') {
       const name = req.body.name;
-      const doc = await collection.findOne({'name': name});
+      const playerId = req.body.id;
+      const doc = await collection.findOne({ name: name });
 
-      if (req.body._method === 'PUT') {
-        await addNewPlayer(name, collection, doc, res);
-      } else {
-        const playerId = new ObjectId(req.body.player_id);
+      if (playerId) {
         await editPlayerName(name, playerId, collection, doc, res);
+      } else {
+        // add new player
+        if (doc) {
+          res.status(500).json({ 'error': 'Name already exits!' });
+        } else {
+          const insertResponse = await collection.insertOne({ name: name });
+          const player = await collection.findOne({
+            _id: new ObjectId(insertResponse.insertedId)
+          });
+          res.json(player);
+        }
+      }
+    }
+
+    if (req.method === 'DELETE') {
+      const result = await collection.deleteOne( { name: req.query.name });
+      console.log(result);
+      if (result.deletedCount > 0) {
+        res.end();
+      } else {
+        res.json({'Error': 'Delete failed!'});
       }
     }
   } catch (e) {
@@ -54,3 +64,18 @@ export default async (req, res) => {
     await client.close();
   }
 }
+
+const editPlayerName = async (name, playerId, collection, doc, res) => {
+  const query = { _id: new ObjectId(playerId) };
+  if (doc) {
+    res.status(500).json({ 'error': 'Name already exits!' });
+  } else {
+    await collection.updateOne(query, {
+        $set: {
+          name: name
+        }
+    });
+    const player = await collection.findOne(query);
+    res.json(player);
+  }
+};

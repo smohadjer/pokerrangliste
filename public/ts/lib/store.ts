@@ -2,8 +2,7 @@ import { State } from './types.js';
 import { deepClone } from './utils.js';
 
 type StateOptions = {
-    payload: any,
-    action?: Function
+    payload: any;
 };
 
 type Store = {
@@ -28,10 +27,6 @@ export const store: Store = {
             if (store.state.hasOwnProperty(key)) {
                 store.state[key] = options.payload[key];
             }
-        }
-
-        if (typeof options.action === 'function') {
-            options.action();
         }
     }
 }

@@ -1,4 +1,5 @@
 import { PlayerDB, Season } from './types';
+import { ajaxifyForms } from './ajaxifyForms';
 
 export const initAdmin = async (container: HTMLElement) => {
     const seasonDropdown: HTMLSelectElement = container.querySelector('#season_dropdown')!;
@@ -63,6 +64,12 @@ export const initAdmin = async (container: HTMLElement) => {
             });
         }
     };
+
+    document.querySelectorAll('.form-ajax').forEach((form) => {
+        if (form instanceof HTMLFormElement) {
+            ajaxifyForms(form);
+        }
+    })
 }
 
 async function getPlayers() {

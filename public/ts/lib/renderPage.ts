@@ -60,7 +60,9 @@ const render = async (args: Args) => {
 };
 
 export const renderPage = async (options?: RenderOptions) => {
-    const view = store.getState().view;
+    const state = store.getState();
+    console.log(state)
+    const view = state.view;
     const fetchData = controller.hasOwnProperty(view) ? controller[view] : null;
     const pageData = (typeof fetchData === 'function') ? fetchData() : null;
 
