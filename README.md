@@ -3,6 +3,7 @@ https://tournaments.saeidmohadjer.com/
 # Run on localhost using Vercel serverless
 - git clone https://github.com/smohadjer/pokerrangliste.git
 - npm install
+- npm start
 - vercel dev
 - Open http://localhost:3000 in browser
 

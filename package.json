@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "bundle:index": "esbuild public/ts/index.ts --bundle --format=esm --sourcemap --outfile=public/js/index.js --minify",
-    "build": "npm run bundle:index"
+    "build": "npm run bundle:index",
+    "start": "npm run bundle:index -- --watch=forever"
+
   },
   "author": "Saeid Mohadjer",
   "license": "ISC",
