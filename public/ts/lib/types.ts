@@ -30,6 +30,8 @@ export interface Tournament {
   season_id: string;
   bounties?: bounty[];
   hasBounty?: string;
+  firstPlace?: string;
+  secondPlace?: string;
 }
 
 export type Profile = {

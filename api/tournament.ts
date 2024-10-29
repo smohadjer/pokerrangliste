@@ -120,8 +120,12 @@ export default async (req, res) => {
         });
       }
     }
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      error: 500,
+      message: error
+    });
   } finally {
     await client.close();
   }

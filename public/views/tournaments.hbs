@@ -5,21 +5,17 @@
 <div class="wrapper">
   <table class="table-results">
     <tr>
-      <th>#</th>
       <th>Date</th>
       <th>Players</th>
-      <th>Buyin</th>
-      <th>Rebuys</th>
-      <th>Bounty</th>
+      <th><span class="first-place before">1st Pl.</span></th>
+      <th><span class="second-place before">2nd Pl.</span></th>
     </tr>
     {{#each tournaments}}
       <tr>
-        <td>{{inc @index}}</td>
         <td class="name"><a data-animation="slideInRTL" href="/tournament?tournament_id={{this._id}}">{{this.date}}</a></td>
         <td>{{this.players.length}}</td>
-        <td>{{this.buyin}}</td>
-        <td>{{this.rebuys}}</td>
-        <td>{{this.hasBounty}}</td>
+        <td>{{this.firstPlace}}</td>
+        <td>{{this.secondPlace}}</td>
       </tr>
     {{/each}}
   </table>

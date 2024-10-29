@@ -8,6 +8,7 @@ import {
 I have copy/pasted dist/handlebars.min.js to ts/lib/ext and renamed it from .js to .cjs
 to avoid errors during build */
 import Handlebars from './ext/handlebars.min.cjs';
+import { store } from '../lib/store';
 
 export const setHandlebars = async() => {
     // setting Handlebars helpers to help with compiling templates
@@ -77,7 +78,9 @@ export const getBounty = (player: Player, tournament: Tournament) => {
     return bountyWinner ? bountyWinner.prize : 0;
 };
 
-export const getPlayerName = (id: string, players: PlayerDB[]) => {
+export const getPlayerName = (id: string) => {
+    const state = store.getState();
+    const players: PlayerDB[] = state.data!.players;
     const player = players.find(player => player._id === id);
     return player?.name;
 }

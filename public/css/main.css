@@ -54,19 +54,28 @@ h1 {
     font-weight: 500;
 }
 
-.first-place:after {
+.first-place:after,
+.first-place.before:before {
     content: '🥇';
     display: inline-block;
 }
 
-.second-place:after {
+.second-place:after,
+.second-place.before:before {
     content: '🥈';
     display: inline-block;
 }
 
-.third-place:after {
+.third-place:after,
+.third-place.before:before {
     content: '🥉';
     display: inline-block;
+}
+
+.first-place.before:after,
+.second-place.before:after,
+.third-place.before:after {
+    content: none;
 }
 
 p {

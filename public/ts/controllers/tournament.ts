@@ -1,4 +1,4 @@
-import { Tournament, Player, PlayerDB } from '../lib/types';
+import { Tournament, Player } from '../lib/types';
 import {
     deepClone,
     getPrize,
@@ -13,7 +13,6 @@ import { store } from '../lib/store';
 export default () => {
     const state = store.getState();
     const tournaments: Tournament[] = getTournaments(state.data!.tournaments, 'all-time');
-    const playersList: PlayerDB[] = state.data!.players;
 
     const tournament = tournaments.find((item) => {
         return item._id === state.tournament_id
@@ -31,7 +30,7 @@ export default () => {
         player.prize = getPrize(player, cloneTournament);
         player.bounty = getBounty(player, cloneTournament);
         player.points = getPoints(player, cloneTournament);
-        player.name = getPlayerName(player.id, playersList);
+        player.name = getPlayerName(player.id);
         return player;
     });
 

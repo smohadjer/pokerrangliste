@@ -1,4 +1,4 @@
-import { getRebuys, getTournaments, getSeasonName } from '../lib/utils';
+import { getPlayerName, getTournaments, getSeasonName } from '../lib/utils';
 import { store } from '../lib/store';
 
 export default () => {
@@ -6,8 +6,8 @@ export default () => {
     const tournaments = getTournaments(state.data!.tournaments, state.season_id!);
 
     const optimizedData = tournaments.map((item) => {
-        item.rebuys = getRebuys(item);
-        item.hasBounty = item.bounties ? 'Yes' : 'No';
+        item.firstPlace = getPlayerName(item.players[0].id);
+        item.secondPlace = getPlayerName(item.players[1].id);
         return item;
     });
 
