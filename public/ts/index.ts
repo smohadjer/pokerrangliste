@@ -2,24 +2,33 @@ import enableSpaMode from './lib/enableSpaMode.js';
 import fetchData from './lib/fetchData.js';
 import { setHandlebars } from './lib/utils.js';
 import { store } from './lib/store.js';
+import { Data } from './lib/types.js';
+import { renderPage } from './lib/renderPage.js';
 
 const init = async() => {
-    console.log('init', window.location.search);
     const urlParams = new URLSearchParams(window.location.search);
-    //const redirect = urlParams.get('redirect');
     const view = window.location.pathname === '/' ? 'ranking' : window.location.pathname.substring(1);
+
+    await setHandlebars();
+    enableSpaMode();
+    const data: Data | undefined = await fetchData();
+
+    if (!data) {
+        console.error('No data available');
+        return;
+    }
 
     const payload = {
         view,
-        season_id: urlParams.get('season_id') || undefined,
+        season_id: urlParams.get('season_id') || data.seasons[data.seasons.length - 1]._id,
         tournament_id: urlParams.get('tournament_id') || undefined,
         player_id: urlParams.get('player_id') || undefined,
+        data
     }
 
     store.setState({ payload });
-    await setHandlebars();
-    enableSpaMode();
-    await fetchData();
+
+    renderPage();
 
     const state = store.getState();
     console.log(state);

@@ -61,8 +61,8 @@ const render = async (args: Args) => {
 
 export const renderPage = async (options?: RenderOptions) => {
     const view = store.getState().view;
-    const fetchData = controller.hasOwnProperty(view) ? controller[view] : null;
-    const pageData = (typeof fetchData === 'function') ? fetchData() : null;
+    const fetchTemplateData = controller.hasOwnProperty(view) ? controller[view] : null;
+    const pageData = (typeof fetchTemplateData === 'function') ? fetchTemplateData() : null;
 
     if (!pageData) {
         console.warn(`No data found for view ${view}!`);
