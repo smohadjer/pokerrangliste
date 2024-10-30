@@ -45,7 +45,7 @@ export default async (req, res) => {
 
     if (req.method === 'POST') {
       const name = req.body.name;
-      const playerId = req.body.id;
+      const playerId = req.body.player_id;
       const doc = await collection.findOne({ name: name });
 
       if (playerId) {

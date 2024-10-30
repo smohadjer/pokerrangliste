@@ -6,8 +6,8 @@ export default () => {
     const tournaments = getTournaments(state.data!.tournaments, state.season_id!);
 
     const optimizedData = tournaments.map((item) => {
-        item.firstPlace = getPlayerName(item.players[0].id);
-        item.secondPlace = getPlayerName(item.players[1].id);
+        item.firstPlace = getPlayerName(item.players[0]?.id);
+        item.secondPlace = getPlayerName(item.players[1]?.id);
         return item;
     });
 
