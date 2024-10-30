@@ -24,6 +24,14 @@
         {
             "source": "/profile:path*",
             "destination": "/:path*"
+        },
+        {
+            "source": "/api/players/:id",
+            "destination": "/api/players"
+        },
+        {
+            "source": "/api/players/name/:name",
+            "destination": "/api/players"
         }
       ]
 }
