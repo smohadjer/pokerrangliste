@@ -1,21 +1,18 @@
-import { store } from './store.js';
+import { Route } from './types.js';
 
-export const pushHistory = () => {
-  // update URL in browser address bar
+export const pushHistory = (route: Route) => {
   const urlParams = new URLSearchParams(window.location.search);
-  const state = store.getState();
 
-  if (state.season_id) {
-    urlParams.set('season_id', (state.season_id));
+  if (route.params.season_id) {
+    urlParams.set('season_id', (route.params.season_id));
   } else {
     urlParams.delete('season_id');
   }
 
-  let url = state.view;
+  let url = route.view;
   if (urlParams.toString().length > 0) {
     url += '?' + urlParams.toString();
   }
 
-  window.history.pushState(state, '', url);
-
+  window.history.pushState(route, '', url);
 }

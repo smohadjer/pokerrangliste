@@ -56,18 +56,28 @@ export interface Data {
   tournaments: Tournament[],
   seasons: Season[],
   players: PlayerDB[],
-  error?: string,
-  message?: string
+}
+
+export interface Json extends Data {
+  error? : string,
+  message? : string
 }
 
 export type State = {
-  season_id?: string;
-  tournament_id?: string;
-  player_id?: string;
-  view: string;
-  data?: Data;
+  tournaments: Tournament[];
+  seasons: Season[];
+  players: PlayerDB[];
 }
 
 export type RenderOptions =  {
   animation?: string;
+}
+
+export type RouteParams = {
+  [key: string]: string;
+}
+
+export type Route = {
+  view: string;
+  params: RouteParams;
 }

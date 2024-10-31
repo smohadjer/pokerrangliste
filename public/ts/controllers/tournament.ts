@@ -1,4 +1,4 @@
-import { Tournament, Player } from '../lib/types';
+import { Tournament, Player, RouteParams } from '../lib/types';
 import {
     deepClone,
     getPrize,
@@ -10,12 +10,12 @@ import {
 } from '../lib/utils';
 import { store } from '../lib/store';
 
-export default () => {
+export default (params: RouteParams) => {
     const state = store.getState();
-    const tournaments: Tournament[] = getTournaments(state.data!.tournaments, 'all-time');
+    const tournaments: Tournament[] = getTournaments(state.tournaments, 'all-time');
 
     const tournament = tournaments.find((item) => {
-        return item._id === state.tournament_id
+        return item._id === params.tournament_id
     })
     if (!tournament) return;
 
@@ -40,7 +40,6 @@ export default () => {
         buyin: cloneTournament.buyin,
         rebuys: getRebuys(cloneTournament),
         players: players,
-        season_id: state.season_id,
         hasBounty: cloneTournament.bounties ? 'Yes' : 'No'
     }
 

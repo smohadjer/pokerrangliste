@@ -1,4 +1,4 @@
-import { RenderOptions } from './types';
+import { RenderOptions, Route } from './types';
 import { renderChart } from './drawChart';
 import { initAdmin } from './admin.js';
 import { controller } from '../controllers/controller';
@@ -59,10 +59,10 @@ const render = async (args: Args) => {
     }
 };
 
-export const renderPage = async (options?: RenderOptions) => {
-    const view = store.getState().view;
+export const renderPage = async (options: RenderOptions, route: Route) => {
+    const view = route.view;
     const fetchTemplateData = controller.hasOwnProperty(view) ? controller[view] : null;
-    const pageData = (typeof fetchTemplateData === 'function') ? fetchTemplateData() : null;
+    const pageData = (typeof fetchTemplateData === 'function') ? fetchTemplateData(route.params) : null;
 
     if (!pageData) {
         console.warn(`No data found for view ${view}!`);

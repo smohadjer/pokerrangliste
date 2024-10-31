@@ -1,4 +1,4 @@
-import { Data } from './types.js';
+import { Json } from './types.js';
 
 export default async function fetchData() {
     try {
@@ -9,7 +9,8 @@ export default async function fetchData() {
               'Content-Type': 'application/json'
             }
         });
-        const json: Data = await response.json();
+        const json: Json = await response.json();
+        if (!json) throw ('Failed to fetch data from server!');
         if (json.error) {
             throw(json.message);
         } else {

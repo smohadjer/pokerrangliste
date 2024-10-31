@@ -1,10 +1,7 @@
 import { renderPage } from './renderPage.js';
-import { RenderOptions } from './types.js';
+import { RenderOptions, Route } from './types.js';
 import { store } from './store.js';
-
-type Payload = {
-    [key: string]: string;
-};
+import { getRouteParams } from './utils.js';
 
 const results = document.querySelector('#results');
 
@@ -33,35 +30,14 @@ const clickHandler = async (event: MouseEvent) => {
         return;
     }
 
-    const params = new URLSearchParams(link.search);
-
-    // for browsers not supporting URLSearchParams's size property
-    const size = (params.size)
-        ? params.size
-        : params.toString().length;
-
-    const payload: Payload = {}
-    const state = store.getState();
-
-    if (size > 0) {
-        for (const [key, value] of params) {
-            if (state.hasOwnProperty(key)) {
-                payload[key] = value;
-            }
-        }
-    }
-
-    payload.view = link.pathname.substring(1);
-    store.setState({ payload });
-
-    // let url = '/';
-    // if (params.toString().length > 0) {
-    //     url = '/?' +  params.toString();
-    // }
+    const route: Route = {
+        view: link.pathname === '/' ? 'ranking' : link.pathname.substring(1),
+        params: getRouteParams(link.search)
+    };
 
     window.scrollTo(0, 0);
-    await renderPage(options);
-    window.history.pushState(store.getState(), '', link.href);
+    await renderPage(options, route);
+    window.history.pushState(route, '', link.href);
 };
 
 export default function enableSpaMode() {
@@ -71,10 +47,7 @@ export default function enableSpaMode() {
 
 
     window.addEventListener("popstate", async (event) => {
-        store.setState({
-            payload: event.state
-        });
-        await renderPage();
+        await renderPage({}, event.state);
         if (event.state.scroll) {
             results?.querySelector('.wrapper')!.scrollTo(0, event.state.scroll);
         }

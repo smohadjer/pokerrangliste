@@ -13,19 +13,17 @@ type Store = {
 
 export const store: Store = {
     state: {
-        season_id: undefined,
-        tournament_id: undefined,
-        player_id: undefined,
-        view: 'ranking',
-        data: undefined,
+        tournaments: [],
+        players: [],
+        seasons: []
     },
     getState: () => {
         return deepClone(store.state);
     },
     setState: (options: StateOptions) => {
-        for (const key in options.payload) {
+        for (const key in options) {
             if (store.state.hasOwnProperty(key)) {
-                store.state[key] = options.payload[key];
+                store.state[key] = options[key];
             }
         }
     }

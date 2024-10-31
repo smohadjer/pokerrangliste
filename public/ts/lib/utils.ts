@@ -2,6 +2,7 @@ import {
     Tournament,
     PlayerDB, Player,
     Season,
+    RouteParams,
 } from './types';
 
 /* since importing from node_modules using a relative path throws error on Render.com
@@ -80,7 +81,7 @@ export const getBounty = (player: Player, tournament: Tournament) => {
 
 export const getPlayerName = (id: string) => {
     const state = store.getState();
-    const players: PlayerDB[] = state.data!.players;
+    const players: PlayerDB[] = state.players;
     const player = players.find(player => player._id === id);
     return player?.name;
 }
@@ -135,4 +136,20 @@ export const getTournaments = (tournaments: Tournament[], season_id: string) => 
     }
     clone = sortByDate(clone);
     return clone;
+};
+
+export const getRouteParams = (paramsString: string) => {
+    const params = new URLSearchParams(paramsString);
+    const temp: RouteParams = {};
+
+    // for browsers not supporting URLSearchParams's size property
+    const size = (params.size) ? params.size : params.toString().length;
+
+    if (size > 0) {
+        for (const [key, value] of params) {
+            temp[key] = value;
+        }
+    }
+
+    return temp;
 };
