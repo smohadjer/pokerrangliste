@@ -52,6 +52,11 @@ h1 {
     font-size: 1.6rem;
     margin: 0;
     font-weight: 500;
+
+    span {
+        font-size: 1rem;
+        font-weight: normal;
+    }
 }
 
 .first-place:after,
