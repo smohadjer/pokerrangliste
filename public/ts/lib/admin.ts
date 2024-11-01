@@ -1,25 +1,26 @@
-import { PlayerDB, Season } from './types';
+import { Season, State } from './types';
+import { store } from './store.js';
 
 export const initAdmin = async (container: HTMLElement) => {
     const seasonDropdown: HTMLSelectElement = container.querySelector('#season_dropdown')!;
     const countElm = container.querySelector('input[name=count]');
     const playersElm = container.querySelector('#players');
     const postTournamentForm = container.querySelector('#post-tournament')!;
+    const state: State = store.getState();
 
     console.log('initiating seasons dropdown...', seasonDropdown);
     seasonDropdown.closest('div')!.classList.add('loading');
     let seasonsOptions = '';
-    const seasons = await getSeasons();
-    seasons.forEach(element => {
-        seasonsOptions += `<option value="${element._id}">${element.name}</option>`
+    state.seasons.forEach(item => {
+        seasonsOptions += `<option value="${item._id}">${item.name}</option>`
     });
     seasonDropdown.innerHTML = seasonsOptions;
     seasonDropdown.closest('div')!.classList.remove('loading');
 
     let playersSelect = '';
-    const players = await getPlayers();
-    players.forEach(element => {
-        playersSelect += `<option value="${element._id}">${element.name}</option>`
+
+    state.players.forEach(item => {
+        playersSelect += `<option value="${item._id}">${item.name}</option>`
     });
 
     initEditPlayer('#player_edit_dropdown', playersSelect);
@@ -63,18 +64,6 @@ export const initAdmin = async (container: HTMLElement) => {
             });
         }
     };
-}
-
-async function getPlayers() {
-    const response = await fetch('api/players');
-    const players: Array<PlayerDB> = await response.json();
-    return players;
-}
-
-async function getSeasons() {
-    const response = await fetch('api/seasons');
-    const seasons: Array<Season> = await response.json();
-    return seasons;
 }
 
 function getPlayersList(count: number, playersSelect: string) {

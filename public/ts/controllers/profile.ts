@@ -1,4 +1,4 @@
-import { Tournament, PlayerDB, Profile, RouteParams } from '../lib/types';
+import { Tournament, Profile, RouteParams } from '../lib/types';
 import {
     getPoints,
     getPlayers,
@@ -11,11 +11,10 @@ export default (params: RouteParams) => {
     const state = store.getState();
     const season_id = params.season_id || state.seasons[state.seasons.length - 1]._id;
     const tournaments: Tournament[] = getTournaments(state.tournaments, season_id);
-    const playersList: PlayerDB[] = state.players;
 
     if (!params.player_id) return;
 
-    const enhancedPlayers = getPlayers(tournaments, playersList);
+    const enhancedPlayers = getPlayers(tournaments);
     const player = enhancedPlayers.find((player) =>
         player.id === params.player_id);
     const ranking = enhancedPlayers.findIndex((player) =>

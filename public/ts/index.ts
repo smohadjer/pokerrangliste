@@ -2,7 +2,7 @@ import enableSpaMode from './lib/enableSpaMode.js';
 import fetchData from './lib/fetchData.js';
 import { setHandlebars, getRouteParams } from './lib/utils.js';
 import { store } from './lib/store.js';
-import { Data, Route } from './lib/types.js';
+import { State, Route } from './lib/types.js';
 import { renderPage } from './lib/renderPage.js';
 
 (async () => {
@@ -13,7 +13,7 @@ import { renderPage } from './lib/renderPage.js';
     enableSpaMode();
 
     try {
-        const data: Data | undefined = await fetchData();
+        const data: State | undefined = await fetchData();
         const route: Route = {
             view: window.location.pathname === '/' ? 'ranking' : window.location.pathname.substring(1),
             params: getRouteParams(window.location.search)

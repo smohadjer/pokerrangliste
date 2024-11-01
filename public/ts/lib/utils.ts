@@ -95,7 +95,7 @@ export const deepClone = (arrayOrObject) => {
     }
  }
 
-export const getPlayers = (tournaments: Tournament[], playersList: PlayerDB[]) => {
+export const getPlayers = (tournaments: Tournament[]) => {
     const players: Player[] = [];
     tournaments.forEach((tournament) => {
         tournament.players.forEach((item) => {
@@ -104,7 +104,7 @@ export const getPlayers = (tournaments: Tournament[], playersList: PlayerDB[]) =
             clone.bounty = getBounty(clone, tournament);
             clone.prize = getPrize(clone, tournament);
             clone.games = 1;
-            clone.name = getPlayerName(clone.id, playersList)
+            clone.name = getPlayerName(clone.id);
 
             const foundPlayer = players.find(player => player.id === clone.id);
 

@@ -52,13 +52,7 @@ export interface Season {
   name: string
 }
 
-export interface Data {
-  tournaments: Tournament[],
-  seasons: Season[],
-  players: PlayerDB[],
-}
-
-export interface Json extends Data {
+export interface Json extends State {
   error? : string,
   message? : string
 }
