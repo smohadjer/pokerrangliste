@@ -3,7 +3,6 @@ import { renderChart } from './drawChart';
 import { initAdmin } from './admin.js';
 import { controller } from '../controllers/controller';
 import Handlebars from './ext/handlebars.min.cjs';
-import { store } from './store';
 import { onChangeEventHandler } from './nav.js';
 
 type Args = {
@@ -59,7 +58,7 @@ const render = async (args: Args) => {
     }
 };
 
-export const renderPage = async (options: RenderOptions, route: Route) => {
+export const renderPage = async (route: Route, options: RenderOptions = {}) => {
     const view = route.view;
     const fetchTemplateData = controller.hasOwnProperty(view) ? controller[view] : null;
     const pageData = (typeof fetchTemplateData === 'function') ? fetchTemplateData(route.params) : null;

@@ -36,7 +36,7 @@ const clickHandler = async (event: MouseEvent) => {
     };
 
     window.scrollTo(0, 0);
-    await renderPage(options, route);
+    await renderPage(route, options);
     window.history.pushState(route, '', link.href);
 };
 
@@ -47,7 +47,7 @@ export default function enableSpaMode() {
 
 
     window.addEventListener("popstate", async (event) => {
-        await renderPage({}, event.state);
+        await renderPage(event.state);
         if (event.state.scroll) {
             results?.querySelector('.wrapper')!.scrollTo(0, event.state.scroll);
         }
