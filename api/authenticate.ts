@@ -39,10 +39,14 @@ function setCookieServerless(res, token) {
   // setting Location header for a redirect to admin page
   res.setHeader('Location', '/admin');
 
+  // set cookie expiry date to a year later
+  const cookieDate = new Date();
+  cookieDate.setFullYear(cookieDate.getFullYear() + 1);
+
   // setting token in a httpOnly cookie, we need to specify Path since we
   // want browser to send cookie when page outside /api folder is requested
   // as we also use the cookie to allow access to public/admin.html
-  res.setHeader('Set-Cookie', [`jwt=${token}; HttpOnly; Path=/${secure}`]);
+  res.setHeader('Set-Cookie', [`jwt=${token}; Expires=${cookieDate.toUTCString()}; HttpOnly; Path=/${secure}`]);
 
   // redirecting to admin page
   res.status(302).end();
