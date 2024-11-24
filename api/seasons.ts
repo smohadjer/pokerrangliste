@@ -1,4 +1,5 @@
 import client from './db.js';
+import { fetchAllSeasons } from './_utils.js';
 
 export default async (req, res) => {
   try {
@@ -17,9 +18,15 @@ export default async (req, res) => {
 
       if (!doc) {
         const insertResponse = await collection.insertOne({'name': name});
-        res.json({'id': insertResponse.insertedId});
+        const seasonsData = await fetchAllSeasons(collection);
+        //res.json({'id': insertResponse.insertedId});
+        res.json({
+          data: {
+            seasons: seasonsData
+          }
+        })
       } else {
-        res.status(500).json({'error': 'invalid name'});
+        res.status(500).json({error: 'Invalid season name'});
       }
     }
   } catch (e) {

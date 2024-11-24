@@ -2,9 +2,7 @@ import client from './db.js';
 import { sanitize } from './_sanitize.js';
 import { ObjectId } from 'mongodb';
 
-const getTournaments = async (tournaments, req) => {
-  const seasonId =  req.query.season_id;
-  const id = req.query.tournament_id;
+const getTournaments = async (tournaments, seasonId: string, id: string = undefined) => {
   const query = (seasonId) ? {'season_id': seasonId} : {};
   const sortQuery = {'date': -1};
 
@@ -42,7 +40,7 @@ const insertTournament = async (tournaments, req) => {
     }, 0);
     const buyIns = count * req.body.buyin;
     const rebuysTotal = getRebuys(players) * req.body.buyin;
-    console.log(rebuysTotal);
+    console.log({rebuysTotal});
 
     return totalprize === buyIns + rebuysTotal;
   };
@@ -95,28 +93,35 @@ export default async (req, res) => {
       const data = {
         seasons: await seasons.find().toArray(),
         players: await players.find().sort({'name': 1}).toArray(),
-        tournaments: await getTournaments(tournaments, req)
+        tournaments: await getTournaments(tournaments, req.query.season_id, req.query.tournament_id)
       };
       res.json(data);
     }
 
     if (req.method === 'POST') {
-      const isValid = validateData(req);
-
-      if (!isValid) {
-        return res.sendStatus(400);
+      if (!req.body.count) {
+        return res.status(500).send({
+          error: 'Invalid data, count not set!'
+        });
       }
 
       const tournament_id = await insertTournament(tournaments, req);
       if (tournament_id) {
-        res.status(200).send({
-          message: 'Tournament inserted!',
-          tournament_id: tournament_id
+        // return all tournaments so state in app can be updated from response
+        const tournamentsData = await getTournaments(tournaments, req.body.season_id);
+        res.json({
+          data: {
+            tournaments: tournamentsData
+          }
         });
+
+        // res.status(200).send({
+        //   message: 'Tournament inserted!',
+        //   tournament_id: tournament_id
+        // });
       } else {
         res.status(500).send({
-          error: 500,
-          message: 'Invalid data!'
+          error: 'Invalid data!'
         });
       }
     }

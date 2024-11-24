@@ -9,7 +9,7 @@ GET http://localhost:3000/api/players/654b3fc05c0cb6103ea76d74
 ###
 
 // returns a player by name
-GET http://localhost:3000/api/players/name/Tester
+GET http://localhost:3000/api/players/name/Goscha
 
 ###
 
@@ -19,7 +19,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InNtb2hhZGplciIsImV4cCI6MTczNDM2Mjc2OH0.Jgg5QJ28rc5X0L350i4oW4lAxKdFH2cTlnZn2P7HTlU
 
 {
-  "name": "Tester"
+  "name": "Abba"
 }
 
 ###
@@ -30,8 +30,8 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InNtb2hhZGplciIsImV4cCI6MTczNDM2Mjc2OH0.Jgg5QJ28rc5X0L350i4oW4lAxKdFH2cTlnZn2P7HTlU
 
 {
-  "id": "654b3f685c0cb6103ea76d6f",
-  "name": "Andy"
+  "player_id": "654b3fc05c0cb6103ea76d74",
+  "name": "Goscha123"
 }
 
 ###

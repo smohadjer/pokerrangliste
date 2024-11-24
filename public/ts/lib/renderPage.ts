@@ -4,6 +4,7 @@ import { initAdmin } from './admin.js';
 import { controller } from '../controllers/controller';
 import Handlebars from './ext/handlebars.min.cjs';
 import { onChangeEventHandler } from './nav.js';
+import { ajaxifyForms } from './ajaxifyForms';
 
 type Args = {
     view: string;
@@ -47,6 +48,12 @@ const render = async (args: Args) => {
                 }
             });
         }
+
+        document.querySelectorAll('.form-ajax').forEach((form) => {
+            if (form instanceof HTMLFormElement) {
+                ajaxifyForms(form);
+            }
+        })
 
         document.getElementById('results')?.addEventListener('animationend', (event) => {
             console.log('animaiton end');
