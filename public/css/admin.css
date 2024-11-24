@@ -1,11 +1,20 @@
-.admin {
-  h1 {
+.admin h1 {
     margin-left: 0;
+}
+
+form {
+  padding: 10px;
+  font-size: 16px;
+
+  .error {
+    display: none;
   }
 
-  form {
-    padding: 10px;
-    background: rgba(255,255,255,0.5);
+  &.error {
+    .error {
+      display: block;
+      color: red;
+    }
   }
 
   div {
@@ -17,32 +26,10 @@
     display: inline-block;
   }
 
-  form {
-    font-size: 16px;
-  }
-
   input,
   select {
     min-width: 180px;
     box-sizing: border-box;
     font-size: inherit;
   }
-
-  .loading::after {
-    display: inline-block;
-    content: ' ';
-    width: 1em;
-    height: 1em;
-    border: 0.2em solid #999;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: loadingspin 1s linear infinite;
-  }
-
-  @keyframes loadingspin {
-    100% {
-        transform: rotate(360deg)
-    }
-  }
-
 }

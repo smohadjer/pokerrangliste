@@ -13,6 +13,23 @@ const clickHandler = async (event: MouseEvent) => {
 
     event.preventDefault();
 
+    const requiresAuth = link.href.indexOf('admin') > -1;
+
+    console.log(link.href, requiresAuth);
+
+    // if link requires authorization and user is not authorized go to login
+    if (requiresAuth) {
+        const userIsAuthenticatedResponse = await fetch('api/verifyAuth');
+        const userIsAuthenticated = await userIsAuthenticatedResponse.json();
+        console.log({userIsAuthenticated});
+        if (!userIsAuthenticated.valid) {
+            const route: Route = {view: 'login', params: {}};
+            await renderPage(route);
+            window.history.pushState(route, '', '/login');
+            return;
+        }
+    }
+
     // replace existing history state with one that has scrolling position
     const scrollPosition = results?.querySelector('.wrapper')!.scrollTop;
     const tempState = {...window.history.state, scroll: scrollPosition};

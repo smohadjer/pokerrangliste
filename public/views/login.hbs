@@ -3,10 +3,13 @@
   <h1>Login</h1>
 </header>
 <div class="wrapper">
-    <form id="login" method="POST" action="/api/authenticate">
+    <form class="form-ajax" id="login" data-redirect="admin" method="POST" action="/api/authenticate">
         <p><label>Username: <input required name="username"></label></p>
         <p><label>Password: <input required name="password" type="password"></label></p>
-        <p><button>Login</button></p>
+        <div class="submit">
+          <button>Login</button>
+        </div>
+        <p class="error"></p>
     </form>
 </div>
 <footer>

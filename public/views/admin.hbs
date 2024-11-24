@@ -6,7 +6,7 @@
 <div class="wrapper">
     <main class="admin">
         <section>
-            <form id="post-tournament" method="POST" action="/api/tournament">
+            <form class="form-ajax" id="post-tournament" data-redirect="tournaments" method="POST" action="/api/tournament">
                 <h1>Add Tournament</h1>
                 <div>
                     <label>Season *</label>
@@ -44,34 +44,42 @@
                     <input name="count" type="number" />
                 </div>
                 <div id="players"></div>
-                <button>Submit</button>
+                <div class="submit">
+                    <button>Submit</button>
+                </div>
+                <p class="error"></p>
             </form>
         </section>
         <section>
-            <form method="POST" action="/api/seasons">
+            <form class="form-ajax" method="POST" action="/api/seasons">
                 <h1>Add Season</h1>
                 <div>
                     <label>Season *</label>
                     <input required name="name">
                 </div>
-                <button>Submit</button>
+                 <div class="submit">
+                    <button>Submit</button>
+                 </div>
+                <p class="error"></p>
             </form>
         </section>
         <section>
-            <form method="POST" action="/api/players">
-                <input type="hidden" name="_method" value="PUT">
+            <form class="form-ajax" method="POST" action="/api/players">
                 <h1>Add Player</h1>
                 <div>
                     <label>Player *</label>
                     <input required name="name">
                 </div>
-                <button>Submit</button>
+                <div class="submit">
+                    <button>Submit</button>
+                </div>
+                <p class="error"></p>
             </form>
         </section>
         <section>
-            <form method="POST" action="/api/players">
+            <form class="form-ajax" method="POST" action="/api/players">
                 <h1>Edit Player</h1>
-                <div class="loading">
+                <div>
                     <label>Players</label>
                     <select id="player_edit_dropdown" name="player_id">
                         <option value="">Select player</option>
@@ -81,9 +89,29 @@
                     <label>New name *</label>
                     <input required name="name">
                 </div>
-                <button>Submit</button>
+                <div class="submit">
+                    <button>Submit</button>
+                </div>
+                <p class="error"></p>
             </form>
         </section>
+        <!--
+        <section>
+            <form class="form-ajax" method="DELETE" action="/api/players">
+                <h1>Delete Player</h1>
+                <p>Only palyers who have never played in a tournament can be deleted.</p>
+                <div>
+                    <label>Players</label>
+                    <select id="player_delete_dropdown" name="player_id">
+                        <option value="">Select player</option>
+                    </select>
+                </div>
+                <div class="submit">
+                    <button>Submit</button>
+                </div>
+            </form>
+        </section>
+        -->
     </main>
 </div>
 <footer>

@@ -8,8 +8,7 @@ export const config = {
   matcher: [
     '/api/tournament',
     '/api/seasons',
-    '/api/players',
-    '/admin'
+    '/api/players'
   ]
 };
 
@@ -21,8 +20,8 @@ export default async function middleware(req) {
   console.log('middleware: ', req.method, req.url);
   const url = new URL(req.url);
 
-  // only POST requests to api endpoints and access to admin page is restricted
-  if (req.method === 'GET' && !url.pathname.startsWith('/admin')) {
+  // only POST requests are restricted
+  if (req.method === 'GET') {
     return next();
   }
 
