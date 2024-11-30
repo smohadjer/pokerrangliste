@@ -9,7 +9,7 @@ const editPlayerName = async (name, playerId, collection) => {
         name: name
       }
   });
-  console.log(`Edited name of an existing player to ${name}`);
+  console.log(`Changed name of an existing player to ${name}`);
 };
 
 const addNewPlayer = async (name, collection) => {

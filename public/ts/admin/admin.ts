@@ -1,5 +1,6 @@
-import { State } from './types';
-import { store } from './store.js';
+import { State } from '../lib/types';
+import { store } from '../lib/store.js';
+import { initSeasonSelector } from './seasonSelector.js';
 
 export const initAdmin = async (container: HTMLElement) => {
     console.log('initializing admin');
@@ -7,14 +8,14 @@ export const initAdmin = async (container: HTMLElement) => {
     const playersElm = container.querySelector('#players');
     const state: State = store.getState();
 
-    initSeasonSelector(container, state);
+    // populate season dropdown
+    const seasonDropdown: HTMLSelectElement = container.querySelector('#season_dropdown')!;
+    initSeasonSelector(seasonDropdown);
 
     let playersSelect = '';
     state.players.forEach(item => {
         playersSelect += `<option value="${item._id}">${item.name}</option>`
     });
-    populateSelectPlayer('#player_edit_dropdown', playersSelect);
-    //populateSelectPlayer('#player_delete_dropdown', playersSelect);
 
     if (countElm) {
         countElm.addEventListener('change', (event) => {
@@ -45,26 +46,4 @@ function getPlayersList(count: number, playersSelect: string) {
         </div>`;
     }
     return html;
-}
-
-function populateSelectPlayer(selector: string, players: string) {
-    const select = document.querySelector(selector);
-    select?.parentElement?.classList.remove('loading');
-    const myHtmlElement = new DOMParser().parseFromString(players,
-        'text/html').body.children;
-    if (select) {
-        select.append(...myHtmlElement);
-    }
-}
-
-function initSeasonSelector(container: HTMLElement, state: State) {
-    console.log('initiating seasons dropdown...');
-    const seasonDropdown: HTMLSelectElement = container.querySelector('#season_dropdown')!;
-    seasonDropdown.closest('div')!.classList.add('loading');
-    let seasonsOptions = '';
-    state.seasons.forEach(item => {
-        seasonsOptions += `<option value="${item._id}">${item.name}</option>`
-    });
-    seasonDropdown.innerHTML = seasonsOptions;
-    seasonDropdown.closest('div')!.classList.remove('loading');
 }

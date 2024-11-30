@@ -1,6 +1,9 @@
 import { RenderOptions, Route } from './types';
 import { renderChart } from './drawChart';
-import { initAdmin } from './admin.js';
+import { initAdmin } from '../admin/admin.js';
+import { initPlayer } from '../admin/playerSelector';
+import { initSeasonSelector } from '../admin/seasonSelector.js';
+
 import { initLogin } from './login.js';
 import { controller } from '../controllers/controller';
 import Handlebars from './ext/handlebars.min.cjs';
@@ -37,8 +40,18 @@ const render = async (args: Args) => {
             renderChart(args.templateData);
         }
 
-        if (args.view === '/admin') {
+        if (args.view === '/admin/tournaments') {
             initAdmin(container);
+        }
+
+        if (args.view === '/admin/players') {
+            initPlayer(container);
+        }
+
+        if (args.view === '/admin/seasons') {
+            // populate season dropdown
+            const seasonDropdown: HTMLSelectElement = container.querySelector('#season_edit_dropdown')!;
+            initSeasonSelector(seasonDropdown);
         }
 
         if (args.view === '/login') {

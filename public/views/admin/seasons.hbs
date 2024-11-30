@@ -18,6 +18,25 @@
                 <p class="error"></p>
             </form>
         </section>
+        <section>
+            <form class="form-ajax" method="POST" action="/api/seasons">
+                <h1>Edit Season</h1>
+                <div>
+                    <label>Seasons</label>
+                    <select id="season_edit_dropdown" name="season_id">
+                        <option value="">Select season</option>
+                    </select>
+                </div>
+                <div>
+                    <label>New name *</label>
+                    <input required name="name">
+                </div>
+                <div class="submit">
+                    <button>Submit</button>
+                </div>
+                <p class="error"></p>
+            </form>
+        </section>
     </main>
 </div>
 <footer>
