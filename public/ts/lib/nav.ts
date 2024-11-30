@@ -4,7 +4,7 @@ import { getRouteParams } from './utils.js';
 
 export const onChangeEventHandler = async (target: HTMLSelectElement) => {
   const route: Route = {
-    view: window.location.pathname === '/' ? 'ranking' : window.location.pathname.substring(1),
+    view: window.location.pathname,
     params: getRouteParams(window.location.search)
   };
 

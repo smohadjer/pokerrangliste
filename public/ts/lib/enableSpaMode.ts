@@ -1,7 +1,7 @@
 import { renderPage } from './renderPage.js';
 import { RenderOptions, Route } from './types.js';
-import { store } from './store.js';
 import { getRouteParams } from './utils.js';
+import { isAuthenticated } from './utils.js';
 
 const results = document.querySelector('#results');
 
@@ -13,21 +13,9 @@ const clickHandler = async (event: MouseEvent) => {
 
     event.preventDefault();
 
-    const requiresAuth = link.href.indexOf('admin') > -1;
-
-    console.log(link.href, requiresAuth);
-
-    // if link requires authorization and user is not authorized go to login
-    if (requiresAuth) {
-        const userIsAuthenticatedResponse = await fetch('api/verifyAuth');
-        const userIsAuthenticated = await userIsAuthenticatedResponse.json();
-        console.log({userIsAuthenticated});
-        if (!userIsAuthenticated.valid) {
-            const route: Route = {view: 'login', params: {}};
-            await renderPage(route);
-            window.history.pushState(route, '', '/login');
-            return;
-        }
+    // Do nothing when link to current page is clicked
+    if (link.href === window.location.href) {
+        return;
     }
 
     // replace existing history state with one that has scrolling position
@@ -42,19 +30,21 @@ const clickHandler = async (event: MouseEvent) => {
         options.animation = animationClass;
     }
 
-    // Do nothing when link to current page is clicked
-    if (link.href === window.location.href) {
-        return;
+    const requiresAuth = link.href.indexOf('admin') > -1;
+
+    if (requiresAuth && !await isAuthenticated()) {
+        const route: Route = {view: '/login', params: {}};
+        await renderPage(route);
+        window.history.replaceState(route, '', route.view);
+    } else {
+        const route: Route = {
+            view: link.pathname,
+            params: getRouteParams(link.search)
+        };
+        window.scrollTo(0, 0);
+        await renderPage(route, options);
+        window.history.pushState(route, '', link.href);
     }
-
-    const route: Route = {
-        view: link.pathname === '/' ? 'ranking' : link.pathname.substring(1),
-        params: getRouteParams(link.search)
-    };
-
-    window.scrollTo(0, 0);
-    await renderPage(route, options);
-    window.history.pushState(route, '', link.href);
 };
 
 export default function enableSpaMode() {

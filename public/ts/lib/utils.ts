@@ -153,3 +153,9 @@ export const getRouteParams = (paramsString: string) => {
 
     return temp;
 };
+
+export const isAuthenticated = async () => {
+    const response = await fetch('/api/verifyAuth');
+    const isAuthenticated = await response.json();
+    return isAuthenticated.valid;
+}

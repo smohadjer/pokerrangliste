@@ -12,16 +12,12 @@ export function ajaxifyForms(form: HTMLFormElement) {
             const formData = new FormData(form);
             let object: { [key: string]: FormDataEntryValue; } = {};
             for (const pair of formData.entries()) {
-                console.log(pair[0], pair[1]);
                 object[pair[0]] = pair[1];
             }
 
             const body = (form.method === 'DELETE') ? JSON.stringify({}) : JSON.stringify(object);
 
             const url =  (form.method === 'DELETE') ? `${form.action}/${object.player_id}` : form.action;
-
-            console.log(body);
-            console.log(url);
 
             fetch(url, {
                 method: form.method,
@@ -57,7 +53,7 @@ export function ajaxifyForms(form: HTMLFormElement) {
                         params: {}
                     };
                     await renderPage(route);
-                    window.history.pushState(route, '', `/${redirect}`);
+                    window.history.pushState(route, '', route.view);
                 }
             })
         }

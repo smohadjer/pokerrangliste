@@ -4,8 +4,8 @@ import tournaments from './tournaments';
 import ranking from './ranking';
 
 export const controller = {
-    profile,
-    tournament,
-    tournaments,
-    ranking
+    '/profile': profile,
+    '/tournament': tournament,
+    '/tournaments': tournaments,
+    '/ranking': ranking
 };

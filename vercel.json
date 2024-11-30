@@ -1,12 +1,22 @@
 {
     "cleanUrls": true,
+    "redirects": [
+        {
+            "source": "/",
+            "destination": "/ranking"
+        },
+        {
+            "source": "/admin",
+            "destination": "/admin/home"
+        }
+    ],
     "rewrites": [
         {
             "source": "/login",
             "destination": "/"
         },
         {
-            "source": "/admin",
+            "source": "/admin/(.*)",
             "destination": "/"
         },
         {

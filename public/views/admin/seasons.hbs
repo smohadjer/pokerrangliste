@@ -1,0 +1,25 @@
+
+<header>
+  <h1>Admin > Seasons</h1>
+  <a class="no-ajax" href="/api/logout">Logout</a>
+</header>
+<div class="wrapper">
+    <main class="admin">
+        <section>
+            <form class="form-ajax" method="POST" action="/api/seasons">
+                <h1>Add Season</h1>
+                <div>
+                    <label>Season *</label>
+                    <input required name="name">
+                </div>
+                 <div class="submit">
+                    <button>Submit</button>
+                 </div>
+                <p class="error"></p>
+            </form>
+        </section>
+    </main>
+</div>
+<footer>
+  {{> footer season_id=season_id view="admin"}}
+</footer>

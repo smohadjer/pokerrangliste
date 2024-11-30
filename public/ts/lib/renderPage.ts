@@ -1,6 +1,7 @@
 import { RenderOptions, Route } from './types';
 import { renderChart } from './drawChart';
 import { initAdmin } from './admin.js';
+import { initLogin } from './login.js';
 import { controller } from '../controllers/controller';
 import Handlebars from './ext/handlebars.min.cjs';
 import { onChangeEventHandler } from './nav.js';
@@ -21,7 +22,7 @@ const getHTML = async (templateFile: string, templateData) => {
 };
 
 const render = async (args: Args) => {
-    const templateFile = `views/${args.view}.hbs`;
+    const templateFile = `/views${args.view}.hbs`;
     const container = document.getElementById('results');
     const html = await getHTML(templateFile, args.templateData);
 
@@ -32,12 +33,16 @@ const render = async (args: Args) => {
             container.classList.add(args.options.animation);
         }
 
-        if (args.view === 'profile') {
+        if (args.view === '/profile') {
             renderChart(args.templateData);
         }
 
-        if (args.view === 'admin') {
+        if (args.view === '/admin') {
             initAdmin(container);
+        }
+
+        if (args.view === '/login') {
+            initLogin(container);
         }
 
         const seasonSelector =  document.querySelector('#season-selector');
@@ -73,6 +78,8 @@ export const renderPage = async (route: Route, options: RenderOptions = {}) => {
     if (!pageData) {
         console.warn(`No data found for view ${view}!`);
     }
+
+    console.log('view: ', view);
 
     await render({
         view,

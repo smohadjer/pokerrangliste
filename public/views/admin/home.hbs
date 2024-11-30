@@ -1,0 +1,15 @@
+
+<header>
+  <h1>Admin</h1>
+  <a class="no-ajax" href="/api/logout">Logout</a>
+</header>
+<div class="wrapper">
+    <main class="admin">
+        <a href="/admin/tournaments">Tournaments</a>
+        <a href="/admin/seasons">Seasons</a>
+        <a href="/admin/players">Players</a>
+    </main>
+</div>
+<footer>
+  {{> footer season_id=season_id view="admin"}}
+</footer>
