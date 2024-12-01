@@ -12,7 +12,7 @@
     </tr>
     {{#each tournaments}}
       <tr>
-        <td class="name"><a data-animation="slideInRTL" href="/tournament?tournament_id={{this._id}}">{{this.date}} (R{{this.round}})</a></td>
+        <td class="name"><a data-animation="slideInRTL" href="/tournament?tournament_id={{this._id}}">{{this.date}} ({{this.round}})</a></td>
         <td>{{this.players.length}}</td>
         <td>{{this.firstPlace}}</td>
         <td>{{this.secondPlace}}</td>
