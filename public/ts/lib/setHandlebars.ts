@@ -51,4 +51,9 @@ export const setHandlebars = async () => {
     const responseFooterText = await responseFooter.text();
     const templateFooter = Handlebars.compile(responseFooterText);
     Handlebars.registerPartial('footer', templateFooter);
+
+    const adminNav = await fetch('/views/admin/nav.hbs');
+    const adminNavText = await adminNav.text();
+    const templateAdminNav = Handlebars.compile(adminNavText);
+    Handlebars.registerPartial('adminNav', templateAdminNav);
 };

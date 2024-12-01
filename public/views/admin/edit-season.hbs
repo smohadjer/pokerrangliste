@@ -5,19 +5,7 @@
 </header>
 <div class="wrapper">
     <main class="admin">
-        <section>
-            <form class="form-ajax" method="POST" action="/api/seasons">
-                <h1>Add Season</h1>
-                <div>
-                    <label>Season *</label>
-                    <input required name="name">
-                </div>
-                 <div class="submit">
-                    <button>Submit</button>
-                 </div>
-                <p class="error"></p>
-            </form>
-        </section>
+        {{> adminNav }}
         <section>
             <form class="form-ajax" method="POST" action="/api/seasons">
                 <h1>Edit Season</h1>

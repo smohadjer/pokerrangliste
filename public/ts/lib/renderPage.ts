@@ -40,15 +40,15 @@ const render = async (args: Args) => {
             renderChart(args.templateData);
         }
 
-        if (args.view === '/admin/tournaments') {
+        if (args.view === '/admin/add-tournament') {
             initAdmin(container);
         }
 
-        if (args.view === '/admin/players') {
+        if (args.view === '/admin/edit-player') {
             initPlayer(container);
         }
 
-        if (args.view === '/admin/seasons') {
+        if (args.view === '/admin/edit-season') {
             // populate season dropdown
             const seasonDropdown: HTMLSelectElement = container.querySelector('#season_edit_dropdown')!;
             initSeasonSelector(seasonDropdown);

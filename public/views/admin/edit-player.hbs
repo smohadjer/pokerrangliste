@@ -1,0 +1,32 @@
+
+<header>
+  <h1>Admin > Players</h1>
+  <a class="no-ajax" href="/api/logout">Logout</a>
+</header>
+<div class="wrapper">
+    <main class="admin">
+        {{> adminNav }}
+        <section>
+            <form class="form-ajax" method="POST" action="/api/players">
+                <h1>Edit Player</h1>
+                <div>
+                    <label>Players</label>
+                    <select id="player_edit_dropdown" name="player_id">
+                        <option value="">Select player</option>
+                    </select>
+                </div>
+                <div>
+                    <label>New name *</label>
+                    <input required name="name">
+                </div>
+                <div class="submit">
+                    <button>Submit</button>
+                </div>
+                <p class="error"></p>
+            </form>
+        </section>
+    </main>
+</div>
+<footer>
+  {{> footer season_id=season_id view="admin"}}
+</footer>
