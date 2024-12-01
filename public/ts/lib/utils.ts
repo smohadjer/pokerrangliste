@@ -8,28 +8,7 @@ import {
 /* since importing from node_modules using a relative path throws error on Render.com
 I have copy/pasted dist/handlebars.min.js to ts/lib/ext and renamed it from .js to .cjs
 to avoid errors during build */
-import Handlebars from './ext/handlebars.min.cjs';
 import { store } from '../lib/store';
-
-export const setHandlebars = async() => {
-    // setting Handlebars helpers to help with compiling templates
-    Handlebars.registerHelper("inc", function(value: string, options) {
-        return parseInt(value) + 1;
-    });
-    Handlebars.registerHelper('ifEquals', function(arg1: string, arg2: string, options) {
-        return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-    });
-
-    const response = await fetch('/views/seasons.hbs');
-    const responseText = await response.text();
-    const template = Handlebars.compile(responseText);
-    Handlebars.registerPartial('seasonSelector', template);
-
-    const responseFooter = await fetch('/views/footer.hbs');
-    const responseFooterText = await responseFooter.text();
-    const templateFooter = Handlebars.compile(responseFooterText);
-    Handlebars.registerPartial('footer', templateFooter);
-};
 
 export const getSeasonName = (season_id: string, seasons: Season[]) => {
     if (season_id === 'all-time') {

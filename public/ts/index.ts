@@ -1,10 +1,10 @@
 import enableSpaMode from './lib/enableSpaMode.js';
 import fetchData from './lib/fetchData.js';
-import { setHandlebars, getRouteParams } from './lib/utils.js';
+import { getRouteParams, isAuthenticated } from './lib/utils.js';
+import { setHandlebars } from './lib/setHandlebars.js';
 import { store } from './lib/store.js';
 import { State, Route } from './lib/types.js';
 import { renderPage } from './lib/renderPage.js';
-import { isAuthenticated } from './lib/utils.js';
 
 const init = async () => {
     console.log('init app...', window.location.pathname);
