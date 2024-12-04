@@ -1,5 +1,5 @@
 import { renderPage } from './renderPage.js';
-import { RenderOptions, Route } from './types.js';
+import { RenderPageOptions, Route } from './types.js';
 import { getRouteParams } from './utils.js';
 import { isAuthenticated } from './utils.js';
 
@@ -24,7 +24,7 @@ const clickHandler = async (event: MouseEvent) => {
     window.history.replaceState(tempState, '');
 
     // const href = link.getAttribute('href')!;
-    const options: RenderOptions = {};
+    const options: RenderPageOptions = {};
     const animationClass = link.getAttribute('data-animation');
     if (animationClass) {
         options.animation = animationClass;

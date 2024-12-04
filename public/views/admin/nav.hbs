@@ -1,9 +1,10 @@
-<ul>
-    <li><a href="/admin/add-tournament">Add new tournament</a></li>
-    <li><a href="/admin/add-season">Add new season</a></li>
-    <li><a href="/admin/edit-season">Edit season</a></li>
-    <li><a href="/admin/add-player">Add new player</a></li>
-    <li><a href="/admin/edit-player">Edit player</a></li>
+<ul class="admin__nav">
+    <li><a {{#ifEquals id 'add-tournament'}}class="active"{{/ifEquals}} href="/admin/add-tournament">Add new tournament</a></li>
+    <li><a {{#ifEquals id 'edit-tournament'}}class="active"{{/ifEquals}} href="/admin/edit-tournament">Edit tournament</a></li>
+    <li><a {{#ifEquals id 'add-season'}}class="active"{{/ifEquals}} href="/admin/add-season">Add new season</a></li>
+    <li><a {{#ifEquals id 'edit-season'}}class="active"{{/ifEquals}} href="/admin/edit-season">Edit season</a></li>
+    <li><a {{#ifEquals id 'add-player'}}class="active"{{/ifEquals}} href="/admin/add-player">Add new player</a></li>
+    <li><a {{#ifEquals id 'edit-player'}}class="active"{{/ifEquals}} href="/admin/edit-player">Edit player</a></li>
     <!--
         <li><a href="/admin/delete-player">Delete player</a></li>
     -->

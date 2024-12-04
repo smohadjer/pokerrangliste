@@ -1,12 +1,18 @@
 
 <header>
-  <h1>Game at {{date}}</h1>
+  <h1>{{#ifCond status '==' 'pending'}}
+      <span class="pending"></span>
+    {{/ifCond}} Game {{round}} {{#ifCond status '==' 'pending'}}
+      <span>(In-progress)</span>
+    {{/ifCond}}  </h1>
 </header>
 <div class="wrapper">
   <table class="details">
-    <tr><td>Total players:</td><td>{{playersCount}}</td></tr>
-    <tr><td>Total rebuys:</td><td>{{rebuys}}</td></tr>
+    <tr><td>Date:</td><td>{{date}}</td></tr>
+    <tr><td>Players:</td><td>{{playersCount}}</td></tr>
+    <tr><td>Rebuys:</td><td>{{rebuys}}</td></tr>
     <tr><td>Buyin:</td><td>{{buyin}}</td></tr>
+    <tr><td>Status:</td><td style="text-transform: capitalize;">{{status}}</td></tr>
     <tr><td>Bounty:</td><td>{{hasBounty}}</td></tr>
   </table>
   <table class="table-results">
@@ -24,8 +30,16 @@
       <tr>
         <td>{{this.ranking}}</td>
         <td class="name"><a data-animation="slideInRTL" href="/profile?season_id={{../season_id}}&player_id={{this.id}}"
-          {{#ifEquals this.ranking 1}}class="first-place"{{/ifEquals}}
-          {{#ifEquals this.ranking 2}}class="second-place"{{/ifEquals}}
+          {{#ifEquals this.ranking 1}}
+            {{#ifCond this.points '>' 0}}
+              class="first-place"
+            {{/ifCond}}
+          {{/ifEquals}}
+          {{#ifEquals this.ranking 2}}
+            {{#ifCond this.points '>' 0}}
+              class="second-place"
+            {{/ifCond}}
+          {{/ifEquals}}
           {{#ifEquals this.ranking 3}}
             {{#ifCond this.points '>' 0}}
               class="third-place"

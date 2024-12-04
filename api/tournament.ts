@@ -1,6 +1,6 @@
 import client from './db.js';
-import { sanitize } from './_sanitize.js';
 import { ObjectId } from 'mongodb';
+import { insertTournament } from './_insertTournament.js';
 
 const getTournaments = async (tournaments, seasonId: string, id: string = undefined) => {
   const query = (seasonId) ? {'season_id': seasonId} : {};
@@ -16,69 +16,8 @@ const getTournaments = async (tournaments, seasonId: string, id: string = undefi
   }
 };
 
-const getRebuys = (players) => {
-  let rebuys = 0;
-  players.forEach((player) => {
-      rebuys += player.rebuys;
-  });
-  return rebuys;
-};
+const editTournament = async (tournaments, req) => {
 
-interface Player {
-  id: string;
-  rebuys: number;
-  ranking: number;
-}
-
-const insertTournament = async (tournaments, req) => {
-  const count = Number(req.body.count);
-  const players: Player[] = [];
-  const prizes: number[] = [];
-  const dataIsValid = () => {
-    const totalprize = prizes.reduce((accumulator, currentValue) => {
-      return accumulator + currentValue
-    }, 0);
-    const buyIns = count * req.body.buyin;
-    const rebuysTotal = getRebuys(players) * req.body.buyin;
-    console.log({rebuysTotal});
-
-    return totalprize === buyIns + rebuysTotal;
-  };
-
-  for (let i=0; i<count; i++) {
-    const player: Player = <Player>{};
-    const prize = Number(sanitize(req.body[`players_${i}_prize`]));
-    player.id = req.body[`players_${i}_id`];
-    player.rebuys = Number(sanitize(req.body[`players_${i}_rebuys`]));
-    player.ranking = i+1;
-    players.push(player);
-    if (prize > 0) {
-      prizes.push(prize);
-    }
-  }
-
-  if (!dataIsValid()) {
-    return;
-  }
-
-  const insertResponse = await tournaments.insertOne({
-    season_id: req.body.season_id,
-    date: sanitize(req.body.date),
-    round: sanitize(req.body.round),
-    buyin: sanitize(req.body.buyin),
-    prizes: prizes,
-    players: players
-  });
-
-  return insertResponse.insertedId;
-};
-
-const validateData = (req) => {
-  if (!req.body.count) {
-    return false;
-  }
-
-  return true;
 };
 
 export default async (req, res) => {
@@ -105,24 +44,23 @@ export default async (req, res) => {
         });
       }
 
-      const tournament_id = await insertTournament(tournaments, req);
-      if (tournament_id) {
-        // return all tournaments so state in app can be updated from response
-        const tournamentsData = await getTournaments(tournaments, req.body.season_id);
-        res.json({
-          data: {
-            tournaments: tournamentsData
-          }
-        });
-
-        // res.status(200).send({
-        //   message: 'Tournament inserted!',
-        //   tournament_id: tournament_id
-        // });
+      if (req.body.tournament_id) {
+        editTournament(tournaments, req);
       } else {
-        res.status(500).send({
-          error: 'Invalid data!'
-        });
+        const tournament_id = await insertTournament(tournaments, req);
+        if (tournament_id) {
+          // return all tournaments so state in app can be updated from response
+          const tournamentsData = await getTournaments(tournaments, req.body.season_id);
+          res.json({
+            data: {
+              tournaments: tournamentsData
+            }
+          });
+        } else {
+          res.status(500).send({
+            error: 'Invalid data!'
+          });
+        }
       }
     }
   } catch (error) {

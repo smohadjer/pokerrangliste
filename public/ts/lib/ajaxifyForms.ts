@@ -1,5 +1,5 @@
 import { renderPage } from './renderPage.js';
-import { RenderOptions, Route } from './types.js';
+import { Route } from './types.js';
 import { store } from '../lib/store';
 
 export function ajaxifyForms(form: HTMLFormElement) {

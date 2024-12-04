@@ -40,7 +40,9 @@ export default (params: RouteParams) => {
         buyin: cloneTournament.buyin,
         rebuys: getRebuys(cloneTournament),
         players: players,
-        hasBounty: cloneTournament.bounties ? 'Yes' : 'No'
+        hasBounty: cloneTournament.bounties ? 'Yes' : 'No',
+        status: cloneTournament.status,
+        round: cloneTournament.round
     }
 
     return tournamentData;

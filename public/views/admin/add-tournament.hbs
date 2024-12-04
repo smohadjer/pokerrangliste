@@ -1,24 +1,24 @@
 
 <header>
-  <h1>Admin > Tournaments</h1>
+  <h1>Admin</h1>
   <a class="no-ajax" href="/api/logout">Logout</a>
 </header>
 <div class="wrapper">
     <main class="admin">
-        {{> adminNav }}
+        {{> adminNav id="add-tournament"}}
         <section>
-            <form class="form-ajax" id="post-tournament" data-redirect="tournaments" method="POST" action="/api/tournament">
+            <form class="form-ajax" id="post-tournament" data-redirect="/tournaments" method="POST" action="/api/tournament">
                 <h1>Add Tournament</h1>
-                <div>
+                <div class="row">
                     <label>Season *</label>
                     <select id="season_dropdown" required name="season_id">
                     </select>
                 </div>
-                <div>
+                 <div class="row">
                     <label>Date *</label>
                     <input required name="date" type="date" />
                 </div>
-                <div>
+                 <div class="row">
                     <label>Round *</label>
                     <select required name="round">
                         <option value="1">1</option>
@@ -26,23 +26,57 @@
                         <option value="3">3</option>
                         <option value="4">4</option>
                         <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
                     </select>
                 </div>
-                <div>
+                <div class="row">
                     <label>Buyin *</label>
                     <input required name="buyin" type="number" value="10"/>
                 </div>
-                <div>
+                <div class="row">
                     <label>Bounty Winner</label>
                     <input name="bounty_winner">
                 </div>
-                <div>
+                <div class="row">
                     <label>Bounty Prize</label>
                     <input name="bountry_prize" type="number">
                 </div>
-                <div>
+                <div class="row">
+                    <label>Status</label>
+                    <span>
+                        <input checked name="status" id="upcoming" type="radio" value="upcoming"><label for="upcoming">Scheduled</label><br>
+                        <input name="status" id="pending" type="radio" value="pending"><label for="pending">In-progress</label><br>
+                        <input name="status" id="done" type="radio" value="done"><label  for="done">Completed</label>
+                    </span>
+                </div>
+                <div class="row">
                     <label>Players count *</label>
-                    <input name="count" type="number" />
+                    <select required name="count">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                    </select>
                 </div>
                 <div id="players"></div>
                 <div class="submit">

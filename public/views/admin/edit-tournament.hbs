@@ -1,0 +1,24 @@
+
+<header>
+  <h1>Admin</h1>
+  <a class="no-ajax" href="/api/logout">Logout</a>
+</header>
+<div class="wrapper">
+    <main class="admin">
+        {{> adminNav id="edit-tournament"}}
+        <section>
+            <form class="form-ajax" id="post-tournament" data-redirect="/tournaments" method="POST" action="/api/tournament">
+                <h1>Edit Tournament</h1>
+                <div>
+                    <label>Select tournament:</label>
+                    <select id="tournament_edit_dropdown" name="tournament_id">
+                    </select>
+                    <!-- form content inserted by js -->
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+<footer>
+  {{> footer season_id=season_id view="admin"}}
+</footer>

@@ -1,77 +1,36 @@
-import { RenderOptions, Route } from './types';
-import { renderChart } from './drawChart';
-import { initAdmin } from '../admin/admin.js';
-import { initPlayer } from '../admin/playerSelector';
+import { RenderPageOptions, Route } from './types.js';
+import { renderChart } from './drawChart.js';
+import { initAdmin } from '../admin/add-tournament.js';
+import { initPlayer } from '../admin/playerSelector.js';
 import { initSeasonSelector } from '../admin/seasonSelector.js';
-
+import { initEditTournament } from '../admin/edit-tournament.js';
 import { initLogin } from './login.js';
-import { controller } from '../controllers/controller';
-import Handlebars from './ext/handlebars.min.cjs';
+import { controller } from '../controllers/controller.js';
 import { onChangeEventHandler } from './nav.js';
-import { ajaxifyForms } from './ajaxifyForms';
+import { ajaxifyForms } from './ajaxifyForms.js';
+import { getHandlebarsTemplate } from './setHandlebars.js';
 
-type Args = {
+type RenderOptions = {
     view: string;
     templateData: any;
     options: any;
-}
-
-const getHTML = async (templateFile: string, templateData) => {
-    const response = await fetch(templateFile);
-    const responseText = await response.text();
-    const template = Handlebars.compile(responseText);
-    const html = template(templateData);
-    return html;
 };
 
-const render = async (args: Args) => {
-    const templateFile = `/views${args.view}.hbs`;
+const render = async (options: RenderOptions) => {
+    const templateFile = `/views${options.view}.hbs`;
     const container = document.getElementById('results');
-    const html = await getHTML(templateFile, args.templateData);
+    const template = await getHandlebarsTemplate(templateFile);
+    const html = template(options.templateData);
 
     if (container) {
         container.innerHTML = html;
         container.classList.remove('empty');
-        if (args.options) {
-            container.classList.add(args.options.animation);
+
+        if (options.options, container) {
+            container.classList.add(options.options.animation);
         }
 
-        if (args.view === '/profile') {
-            renderChart(args.templateData);
-        }
-
-        if (args.view === '/admin/add-tournament') {
-            initAdmin(container);
-        }
-
-        if (args.view === '/admin/edit-player') {
-            initPlayer(container);
-        }
-
-        if (args.view === '/admin/edit-season') {
-            // populate season dropdown
-            const seasonDropdown: HTMLSelectElement = container.querySelector('#season_edit_dropdown')!;
-            initSeasonSelector(seasonDropdown);
-        }
-
-        if (args.view === '/login') {
-            initLogin(container);
-        }
-
-        const seasonSelector =  document.querySelector('#season-selector');
-        if (seasonSelector) {
-            seasonSelector.addEventListener('change', (event) => {
-                if (event.target instanceof HTMLSelectElement) {
-                    onChangeEventHandler(event.target);
-                }
-            });
-        }
-
-        document.querySelectorAll('.form-ajax').forEach((form) => {
-            if (form instanceof HTMLFormElement) {
-                ajaxifyForms(form);
-            }
-        })
+        runScripts(options.view, container, options.templateData);
 
         document.getElementById('results')?.addEventListener('animationend', (event) => {
             console.log('animaiton end');
@@ -83,7 +42,7 @@ const render = async (args: Args) => {
     }
 };
 
-export const renderPage = async (route: Route, options: RenderOptions = {}) => {
+export const renderPage = async (route: Route, options: RenderPageOptions = {}) => {
     const view = route.view;
     const fetchTemplateData = controller.hasOwnProperty(view) ? controller[view] : null;
     const pageData = (typeof fetchTemplateData === 'function') ? fetchTemplateData(route.params) : null;
@@ -100,3 +59,46 @@ export const renderPage = async (route: Route, options: RenderOptions = {}) => {
         options: options,
     });
 };
+
+function runScripts(view: string, container: HTMLElement, templateData: any) {
+    if (view === '/profile') {
+        renderChart(templateData);
+    }
+
+    if (view === '/admin/add-tournament') {
+        initAdmin(container);
+    }
+
+    if (view === '/admin/edit-tournament') {
+        initEditTournament(container, view);
+    }
+
+    if (view === '/admin/edit-player') {
+        initPlayer(container);
+    }
+
+    if (view === '/admin/edit-season') {
+        // populate dropdown
+        const seasonDropdown: HTMLSelectElement = container.querySelector('#season_edit_dropdown')!;
+        initSeasonSelector(seasonDropdown);
+    }
+
+    if (view === '/login') {
+        initLogin(container);
+    }
+
+    const seasonSelector =  document.querySelector('#season-selector');
+    if (seasonSelector) {
+        seasonSelector.addEventListener('change', (event) => {
+            if (event.target instanceof HTMLSelectElement) {
+                onChangeEventHandler(event.target);
+            }
+        });
+    }
+
+    document.querySelectorAll('.form-ajax').forEach((form) => {
+        if (form instanceof HTMLFormElement) {
+            ajaxifyForms(form);
+        }
+    })
+}

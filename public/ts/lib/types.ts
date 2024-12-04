@@ -32,6 +32,7 @@ export interface Tournament {
   hasBounty?: string;
   firstPlace?: string;
   secondPlace?: string;
+  status?: 'upcoming' | 'pending' | 'done';
 }
 
 export type Profile = {
@@ -63,7 +64,7 @@ export type State = {
   players: PlayerDB[];
 }
 
-export type RenderOptions =  {
+export type RenderPageOptions =  {
   animation?: string;
 }
 

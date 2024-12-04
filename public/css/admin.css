@@ -5,6 +5,8 @@
 form {
   padding: 10px;
   font-size: 16px;
+  background: rgba(255, 255, 255, 0.75);
+  margin: 1em;
 
   .error {
     display: none;
@@ -17,19 +19,43 @@ form {
     }
   }
 
-  div {
+  div.row {
     margin: 1em 0;
+    display: flex;
+
+    label:first-child {
+      display: inline-block;
+      width: 130px;
+    }
   }
 
-  label {
-    min-width: 130px;
-    display: inline-block;
+  #players div.row {
+    display:block;
+
+    label {
+      display: inline-block;
+      width: 130px;
+    }
   }
 
   input,
   select {
-    min-width: 180px;
     box-sizing: border-box;
     font-size: inherit;
+  }
+}
+
+.admin__nav {
+  list-style: none;
+  margin: 1em;
+
+  li {
+    margin: 0 0 0.5em 0;
+  }
+
+  li a.active {
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
   }
 }

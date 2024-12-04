@@ -1,5 +1,12 @@
 import Handlebars from './ext/handlebars.min.cjs';
 
+export const getHandlebarsTemplate = async (templateFile: string) => {
+    const response = await fetch(templateFile);
+    const responseText = await response.text();
+    const template = Handlebars.compile(responseText);
+    return template;
+};
+
 export const setHandlebars = async () => {
     // setting Handlebars helpers to help with compiling templates
     Handlebars.registerHelper("inc", function(value: string, options) {
