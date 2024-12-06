@@ -18,6 +18,34 @@ header {
     justify-content: space-between;
     background:
     radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 100%);
+
+    .header__meta {
+        font-size: 18px;
+
+        p {
+            margin: 0;
+            line-height: 1.35;
+        }
+    }
+}
+
+.meta {
+    margin: 1em 1em 2em;
+    font-size: 20px;
+    text-align: center;
+
+    p {
+        margin: 0;
+        line-height: 1.5;
+        font-size: 125%;
+
+        &:first-child {
+            font-size: 100%;
+        }
+    }
+
+    strong {
+    }
 }
 
 #season-selector label {

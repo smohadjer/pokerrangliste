@@ -51,7 +51,7 @@ function getPlayersList(count: number, state: State, data?: Tournament) {
 
         html += `</select><br>
             <label class="label">Ranking:</label>
-            <input name="players_${i}_ranking" value="1" type="number" min="1" max="${count}"><br>
+            <input name="players_${i}_ranking" value="0" type="number" min="0" max="${count}"><br>
 
             <label class="label">Rebuys:</label>
             <input name="players_${i}_rebuys" value="0" type="number" min="0"><br>

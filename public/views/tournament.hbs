@@ -2,18 +2,28 @@
 <header>
   <h1>{{#ifCond status '==' 'pending'}}
       <span class="pending"></span>
-    {{/ifCond}} Game {{round}} {{#ifCond status '==' 'pending'}}
-      <span>(In-progress)</span>
-    {{/ifCond}}  </h1>
+    {{/ifCond}} Game {{round}}</h1>
+     {{#ifCond status '==' 'pending'}}
+      <div><button>Pause</button></div>
+    {{/ifCond}}
 </header>
 <div class="wrapper">
+  {{#ifCond status '==' 'pending'}}
+    <div class="meta">
+      <p>Round 1</p>
+      <p>Next level:
+       <strong>05:23</strong></p>
+      <p>Blinds: <strong>15/30</strong></p>
+    </div>
+  {{/ifCond}}
   <table class="details">
     <tr><td>Date:</td><td>{{date}}</td></tr>
     <tr><td>Players:</td><td>{{playersCount}}</td></tr>
     <tr><td>Rebuys:</td><td>{{rebuys}}</td></tr>
     <tr><td>Buyin:</td><td>{{buyin}}</td></tr>
-    <tr><td>Status:</td><td style="text-transform: capitalize;">{{status}}</td></tr>
     <tr><td>Bounty:</td><td>{{hasBounty}}</td></tr>
+    <tr><td>Status:</td><td style="text-transform: capitalize;">{{status}}</td></tr>
+
   </table>
   <table class="table-results">
     <tr>
