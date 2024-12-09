@@ -266,6 +266,10 @@ ul {
     animation: 1.5s blinking ease infinite;
 }
 
+header .pending {
+    background: #1d5410;
+}
+
 .status.pending {
     margin-right: 0.15rem;
     width: 0.75rem;

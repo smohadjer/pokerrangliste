@@ -5,7 +5,7 @@ import { getPlayerName } from '../lib/utils';
 
 // used to populate players and seasons select
 export function populateSelect(select: HTMLSelectElement, data: any[]) {
-    let options = '';
+    let options = '<option selected disabled option="">Select</option>';
     data.forEach(item => {
         options += `<option value="${item._id}">${item.name}</option>`
     });
@@ -13,7 +13,7 @@ export function populateSelect(select: HTMLSelectElement, data: any[]) {
 }
 
 export function populateSelectTournaments(select: HTMLSelectElement, data: any[]) {
-    let options = '';
+    let options = '<option selected disabled option="">Select</option>';
     data.forEach(item => {
         options += `<option value="${item._id}">${item.date} (${item.round})</option>`
     });
@@ -80,6 +80,7 @@ export function generatePlayerFields(
         addPlayerButton.addEventListener('click', (event) => {
             if (event.target instanceof HTMLButtonElement) {
                 const id = playerDropdown.value;
+                if (id === 'Select') return;
                 const name = playerDropdown.options[playerDropdown.selectedIndex].text;
                 const player: Player = {
                     id,

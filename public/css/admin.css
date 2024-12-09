@@ -79,3 +79,9 @@ form {
     font-weight: 700;
   }
 }
+
+.wrapper-status {
+  label {
+    line-height: 1.5;
+  }
+}

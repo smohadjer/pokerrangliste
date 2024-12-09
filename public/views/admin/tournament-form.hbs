@@ -36,11 +36,20 @@
 </div>
 <div class="row">
     <label>Status</label>
-    <span>
-        <input {{#ifCond status '==' 'upcoming'}} checked {{/ifCond}} name="status" id="upcoming" type="radio" value="upcoming"><label for="upcoming">Scheduled</label><br>
-        <input {{#ifCond status '==' 'pending'}} checked {{/ifCond}} name="status" id="pending" type="radio" value="pending"><label for="pending">In-progress</label><br>
-        <input  {{#ifCond status '==' 'done'}} checked {{/ifCond}} name="status" id="done" type="radio" value="done"><label  for="done">Completed</label>
-    </span>
+    <div class="wrapper-status">
+        <div>
+            <input {{#ifCond status '==' 'upcoming'}} checked {{/ifCond}} name="status" id="upcoming" type="radio" value="upcoming">
+            <label for="upcoming">Scheduled</label>
+        </div>
+        <div>
+            <input {{#ifCond status '==' 'pending'}} checked {{/ifCond}} name="status" id="pending" type="radio" value="pending">
+            <label for="pending">In-progress</label>
+        </div>
+        <div>
+            <input {{#ifCond status '==' 'done'}} checked {{/ifCond}} name="status" id="done" type="radio" value="done">
+            <label  for="done">Completed</label>
+        </div>
+    </div>
 </div>
 
 <div id="players"></div>
