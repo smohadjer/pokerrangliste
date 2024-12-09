@@ -10,16 +10,17 @@ import { store } from '../lib/store';
 export default (params: RouteParams) => {
     const state = store.getState();
     const season_id = params.season_id || state.seasons[state.seasons.length - 1]._id;
-    const tournaments: Tournament[] = getTournaments(state.tournaments, season_id);
+    const tournaments = getTournaments(state.tournaments, season_id);
+    const tournamentsNormalized = tournaments.filter((tournament) => tournament.status !== 'upcoming')
 
     if (!params.player_id) return;
 
-    const enhancedPlayers = getPlayers(tournaments);
+    const enhancedPlayers = getPlayers(tournamentsNormalized);
     const player = enhancedPlayers.find((player) =>
         player.id === params.player_id);
     const ranking = enhancedPlayers.findIndex((player) =>
         player.id === params.player_id) + 1;
-    const playerTournaments = tournaments.filter((tournament: Tournament) => {
+    const playerTournaments = tournamentsNormalized.filter((tournament: Tournament) => {
         return tournament.players.find((player) => player.id === params.player_id)
     });
     const results: Profile[] = [];

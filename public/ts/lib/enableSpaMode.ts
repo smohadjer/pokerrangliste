@@ -1,7 +1,9 @@
 import { renderPage } from './renderPage.js';
-import { RenderOptions, Route } from './types.js';
+import { RenderPageOptions, Route } from './types.js';
 import { getRouteParams } from './utils.js';
 import { isAuthenticated } from './utils.js';
+import { State } from './types';
+import { store } from './store.js';
 
 const results = document.querySelector('#results');
 
@@ -24,15 +26,22 @@ const clickHandler = async (event: MouseEvent) => {
     window.history.replaceState(tempState, '');
 
     // const href = link.getAttribute('href')!;
-    const options: RenderOptions = {};
+    const options: RenderPageOptions = {};
     const animationClass = link.getAttribute('data-animation');
     if (animationClass) {
         options.animation = animationClass;
     }
 
     const requiresAuth = link.href.indexOf('admin') > -1;
+    const state: State = store.getState();
 
-    if (requiresAuth && !await isAuthenticated()) {
+    // authenticate with server
+    if (requiresAuth && !state.authenticated) {
+        const authenticated = await isAuthenticated();
+        store.setState({ authenticated });
+    }
+
+    if (requiresAuth && !store.getState().authenticated) {
         const route: Route = {view: '/login', params: {}};
         await renderPage(route);
         window.history.replaceState(route, '', route.view);

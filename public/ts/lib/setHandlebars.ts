@@ -1,9 +1,20 @@
 import Handlebars from './ext/handlebars.min.cjs';
 
+export const getHandlebarsTemplate = async (templateFile: string) => {
+    const response = await fetch(templateFile);
+    const responseText = await response.text();
+    const template = Handlebars.compile(responseText);
+    return template;
+};
+
 export const setHandlebars = async () => {
     // setting Handlebars helpers to help with compiling templates
     Handlebars.registerHelper("inc", function(value: string, options) {
         return parseInt(value) + 1;
+    });
+
+    Handlebars.registerHelper("reverseIndex", function(v1: number, v2:string, options) {
+        return v1 - parseInt(v2);
     });
 
     Handlebars.registerHelper('ifEquals', function(arg1: string, arg2: string, options) {
@@ -56,4 +67,9 @@ export const setHandlebars = async () => {
     const adminNavText = await adminNav.text();
     const templateAdminNav = Handlebars.compile(adminNavText);
     Handlebars.registerPartial('adminNav', templateAdminNav);
+
+    const tournamentForm = await fetch('/views/admin/tournament-form.hbs');
+    const tournamentFormText = await tournamentForm.text();
+    const templateTournamentForm = Handlebars.compile(tournamentFormText);
+    Handlebars.registerPartial('tournamentForm', templateTournamentForm);
 };

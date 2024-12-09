@@ -4477,4 +4477,486 @@
       "ranking": 7
     }
   ]
+},{
+  "_id": {
+    "$oid": "6730a7cd93759ff25422031d"
+  },
+  "season_id": "65acfc9104b8801d45dd7f03",
+  "date": "2024-11-09",
+  "round": "1",
+  "buyin": "10",
+  "prizes": [
+    60,
+    50,
+    30,
+    10
+  ],
+  "players": [
+    {
+      "id": "654b3f055c0cb6103ea76d6b",
+      "rebuys": 0,
+      "ranking": 1
+    },
+    {
+      "id": "654b3f3a5c0cb6103ea76d6d",
+      "rebuys": 0,
+      "ranking": 2
+    },
+    {
+      "id": "654b40475c0cb6103ea76d7c",
+      "rebuys": 0,
+      "ranking": 3
+    },
+    {
+      "id": "654b3f2f5c0cb6103ea76d6c",
+      "rebuys": 0,
+      "ranking": 4
+    },
+    {
+      "id": "654b3fd05c0cb6103ea76d75",
+      "rebuys": 1,
+      "ranking": 5
+    },
+    {
+      "id": "654b3f905c0cb6103ea76d71",
+      "rebuys": 0,
+      "ranking": 6
+    },
+    {
+      "id": "654b40055c0cb6103ea76d78",
+      "rebuys": 0,
+      "ranking": 7
+    },
+    {
+      "id": "654b40365c0cb6103ea76d7b",
+      "rebuys": 0,
+      "ranking": 8
+    },
+    {
+      "id": "654b3f7f5c0cb6103ea76d70",
+      "rebuys": 2,
+      "ranking": 9
+    },
+    {
+      "id": "654b3f565c0cb6103ea76d6e",
+      "rebuys": 0,
+      "ranking": 10
+    },
+    {
+      "id": "654b3ff05c0cb6103ea76d77",
+      "rebuys": 0,
+      "ranking": 11
+    },
+    {
+      "id": "66f889c58db8774e7c060f4f",
+      "rebuys": 0,
+      "ranking": 12
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "6730a8d593759ff25422031e"
+  },
+  "season_id": "65acfc9104b8801d45dd7f03",
+  "date": "2024-11-09",
+  "round": "2",
+  "buyin": "10",
+  "prizes": [
+    60,
+    50,
+    30,
+    10
+  ],
+  "players": [
+    {
+      "id": "654b40475c0cb6103ea76d7c",
+      "rebuys": 1,
+      "ranking": 1
+    },
+    {
+      "id": "654b3f7f5c0cb6103ea76d70",
+      "rebuys": 0,
+      "ranking": 2
+    },
+    {
+      "id": "654b40365c0cb6103ea76d7b",
+      "rebuys": 0,
+      "ranking": 3
+    },
+    {
+      "id": "654b3f565c0cb6103ea76d6e",
+      "rebuys": 1,
+      "ranking": 4
+    },
+    {
+      "id": "654b40055c0cb6103ea76d78",
+      "rebuys": 0,
+      "ranking": 5
+    },
+    {
+      "id": "654b3f905c0cb6103ea76d71",
+      "rebuys": 0,
+      "ranking": 6
+    },
+    {
+      "id": "654b3f3a5c0cb6103ea76d6d",
+      "rebuys": 0,
+      "ranking": 7
+    },
+    {
+      "id": "66f889c58db8774e7c060f4f",
+      "rebuys": 0,
+      "ranking": 8
+    },
+    {
+      "id": "654b3f2f5c0cb6103ea76d6c",
+      "rebuys": 0,
+      "ranking": 9
+    },
+    {
+      "id": "654b3fd05c0cb6103ea76d75",
+      "rebuys": 0,
+      "ranking": 10
+    },
+    {
+      "id": "654b3ff05c0cb6103ea76d77",
+      "rebuys": 1,
+      "ranking": 11
+    },
+    {
+      "id": "654b3f055c0cb6103ea76d6b",
+      "rebuys": 0,
+      "ranking": 12
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "67425f47343971fcfba5f336"
+  },
+  "season_id": "65acfc9104b8801d45dd7f03",
+  "date": "2024-11-23",
+  "round": "1",
+  "buyin": "10",
+  "prizes": [
+    60,
+    20
+  ],
+  "players": [
+    {
+      "id": "654b3f905c0cb6103ea76d71",
+      "rebuys": 0,
+      "ranking": 1
+    },
+    {
+      "id": "654b40475c0cb6103ea76d7c",
+      "rebuys": 0,
+      "ranking": 2
+    },
+    {
+      "id": "65532ab65bcb227a610115d8",
+      "rebuys": 0,
+      "ranking": 3
+    },
+    {
+      "id": "654b405b5c0cb6103ea76d7d",
+      "rebuys": 0,
+      "ranking": 4
+    },
+    {
+      "id": "656c58d8187fb4d7d7ff287d",
+      "rebuys": 0,
+      "ranking": 5
+    },
+    {
+      "id": "654b3f2f5c0cb6103ea76d6c",
+      "rebuys": 0,
+      "ranking": 6
+    },
+    {
+      "id": "654b40365c0cb6103ea76d7b",
+      "rebuys": 0,
+      "ranking": 7
+    },
+    {
+      "id": "654b3f055c0cb6103ea76d6b",
+      "rebuys": 0,
+      "ranking": 8
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "674260a4b5c59e5f5e8f4032"
+  },
+  "season_id": "65acfc9104b8801d45dd7f03",
+  "date": "2024-11-23",
+  "round": "1",
+  "buyin": "10",
+  "prizes": [
+    90,
+    20
+  ],
+  "players": [
+    {
+      "id": "654b3f055c0cb6103ea76d6b",
+      "rebuys": 0,
+      "ranking": 1
+    },
+    {
+      "id": "654b40475c0cb6103ea76d7c",
+      "rebuys": 1,
+      "ranking": 2
+    },
+    {
+      "id": "656c58d8187fb4d7d7ff287d",
+      "rebuys": 0,
+      "ranking": 3
+    },
+    {
+      "id": "654b3f905c0cb6103ea76d71",
+      "rebuys": 0,
+      "ranking": 4
+    },
+    {
+      "id": "65532ab65bcb227a610115d8",
+      "rebuys": 0,
+      "ranking": 5
+    },
+    {
+      "id": "654b3f2f5c0cb6103ea76d6c",
+      "rebuys": 1,
+      "ranking": 6
+    },
+    {
+      "id": "654b40365c0cb6103ea76d7b",
+      "rebuys": 1,
+      "ranking": 7
+    },
+    {
+      "id": "654b405b5c0cb6103ea76d7d",
+      "rebuys": 0,
+      "ranking": 8
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "674261dfb5c59e5f5e8f4033"
+  },
+  "season_id": "65acfc9104b8801d45dd7f03",
+  "date": "2024-11-23",
+  "round": "1",
+  "buyin": "10",
+  "prizes": [
+    60,
+    30,
+    10
+  ],
+  "players": [
+    {
+      "id": "65532ab65bcb227a610115d8",
+      "rebuys": 0,
+      "ranking": 1
+    },
+    {
+      "id": "654b3f2f5c0cb6103ea76d6c",
+      "rebuys": 0,
+      "ranking": 2
+    },
+    {
+      "id": "654b40365c0cb6103ea76d7b",
+      "rebuys": 0,
+      "ranking": 3
+    },
+    {
+      "id": "654b405b5c0cb6103ea76d7d",
+      "rebuys": 0,
+      "ranking": 4
+    },
+    {
+      "id": "654b40475c0cb6103ea76d7c",
+      "rebuys": 0,
+      "ranking": 5
+    },
+    {
+      "id": "654b3f055c0cb6103ea76d6b",
+      "rebuys": 0,
+      "ranking": 6
+    },
+    {
+      "id": "656c58d8187fb4d7d7ff287d",
+      "rebuys": 1,
+      "ranking": 7
+    },
+    {
+      "id": "654b3f905c0cb6103ea76d71",
+      "rebuys": 1,
+      "ranking": 8
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "674b7d8235426d83cd83db00"
+  },
+  "season_id": "65acfc9104b8801d45dd7f03",
+  "date": "2024-11-30",
+  "round": "1",
+  "buyin": "10",
+  "prizes": [
+    110,
+    20
+  ],
+  "players": [
+    {
+      "id": "654b3fe35c0cb6103ea76d76",
+      "rebuys": 2,
+      "ranking": 1
+    },
+    {
+      "id": "654b3f905c0cb6103ea76d71",
+      "rebuys": 0,
+      "ranking": 2
+    },
+    {
+      "id": "654b40055c0cb6103ea76d78",
+      "rebuys": 0,
+      "ranking": 3
+    },
+    {
+      "id": "654b3f565c0cb6103ea76d6e",
+      "rebuys": 0,
+      "ranking": 4
+    },
+    {
+      "id": "65acfcbc530fea5b0a41379e",
+      "rebuys": 1,
+      "ranking": 5
+    },
+    {
+      "id": "66c518245239cf058c809fc7",
+      "rebuys": 0,
+      "ranking": 6
+    },
+    {
+      "id": "654b40245c0cb6103ea76d7a",
+      "rebuys": 0,
+      "ranking": 7
+    },
+    {
+      "id": "654b3f3a5c0cb6103ea76d6d",
+      "rebuys": 0,
+      "ranking": 8
+    },
+    {
+      "id": "654b40175c0cb6103ea76d79",
+      "rebuys": 1,
+      "ranking": 9
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "674c0bc9558b3082ddc6c146"
+  },
+  "season_id": "65acfc9104b8801d45dd7f03",
+  "date": "2024-11-30",
+  "round": "2",
+  "buyin": "10",
+  "prizes": [
+    80,
+    80
+  ],
+  "players": [
+    {
+      "id": "654b40245c0cb6103ea76d7a",
+      "rebuys": 0,
+      "ranking": 1
+    },
+    {
+      "id": "66c518245239cf058c809fc7",
+      "rebuys": 0,
+      "ranking": 2
+    },
+    {
+      "id": "65acfcbc530fea5b0a41379e",
+      "rebuys": 0,
+      "ranking": 3
+    },
+    {
+      "id": "654b40175c0cb6103ea76d79",
+      "rebuys": 0,
+      "ranking": 4
+    },
+    {
+      "id": "654b40055c0cb6103ea76d78",
+      "rebuys": 0,
+      "ranking": 5
+    },
+    {
+      "id": "654b3fe35c0cb6103ea76d76",
+      "rebuys": 2,
+      "ranking": 6
+    },
+    {
+      "id": "654b3f565c0cb6103ea76d6e",
+      "rebuys": 2,
+      "ranking": 7
+    },
+    {
+      "id": "654b3f3a5c0cb6103ea76d6d",
+      "rebuys": 0,
+      "ranking": 8
+    },
+    {
+      "id": "654b3f905c0cb6103ea76d71",
+      "rebuys": 3,
+      "ranking": 9
+    }
+  ]
+},{
+  "_id": {
+    "$oid": "674c0cb2558b3082ddc6c147"
+  },
+  "season_id": "65acfc9104b8801d45dd7f03",
+  "date": "2024-11-30",
+  "round": "3",
+  "buyin": "10",
+  "prizes": [
+    45,
+    25
+  ],
+  "players": [
+    {
+      "id": "654b3f905c0cb6103ea76d71",
+      "rebuys": 0,
+      "ranking": 1
+    },
+    {
+      "id": "654b3f3a5c0cb6103ea76d6d",
+      "rebuys": 0,
+      "ranking": 2
+    },
+    {
+      "id": "654b40175c0cb6103ea76d79",
+      "rebuys": 0,
+      "ranking": 3
+    },
+    {
+      "id": "654b3f565c0cb6103ea76d6e",
+      "rebuys": 0,
+      "ranking": 4
+    },
+    {
+      "id": "654b40055c0cb6103ea76d78",
+      "rebuys": 0,
+      "ranking": 5
+    },
+    {
+      "id": "654b3fe35c0cb6103ea76d76",
+      "rebuys": 0,
+      "ranking": 6
+    },
+    {
+      "id": "654b40245c0cb6103ea76d7a",
+      "rebuys": 0,
+      "ranking": 7
+    }
+  ]
 }]

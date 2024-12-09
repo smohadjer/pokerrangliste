@@ -44,6 +44,7 @@ export const getPoints = (player: Player, tournament: Tournament) => {
 };
 
 export const getPrize = (player: Player, tournament: Tournament) => {
+    if ( tournament.prizes.length === 0) return 0;
     const prize = (player.ranking <= tournament.prizes.length)
     ? tournament.prizes[player.ranking - 1] : 0;
     return prize;

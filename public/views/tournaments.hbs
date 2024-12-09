@@ -1,21 +1,31 @@
 <header>
-  <h1>Games <span>({{ tournaments.length }})</span></h1>
+  <h1>Games</h1>
   {{> seasonSelector seasons=seasons season_id=season_id }}
 </header>
 <div class="wrapper">
   <table class="table-results">
     <tr>
-      <th>Date</th>
+      <th>#</th>
+      <th class="date">Date</th>
       <th>Players</th>
-      <th><span class="first-place before">1st Pl.</span></th>
-      <th><span class="second-place before">2nd Pl.</span></th>
+      <th class="first-place">Winner</th>
     </tr>
     {{#each tournaments}}
       <tr>
-        <td class="name"><a data-animation="slideInRTL" href="/tournament?tournament_id={{this._id}}">{{this.date}} ({{this.round}})</a></td>
+        <td>
+           {{reverseIndex ../tournaments.length @index}}</td>
+        </td>
+        <td class="name"><a data-animation="slideInRTL" href="/tournament?tournament_id={{this._id}}">{{this.date}}</a>
+        <span class="status {{#if this.status}}{{this.status}}{{/if}}"></span></td>
         <td>{{this.players.length}}</td>
-        <td>{{this.firstPlace}}</td>
-        <td>{{this.secondPlace}}</td>
+        <td>
+          {{#ifCond this.status '==' 'pending'}} ? {{/ifCond}}
+          {{#ifCond this.status '==' 'upcoming'}} ? {{/ifCond}}
+          {{#ifCond this.status '==' 'done'}}  {{this.firstPlace}} {{/ifCond}}
+
+          {{!-- for backward compatibility --}}
+          {{#unless this.status }}  {{this.firstPlace}} {{/unless}}
+         </td>
       </tr>
     {{/each}}
   </table>

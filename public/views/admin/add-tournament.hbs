@@ -1,54 +1,15 @@
-
 <header>
-  <h1>Admin > Tournaments</h1>
+  <h1>Add Tournament</h1>
   <a class="no-ajax" href="/api/logout">Logout</a>
 </header>
 <div class="wrapper">
     <main class="admin">
-        {{> adminNav }}
+        {{> adminNav id="add-tournament"}}
         <section>
-            <form class="form-ajax" id="post-tournament" data-redirect="tournaments" method="POST" action="/api/tournament">
-                <h1>Add Tournament</h1>
-                <div>
-                    <label>Season *</label>
-                    <select id="season_dropdown" required name="season_id">
-                    </select>
-                </div>
-                <div>
-                    <label>Date *</label>
-                    <input required name="date" type="date" />
-                </div>
-                <div>
-                    <label>Round *</label>
-                    <select required name="round">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-                <div>
-                    <label>Buyin *</label>
-                    <input required name="buyin" type="number" value="10"/>
-                </div>
-                <div>
-                    <label>Bounty Winner</label>
-                    <input name="bounty_winner">
-                </div>
-                <div>
-                    <label>Bounty Prize</label>
-                    <input name="bountry_prize" type="number">
-                </div>
-                <div>
-                    <label>Players count *</label>
-                    <input name="count" type="number" />
-                </div>
-                <div id="players"></div>
-                <div class="submit">
-                    <button>Submit</button>
-                </div>
-                <p class="error"></p>
+            <form class="form-ajax" id="post-tournament" data-redirect="/tournaments" method="POST" action="/api/tournament">
+                <fieldset id="tournament-fieldset">
+                    {{> tournamentForm round="1" buyin="10" status="upcoming" }}
+                </fieldset>
             </form>
         </section>
     </main>

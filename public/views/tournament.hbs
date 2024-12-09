@@ -1,11 +1,25 @@
 
 <header>
-  <h1>Game at {{date}}</h1>
+  <h1>
+    {{#ifCond status '==' 'pending'}}
+      <span class="pending"></span>
+    {{/ifCond}} Game {{round}}
+  </h1>
+  {{#ifCond status '==' 'pending'}}
+    <span>Status: In progress</span>
+  {{/ifCond}}
+  {{#ifCond status '==' 'upcoming'}}
+    <span>Status: Upcoming</span>
+  {{/ifCond}}
+  {{#unless status}}
+    <span>Status: Completed</span>
+  {{/unless}}
 </header>
 <div class="wrapper">
   <table class="details">
-    <tr><td>Total players:</td><td>{{playersCount}}</td></tr>
-    <tr><td>Total rebuys:</td><td>{{rebuys}}</td></tr>
+    <tr><td>Date:</td><td>{{date}}</td></tr>
+    <tr><td>Players:</td><td>{{playersCount}}</td></tr>
+    <tr><td>Rebuys:</td><td>{{rebuys}}</td></tr>
     <tr><td>Buyin:</td><td>{{buyin}}</td></tr>
     <tr><td>Bounty:</td><td>{{hasBounty}}</td></tr>
   </table>
@@ -22,15 +36,27 @@
     </tr>
     {{#each players}}
       <tr>
-        <td>{{this.ranking}}</td>
-        <td class="name"><a data-animation="slideInRTL" href="/profile?season_id={{../season_id}}&player_id={{this.id}}"
-          {{#ifEquals this.ranking 1}}class="first-place"{{/ifEquals}}
-          {{#ifEquals this.ranking 2}}class="second-place"{{/ifEquals}}
+        <td>{{#ifCond this.ranking '>' 0}}
+          {{this.ranking}}
+          {{/ifCond}}
+          {{#ifCond this.ranking '==' 0}} - {{/ifCond}}
+        </td>
+        <td class="name"><span
+          {{#ifEquals this.ranking 1}}
+            {{#ifCond this.points '>' 0}}
+              class="first-place"
+            {{/ifCond}}
+          {{/ifEquals}}
+          {{#ifEquals this.ranking 2}}
+            {{#ifCond this.points '>' 0}}
+              class="second-place"
+            {{/ifCond}}
+          {{/ifEquals}}
           {{#ifEquals this.ranking 3}}
             {{#ifCond this.points '>' 0}}
               class="third-place"
             {{/ifCond}}
-          {{/ifEquals}}>{{this.name}}</a>
+          {{/ifEquals}}>{{this.name}}</span>
         </td>
         <td>{{this.points}}</td>
         <td>{{this.prize}}</td>
