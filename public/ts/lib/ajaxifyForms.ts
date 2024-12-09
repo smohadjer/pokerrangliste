@@ -1,5 +1,5 @@
 import { renderPage } from './renderPage.js';
-import { RenderOptions, Route } from './types.js';
+import { Route } from './types.js';
 import { store } from '../lib/store';
 
 export function ajaxifyForms(form: HTMLFormElement) {
@@ -10,22 +10,33 @@ export function ajaxifyForms(form: HTMLFormElement) {
             form.querySelector('.submit')!.classList.add('loading');
             const redirect = form.dataset.redirect;
             const formData = new FormData(form);
-            let object: { [key: string]: FormDataEntryValue; } = {};
-            for (const pair of formData.entries()) {
-                object[pair[0]] = pair[1];
-            }
 
-            const body = (form.method === 'DELETE') ? JSON.stringify({}) : JSON.stringify(object);
 
-            const url =  (form.method === 'DELETE') ? `${form.action}/${object.player_id}` : form.action;
+            // let object: { [key: string]: FormDataEntryValue; } = {};
+            // for (const pair of formData.entries()) {
+            //     object[pair[0]] = pair[1];
+            //     console.log(pair[0], pair[1]);
+            // }
+
+            // const data = new URLSearchParams();
+            // for (const pair of formData) {
+            //     data.append(pair[0], pair[1]);
+            // }
+
+            const data = new URLSearchParams(formData);
+
+            //const body = (form.method === 'DELETE') ? JSON.stringify({}) : JSON.stringify(object);
+
+            //const url =  (form.method === 'DELETE') ? `${form.action}/${object.player_id}` : form.action;
+            const url = form.action;
 
             fetch(url, {
                 method: form.method,
                 headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
+                    // 'Accept': 'application/json',
+                    // 'Content-Type': 'application/json'
                 },
-                body
+                body: data
             })
             .then(response => response.json())
             .then(async (res) => {

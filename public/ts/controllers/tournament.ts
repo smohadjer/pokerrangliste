@@ -27,9 +27,9 @@ export default (params: RouteParams) => {
     });
 
     const players: Player[] = cloneTournament.players.map((player: Player) => {
-        player.prize = getPrize(player, cloneTournament);
-        player.bounty = getBounty(player, cloneTournament);
-        player.points = getPoints(player, cloneTournament);
+        player.prize =  (cloneTournament.status === 'upcoming') ? 0 : getPrize(player, cloneTournament);
+        player.bounty =  (cloneTournament.status === 'upcoming') ? 0 : getBounty(player, cloneTournament);
+        player.points = (cloneTournament.status === 'upcoming') ? 0 : getPoints(player, cloneTournament);
         player.name = getPlayerName(player.id);
         return player;
     });
@@ -40,7 +40,9 @@ export default (params: RouteParams) => {
         buyin: cloneTournament.buyin,
         rebuys: getRebuys(cloneTournament),
         players: players,
-        hasBounty: cloneTournament.bounties ? 'Yes' : 'No'
+        hasBounty: cloneTournament.bounties ? 'Yes' : 'No',
+        status: cloneTournament.status,
+        round: cloneTournament.round
     }
 
     return tournamentData;

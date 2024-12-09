@@ -1,21 +1,19 @@
-
 <header>
-  <h1>Admin > Players</h1>
+  <h1>Edit Player</h1>
   <a class="no-ajax" href="/api/logout">Logout</a>
 </header>
 <div class="wrapper">
     <main class="admin">
-        {{> adminNav }}
+        {{> adminNav id="edit-player"}}
         <section>
             <form class="form-ajax" method="POST" action="/api/players">
-                <h1>Edit Player</h1>
-                <div>
+                <div class="row">
                     <label>Players</label>
                     <select id="player_edit_dropdown" name="player_id">
                         <option value="">Select player</option>
                     </select>
                 </div>
-                <div>
+                <div class="row">
                     <label>New name *</label>
                     <input required name="name">
                 </div>

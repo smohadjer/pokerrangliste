@@ -1,0 +1,59 @@
+<div class="row">
+    <label>Season *</label>
+    <select id="season_dropdown" required name="season_id">
+    </select>
+</div>
+<div class="row">
+    <label>Date *</label>
+    <input required name="date" type="date" value="{{date}}"/>
+</div>
+<div class="row">
+    <label>Round *</label>
+    <select required name="round">
+        <option {{#ifCond round '==' 1}}selected{{/ifCond}} value="1">1</option>
+        <option {{#ifCond round '==' 2}}selected{{/ifCond}} value="2">2</option>
+        <option {{#ifCond round '==' 3}}selected{{/ifCond}} value="3">3</option>
+        <option {{#ifCond round '==' 4}}selected{{/ifCond}} value="4">4</option>
+        <option {{#ifCond round '==' 5}}selected{{/ifCond}} value="5">5</option>
+        <option {{#ifCond round '==' 6}}selected{{/ifCond}} value="6">6</option>
+        <option {{#ifCond round '==' 7}}selected{{/ifCond}} value="7">7</option>
+        <option {{#ifCond round '==' 8}}selected{{/ifCond}} value="8">8</option>
+        <option {{#ifCond round '==' 9}}selected{{/ifCond}} value="9">9</option>
+        <option {{#ifCond round '==' 10}}selected{{/ifCond}} value="10">10</option>
+    </select>
+</div>
+<div class="row">
+    <label>Buyin *</label>
+    <input required name="buyin" type="number" value="{{buyin}}"/>
+</div>
+<div class="row">
+    <label>Bounty Winner</label>
+    <input name="bounty_winner">
+</div>
+<div class="row">
+    <label>Bounty Prize</label>
+    <input name="bountry_prize" type="number">
+</div>
+<div class="row">
+    <label>Status</label>
+    <span>
+        <input {{#ifCond status '==' 'upcoming'}} checked {{/ifCond}} name="status" id="upcoming" type="radio" value="upcoming"><label for="upcoming">Scheduled</label><br>
+        <input {{#ifCond status '==' 'pending'}} checked {{/ifCond}} name="status" id="pending" type="radio" value="pending"><label for="pending">In-progress</label><br>
+        <input  {{#ifCond status '==' 'done'}} checked {{/ifCond}} name="status" id="done" type="radio" value="done"><label  for="done">Completed</label>
+    </span>
+</div>
+
+<div id="players"></div>
+
+<div class="row row--mt2">
+    <select id="player_dropdown">
+        <option value="">Select player</option>
+        <!-- options added by js -->
+    </select>
+    <button id="add-player" type="button">Add player</button>
+</div>
+
+<div class="submit">
+    <button>Submit</button>
+</div>
+<p class="error"></p>

@@ -3,8 +3,8 @@ export interface Player {
   name?: string,
   rebuys: number,
   ranking: number,
-  points: number,
-  bounty: number,
+  points?: number,
+  bounty?: number,
   prize: number,
   games?: number
 }
@@ -32,6 +32,7 @@ export interface Tournament {
   hasBounty?: string;
   firstPlace?: string;
   secondPlace?: string;
+  status?: 'upcoming' | 'pending' | 'done';
 }
 
 export type Profile = {
@@ -61,9 +62,10 @@ export type State = {
   tournaments: Tournament[];
   seasons: Season[];
   players: PlayerDB[];
+  authenticated: boolean;
 }
 
-export type RenderOptions =  {
+export type RenderPageOptions =  {
   animation?: string;
 }
 

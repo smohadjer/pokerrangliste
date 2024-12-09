@@ -15,7 +15,8 @@ export const store: Store = {
     state: {
         tournaments: [],
         players: [],
-        seasons: []
+        seasons: [],
+        authenticated: false
     },
     getState: () => {
         return deepClone(store.state);

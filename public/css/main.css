@@ -99,6 +99,10 @@ h1 {
         text-align: left;
     }
 
+    th.date {
+        min-width: 110px;
+    }
+
     tr:first-child {
         position: sticky;
         top: 0;
@@ -121,14 +125,17 @@ h1 {
         padding-left: 10px;
     }
 
-    td a {
-        padding: 0.8em 1em 0.8em 0;
-        color: #ECE18F;
+    td a, td.name span {
+        padding: 0.8em 0.5em 0.8em 0;
         display: inline-block;
 
         @media (min-width: 1024px) {
             padding: 0.5em 0;
         }
+    }
+
+    td a {
+        color: #ECE18F;
     }
 
     td a:visited {
@@ -225,4 +232,43 @@ ul {
     animation: fadeIn 0.25s;
     animation-fill-mode: both;
     animation-timing-function: ease-out;
+}
+
+@keyframes blinking {
+    from, to {
+      opacity: 0;
+    }
+    40% {
+      opacity: 1;
+    }
+}
+
+.status {
+    padding: 0 !important;
+    display: inline-block;
+    border-radius: 50%;
+    width: 10px;
+    height: 10px;
+    background: #1D5410;
+    vertical-align: middle;
+    margin-right: 0;
+    opacity: 0;
+}
+
+.pending {
+    display: inline-block;
+    border-radius: 50%;
+    width: 1rem;
+    height: 1rem;
+    background: rgb(193, 241, 122);
+    vertical-align: baseline;
+    margin-right: 0.25rem;
+    animation: 1.5s blinking ease infinite;
+}
+
+.status.pending {
+    margin-right: 0.15rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    opacity: 1;
 }

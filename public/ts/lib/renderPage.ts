@@ -1,64 +1,43 @@
-import { RenderOptions, Route } from './types';
-import { renderChart } from './drawChart';
-import { initAdmin } from '../admin/admin.js';
-import { initPlayer } from '../admin/playerSelector';
-import { initSeasonSelector } from '../admin/seasonSelector.js';
-
+import { RenderPageOptions, Route } from './types.js';
+import { renderChart } from './drawChart.js';
+import { initAddTournament } from '../admin/add-tournament.js';
+import {
+    populateSelect
+} from '../admin/utils.js';
+import { initEditTournament } from '../admin/edit-tournament.js';
 import { initLogin } from './login.js';
-import { controller } from '../controllers/controller';
-import Handlebars from './ext/handlebars.min.cjs';
+import { controller } from '../controllers/controller.js';
 import { onChangeEventHandler } from './nav.js';
-import { ajaxifyForms } from './ajaxifyForms';
+import { ajaxifyForms } from './ajaxifyForms.js';
+import { getHandlebarsTemplate } from './setHandlebars.js';
+import { State } from '../lib/types';
+import { store } from '../lib/store.js';
 
-type Args = {
+type RenderOptions = {
     view: string;
     templateData: any;
     options: any;
-}
-
-const getHTML = async (templateFile: string, templateData) => {
-    const response = await fetch(templateFile);
-    const responseText = await response.text();
-    const template = Handlebars.compile(responseText);
-    const html = template(templateData);
-    return html;
 };
 
-const render = async (args: Args) => {
-    const templateFile = `/views${args.view}.hbs`;
+const render = async (options: RenderOptions) => {
+    const templateFile = `/views${options.view}.hbs`;
     const container = document.getElementById('results');
-    const html = await getHTML(templateFile, args.templateData);
+    const template = await getHandlebarsTemplate(templateFile);
+    const html = template(options.templateData);
+    const state: State = store.getState();
 
     if (container) {
         container.innerHTML = html;
         container.classList.remove('empty');
-        if (args.options) {
-            container.classList.add(args.options.animation);
+
+        if (options.options, container) {
+            container.classList.add(options.options.animation);
         }
 
-        if (args.view === '/profile') {
-            renderChart(args.templateData);
-        }
+        runScripts(options.view, container, options.templateData, state);
 
-        if (args.view === '/admin/add-tournament') {
-            initAdmin(container);
-        }
-
-        if (args.view === '/admin/edit-player') {
-            initPlayer(container);
-        }
-
-        if (args.view === '/admin/edit-season') {
-            // populate season dropdown
-            const seasonDropdown: HTMLSelectElement = container.querySelector('#season_edit_dropdown')!;
-            initSeasonSelector(seasonDropdown);
-        }
-
-        if (args.view === '/login') {
-            initLogin(container);
-        }
-
-        const seasonSelector =  document.querySelector('#season-selector');
+        // init season select in header
+        const seasonSelector =  document.querySelector('header #season-selector');
         if (seasonSelector) {
             seasonSelector.addEventListener('change', (event) => {
                 if (event.target instanceof HTMLSelectElement) {
@@ -67,6 +46,7 @@ const render = async (args: Args) => {
             });
         }
 
+        // set all forms to use fetch
         document.querySelectorAll('.form-ajax').forEach((form) => {
             if (form instanceof HTMLFormElement) {
                 ajaxifyForms(form);
@@ -83,7 +63,7 @@ const render = async (args: Args) => {
     }
 };
 
-export const renderPage = async (route: Route, options: RenderOptions = {}) => {
+export const renderPage = async (route: Route, options: RenderPageOptions = {}) => {
     const view = route.view;
     const fetchTemplateData = controller.hasOwnProperty(view) ? controller[view] : null;
     const pageData = (typeof fetchTemplateData === 'function') ? fetchTemplateData(route.params) : null;
@@ -92,7 +72,7 @@ export const renderPage = async (route: Route, options: RenderOptions = {}) => {
         console.warn(`No data found for view ${view}!`);
     }
 
-    console.log('view: ', view);
+    console.log({view});
 
     await render({
         view,
@@ -100,3 +80,30 @@ export const renderPage = async (route: Route, options: RenderOptions = {}) => {
         options: options,
     });
 };
+
+function runScripts(
+    view: string,
+    container: HTMLElement,
+    templateData: any,
+    state: State) {
+    if (view === '/profile') {
+        renderChart(templateData);
+    }
+    if (view === '/admin/add-tournament') {
+        initAddTournament(container);
+    }
+    if (view === '/admin/edit-tournament') {
+        initEditTournament(container);
+    }
+    if (view === '/admin/edit-player') {
+        const select: HTMLSelectElement = container.querySelector('#player_edit_dropdown')!;
+        populateSelect(select, state.players);
+    }
+    if (view === '/admin/edit-season') {
+        const select: HTMLSelectElement = container.querySelector('#season_edit_dropdown')!;
+        populateSelect(select, state.seasons);
+    }
+    if (view === '/login') {
+        initLogin(container);
+    }
+}

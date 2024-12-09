@@ -1,15 +1,13 @@
-
 <header>
-  <h1>Admin > Seasons</h1>
+  <h1>Add Season</h1>
   <a class="no-ajax" href="/api/logout">Logout</a>
 </header>
 <div class="wrapper">
     <main class="admin">
-        {{> adminNav }}
+        {{> adminNav id="add-season"}}
         <section>
             <form class="form-ajax" method="POST" action="/api/seasons">
-                <h1>Add Season</h1>
-                <div>
+                <div class="row">
                     <label>Season *</label>
                     <input required name="name">
                 </div>

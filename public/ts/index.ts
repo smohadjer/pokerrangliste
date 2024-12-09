@@ -15,8 +15,6 @@ const init = async () => {
     // registering event listeners for clicks on links and popstate event to avoid browser reloading pages from server
     enableSpaMode();
 
-    console.log('SPA mode is enabled');
-
     try {
         // fetching app data from server and storing it in state
         const stateData: State | undefined = await fetchData();
@@ -25,9 +23,16 @@ const init = async () => {
         const path = window.location.pathname;
 
         const requiresAuth = path.indexOf('admin') > -1;
+        const state: State = store.getState();
+
+        // authenticate with server
+        if (requiresAuth && !state.authenticated) {
+            const authenticated = await isAuthenticated();
+            store.setState({ authenticated });
+        }
 
         // if path requires authentication and user is not authenticated redirect to login page
-        if (requiresAuth && !await isAuthenticated()) {
+        if (requiresAuth && !store.getState().authenticated) {
             const route: Route = {view: '/login', params: {}};
             await renderPage(route);
             window.history.replaceState(route, '', route.view);

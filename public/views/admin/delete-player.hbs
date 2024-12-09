@@ -1,16 +1,14 @@
-
 <header>
-  <h1>Admin > Players</h1>
+  <h1>Delete Player</h1>
   <a class="no-ajax" href="/api/logout">Logout</a>
 </header>
 <div class="wrapper">
     <main class="admin">
-        {{> adminNav }}
+        {{> adminNav id="delete-player"}}
         <section>
             <form class="form-ajax" method="DELETE" action="/api/players">
-                <h1>Delete Player</h1>
                 <p>Only palyers who have never played in a tournament can be deleted.</p>
-                <div>
+                <div class="row">
                     <label>Players</label>
                     <select id="player_delete_dropdown" name="player_id">
                         <option value="">Select player</option>

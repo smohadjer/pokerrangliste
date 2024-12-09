@@ -1,15 +1,13 @@
-
 <header>
-  <h1>Admin > Players</h1>
+  <h1>Add Player</h1>
   <a class="no-ajax" href="/api/logout">Logout</a>
 </header>
 <div class="wrapper">
     <main class="admin">
-        {{> adminNav }}
+        {{> adminNav id="add-player"}}
         <section>
             <form class="form-ajax" method="POST" action="/api/players">
-                <h1>Add Player</h1>
-                <div>
+                <div class="row">
                     <label>Player *</label>
                     <input required name="name">
                 </div>

@@ -1,21 +1,20 @@
 
 <header>
-  <h1>Admin > Seasons</h1>
+  <h1>Edit Season</h1>
   <a class="no-ajax" href="/api/logout">Logout</a>
 </header>
 <div class="wrapper">
     <main class="admin">
-        {{> adminNav }}
+        {{> adminNav id="edit-season"}}
         <section>
             <form class="form-ajax" method="POST" action="/api/seasons">
-                <h1>Edit Season</h1>
-                <div>
+                <div class="row">
                     <label>Seasons</label>
                     <select id="season_edit_dropdown" name="season_id">
                         <option value="">Select season</option>
                     </select>
                 </div>
-                <div>
+                <div class="row">
                     <label>New name *</label>
                     <input required name="name">
                 </div>
