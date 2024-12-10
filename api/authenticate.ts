@@ -6,10 +6,17 @@ dotenv.config();
 export default async (req, res) => {
   const { username, password } = req.body;
 
-  console.log('req arrived', password)
+  let authenticated = false;
 
-  if (username === process.env.admin_username &&
-    password === process.env.admin_password) {
+  if (process.env.development === 'demo') {
+    authenticated = (username === process.env.admin_demo_username) &&
+    (password === process.env.admin_demo_password);
+  } else {
+    authenticated = (username === process.env.admin_username &&
+      password === process.env.admin_password);
+  }
+
+  if (authenticated) {
     const secret = new TextEncoder().encode(process.env.jwtSecret);
     const alg = 'HS256';
     const token = await new SignJWT({ 'username': username })
