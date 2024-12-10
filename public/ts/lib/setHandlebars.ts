@@ -1,3 +1,6 @@
+/* since importing from node_modules using a relative path throws error on Render.com
+I have copy/pasted dist/handlebars.min.js to ts/lib/ext and renamed it from .js to .cjs
+to avoid errors during build */
 import Handlebars from './ext/handlebars.min.cjs';
 
 export const getHandlebarsTemplate = async (templateFile: string) => {

@@ -9,9 +9,14 @@ export interface Player {
   games?: number
 }
 
-export interface PlayerDB {
-  readonly _id: {},
-  name: string
+export type PlayerDB = {
+  readonly _id: string;
+  name: string;
+}
+
+export type Season = {
+  readonly _id: string;
+  name: string;
 }
 
 export type bounty = {
@@ -48,11 +53,6 @@ export type ChartData = Profile & {
   sum: number;
 }
 
-export interface Season {
-  _id: string,
-  name: string
-}
-
 export interface Json extends State {
   error? : string,
   message? : string
@@ -68,6 +68,12 @@ export type State = {
 export type RenderPageOptions =  {
   animation?: string;
 }
+
+export type RenderOptions = {
+  view: string;
+  templateData: any;
+  options: any;
+};
 
 export type RouteParams = {
   [key: string]: string;

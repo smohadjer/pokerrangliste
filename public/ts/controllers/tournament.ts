@@ -7,7 +7,7 @@ import {
     getPlayerName,
     getRebuys,
     getTournaments,
-} from '../lib/utils';
+} from '../utils';
 import { store } from '../lib/store';
 
 export default (params: RouteParams) => {

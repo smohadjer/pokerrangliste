@@ -1,4 +1,4 @@
-import { getPlayerName, getTournaments, getSeasonName } from '../lib/utils';
+import { getPlayerName, getTournaments, getSeasonName } from '../utils';
 import { store } from '../lib/store';
 import { RouteParams } from '../lib/types';
 

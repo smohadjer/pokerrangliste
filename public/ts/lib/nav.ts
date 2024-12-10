@@ -1,6 +1,6 @@
 import { renderPage } from './renderPage.js';
 import { Route } from './types.js';
-import { getRouteParams } from './utils.js';
+import { getRouteParams } from '../utils.js';
 
 export const onChangeEventHandler = async (target: HTMLSelectElement) => {
   const route: Route = {

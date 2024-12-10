@@ -1,6 +1,6 @@
 import enableSpaMode from './lib/enableSpaMode.js';
 import fetchData from './lib/fetchData.js';
-import { getRouteParams, isAuthenticated } from './lib/utils.js';
+import { getRouteParams, isAuthenticated } from './utils.js';
 import { setHandlebars } from './lib/setHandlebars.js';
 import { store } from './lib/store.js';
 import { State, Route } from './lib/types.js';

@@ -1,23 +1,14 @@
-import { RenderPageOptions, Route } from './types.js';
+import { RenderOptions, RenderPageOptions, Route } from './types.js';
 import { renderChart } from './drawChart.js';
-import { initAddTournament } from '../admin/add-tournament.js';
-import {
-    populateSelect
-} from '../admin/utils.js';
-import { initEditTournament } from '../admin/edit-tournament.js';
-import { initLogin } from './login.js';
+import { initAddTournament } from '../add-tournament.js';
+import { initEditTournament } from '../edit-tournament.js';
 import { controller } from '../controllers/controller.js';
 import { onChangeEventHandler } from './nav.js';
 import { ajaxifyForms } from './ajaxifyForms.js';
 import { getHandlebarsTemplate } from './setHandlebars.js';
 import { State } from '../lib/types';
 import { store } from '../lib/store.js';
-
-type RenderOptions = {
-    view: string;
-    templateData: any;
-    options: any;
-};
+import { populateSelect, enablePasswordToggle } from '../utils.js';
 
 const render = async (options: RenderOptions) => {
     const templateFile = `/views${options.view}.hbs`;
@@ -104,6 +95,6 @@ function runScripts(
         populateSelect(select, state.seasons);
     }
     if (view === '/login') {
-        initLogin(container);
+        enablePasswordToggle(container);
     }
 }

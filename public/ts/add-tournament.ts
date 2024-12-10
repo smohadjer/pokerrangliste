@@ -1,5 +1,5 @@
-import { State } from '../lib/types';
-import { store } from '../lib/store.js';
+import { State } from './lib/types';
+import { store } from './lib/store.js';
 import {
     initTournamentForm
 } from './utils.js';
