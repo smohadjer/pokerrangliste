@@ -1,26 +1,13 @@
-import client from './db.js';
-import { ObjectId } from 'mongodb';
-import { fetchAllPlayers } from './_utils.js';
+import { MongoClient, ObjectId } from 'mongodb';
+import { database_uri, database_name } from './_config.js';
+import { fetchAllPlayers, editPlayerName, addNewPlayer } from './_utils.js';
 
-const editPlayerName = async (name, playerId, collection) => {
-  const query = { _id: new ObjectId(playerId) };
-  await collection.updateOne(query, {
-      $set: {
-        name: name
-      }
-  });
-  console.log(`Changed name of an existing player to ${name}`);
-};
-
-const addNewPlayer = async (name, collection) => {
-  const insertResponse = await collection.insertOne({ name: name });
-  console.log(`Added new player with name ${name} and id `, insertResponse.insertedId);
-};
+const client = new MongoClient(database_uri);
 
 export default async (req, res) => {
   try {
     await client.connect();
-    const database = client.db('pokerrangliste');
+    const database = client.db(database_name);
     const collection = database.collection('players');
 
     if (req.method === 'GET') {

@@ -1,4 +1,5 @@
-import client from './db.js';
+import { MongoClient } from 'mongodb';
+import { database_uri, database_name } from './_config.js';
 import {
   getTournament,
   getTournaments,
@@ -6,10 +7,13 @@ import {
   editTournament
 } from './_utils.js';
 
+const client = new MongoClient(database_uri);
+
 export default async (req, res) => {
   try {
     await client.connect();
-    const database = client.db('pokerrangliste');
+
+    const database = client.db(database_name);
     const tournamentsCol = database.collection('tournaments');
     const seasonsCol = database.collection('seasons');
     const playersCol = database.collection('players');

@@ -1,14 +1,12 @@
-import dotenv from 'dotenv';
-import {SignJWT} from 'jose';
-
-dotenv.config();
+import { SignJWT } from 'jose';
+import { jwtSecret, environment } from './_config.js';
 
 export default async (req, res) => {
   const { username, password } = req.body;
 
   let authenticated = false;
 
-  if (process.env.development === 'demo') {
+  if (environment === 'demo') {
     authenticated = (username === process.env.admin_demo_username) &&
     (password === process.env.admin_demo_password);
   } else {
@@ -17,7 +15,7 @@ export default async (req, res) => {
   }
 
   if (authenticated) {
-    const secret = new TextEncoder().encode(process.env.jwtSecret);
+    const secret = new TextEncoder().encode(jwtSecret);
     const alg = 'HS256';
     const token = await new SignJWT({ 'username': username })
       .setProtectedHeader({ alg })
@@ -45,8 +43,8 @@ export default async (req, res) => {
 }
 
 function setCookieServerless(res, token) {
-  // use secure on production so cookie is sent only over https
-  const secure = process.env.development ? '' : '; Secure';
+  // if we are not running app locally use secure so cookie is sent only over https
+  const secure = (environment === 'local') ? '' : '; Secure';
 
   // set cookie expiry date to a year later
   const cookieDate = new Date();

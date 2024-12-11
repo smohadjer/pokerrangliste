@@ -134,3 +134,33 @@ export const editTournament = async (tournamentsCol, req, tournamentId) => {
     return;
   }
 };
+
+export const editPlayerName = async (name, playerId, collection) => {
+  const query = { _id: new ObjectId(playerId) };
+  await collection.updateOne(query, {
+      $set: {
+        name: name
+      }
+  });
+  console.log(`Changed name of an existing player to ${name}`);
+};
+
+export const addNewPlayer = async (name, collection) => {
+  const insertResponse = await collection.insertOne({ name: name });
+  console.log(`Added new player with name ${name} and id `, insertResponse.insertedId);
+};
+
+export const editSeasonName = async (name, seasonId, collection) => {
+  const query = { _id: new ObjectId(seasonId) };
+  await collection.updateOne(query, {
+      $set: {
+        name: name
+      }
+  });
+  console.log(`Changed name of an existing season to ${name}`);
+};
+
+export const addNewSeason = async (name, collection) => {
+  const insertResponse = await collection.insertOne({ name: name });
+  console.log(`Added new season with name ${name} and id `, insertResponse.insertedId);
+};
