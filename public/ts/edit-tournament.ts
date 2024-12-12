@@ -20,7 +20,7 @@ export function initEditTournament(container: HTMLElement) {
             const tournaments = state.tournaments.filter(
                 item => item._id === tournamentId);
             const tournamentData = tournaments[0];
-            const htmlElement = await generateHTML('/views/admin/tournament-form.hbs', tournamentData);
+            const htmlElement = await generateHTML('/views/partials/tournamentForm.hbs', tournamentData);
 
             fieldset.innerHTML = '';
             fieldset.append(...htmlElement);
