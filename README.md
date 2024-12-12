@@ -29,4 +29,7 @@ vercel --prod
 Typescript files are watched and bundled via esbuild.
 
 
+# Icons
+Icons are from https://fonts.google.com/icons
+SVG format size 24x24 color: #5f6368
 

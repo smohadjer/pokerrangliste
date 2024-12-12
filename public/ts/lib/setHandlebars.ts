@@ -55,24 +55,17 @@ export const setHandlebars = async () => {
         }
     });
 
-    // seting Handlebars partials
-    const response = await fetch('/views/seasons.hbs');
-    const responseText = await response.text();
-    const template = Handlebars.compile(responseText);
-    Handlebars.registerPartial('seasonSelector', template);
-
-    const responseFooter = await fetch('/views/footer.hbs');
-    const responseFooterText = await responseFooter.text();
-    const templateFooter = Handlebars.compile(responseFooterText);
-    Handlebars.registerPartial('footer', templateFooter);
-
-    const adminNav = await fetch('/views/admin/nav.hbs');
-    const adminNavText = await adminNav.text();
-    const templateAdminNav = Handlebars.compile(adminNavText);
-    Handlebars.registerPartial('adminNav', templateAdminNav);
-
-    const tournamentForm = await fetch('/views/admin/tournament-form.hbs');
-    const tournamentFormText = await tournamentForm.text();
-    const templateTournamentForm = Handlebars.compile(tournamentFormText);
-    Handlebars.registerPartial('tournamentForm', templateTournamentForm);
+    // registering Handlebars partials
+    registerPartial('seasonSelector');
+    registerPartial('footer');
+    registerPartial('adminNav');
+    registerPartial('tournamentForm');
+    registerPartial('logout');
 };
+
+async function registerPartial(name: string) {
+    const res = await fetch(`/views/partials/${name}.hbs`);
+    const text = await res.text();
+    const template = Handlebars.compile(text);
+    Handlebars.registerPartial(name, template);
+}

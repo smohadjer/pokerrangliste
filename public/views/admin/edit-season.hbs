@@ -1,7 +1,7 @@
 
 <header>
   <h1>Edit Season</h1>
-  <a class="no-ajax" href="/api/logout">Logout</a>
+  {{> logout }}
 </header>
 <div class="wrapper">
     <main class="admin">
@@ -26,6 +26,4 @@
         </section>
     </main>
 </div>
-<footer>
-  {{> footer season_id=season_id view="admin"}}
-</footer>
+{{> footer season_id=season_id view="admin"}}
