@@ -1,6 +1,6 @@
 import enableSpaMode from './lib/enableSpaMode.js';
 import fetchData from './lib/fetchData.js';
-import { getRouteParams, isAuthenticated } from './utils.js';
+import { isAuthenticated } from './utils.js';
 import { setHandlebars } from './lib/setHandlebars.js';
 import { store } from './lib/store.js';
 import { State, Route } from './lib/types.js';
@@ -16,12 +16,7 @@ const init = async () => {
     enableSpaMode();
 
     try {
-        // fetching app data from server and storing it in state
-        const stateData: State | undefined = await fetchData();
-        store.setState(stateData);
-
         const path = window.location.pathname;
-
         const requiresAuth = path.indexOf('admin') > -1;
         const state: State = store.getState();
 
@@ -33,14 +28,35 @@ const init = async () => {
 
         // if path requires authentication and user is not authenticated redirect to login page
         if (requiresAuth && !store.getState().authenticated) {
-            const route: Route = {view: '/login', params: {}};
+            const route: Route = {
+                view: '/login',
+                params: ''
+            };
             await renderPage(route);
             window.history.replaceState(route, '', route.view);
         } else {
+            const params = new URLSearchParams(window.location.search);
+            const tenant_id = params.get('tenant_id');
+            console.log({tenant_id});
+
+            // all pages except login and register should have tenant_id as parameter in url
+            if (!tenant_id && path.indexOf('login') < 0 && path.indexOf('register') < 0) {
+                alert('This is not a valid URL. Ask your tournament organizer to send  you a proper url containing a tenant_id');
+                window.location.href = '/login';
+                return;
+            }
+
+            // fetch app data from server and storing it in state
+            const stateData: State | undefined = await fetchData(tenant_id);
+            store.setState(stateData);
+            console.log('state before page render: ', store.getState());
+
             // calling renderPage to generate HTML for current route
+            // we convert params to string since history methods throw error when
+            // cloning a URLSearchParam object
             const route: Route = {
                 view: window.location.pathname,
-                params: getRouteParams(window.location.search)
+                params: params.toString()
             };
 
             await renderPage(route);

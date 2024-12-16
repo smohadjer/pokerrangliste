@@ -100,31 +100,15 @@ export const getPlayers = (tournaments: Tournament[]) => {
     return players;
 };
 
-export const getTournaments = (tournaments: Tournament[], season_id: string) => {
+export const getTournaments = (tournaments: Tournament[], season_id: string | undefined) => {
     let clone: Tournament[] = deepClone(tournaments);
-    if (season_id !== 'all-time') {
+    if (season_id && season_id !== 'all-time') {
         clone = clone.filter((tour) => {
             return tour.season_id === season_id;
         });
     }
     clone = sortByDate(clone);
     return clone;
-};
-
-export const getRouteParams = (paramsString: string) => {
-    const params = new URLSearchParams(paramsString);
-    const temp: RouteParams = {};
-
-    // for browsers not supporting URLSearchParams's size property
-    const size = (params.size) ? params.size : params.toString().length;
-
-    if (size > 0) {
-        for (const [key, value] of params) {
-            temp[key] = value;
-        }
-    }
-
-    return temp;
 };
 
 export const isAuthenticated = async () => {

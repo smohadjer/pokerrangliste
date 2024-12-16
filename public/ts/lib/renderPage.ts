@@ -56,14 +56,17 @@ const render = async (options: RenderOptions) => {
 
 export const renderPage = async (route: Route, options: RenderPageOptions = {}) => {
     const view = route.view;
+    const urlParams = new URLSearchParams(route.params);
     const fetchTemplateData = controller.hasOwnProperty(view) ? controller[view] : null;
-    const pageData = (typeof fetchTemplateData === 'function') ? fetchTemplateData(route.params) : null;
+    const pageData = (typeof fetchTemplateData === 'function') ? fetchTemplateData(urlParams) : null;
 
     if (!pageData) {
-        console.warn(`No data found for view ${view}!`);
+        console.warn(`No data found for view ${view}`);
+    } else {
+        console.log(`rendering ${view}`);
     }
 
-    console.log({view});
+    console.log({pageData})
 
     await render({
         view,
@@ -94,7 +97,7 @@ function runScripts(
         const select: HTMLSelectElement = container.querySelector('#season_edit_dropdown')!;
         populateSelect(select, state.seasons);
     }
-    if (view === '/login') {
+    if (view === '/login' || view === '/register') {
         enablePasswordToggle(container);
     }
 }

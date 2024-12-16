@@ -1,11 +1,14 @@
 import { getPlayerName, getTournaments, getSeasonName } from '../utils';
 import { store } from '../lib/store';
-import { RouteParams } from '../lib/types';
+//import { RouteParams } from '../lib/types';
 
-export default (params: RouteParams) => {
+export default (params: URLSearchParams) => {
     const state = store.getState();
-    const season_id = params.season_id || state.seasons[state.seasons.length - 1]._id;
-    const tournaments = getTournaments(state.tournaments, season_id!);
+    let season_id = params.get('season_id') ?? undefined;
+    if (!season_id && state.seasons?.length > 0) {
+        season_id = state.seasons[state.seasons.length - 1]._id;
+    }
+    const tournaments = getTournaments(state.tournaments, season_id);
 
     const optimizedData = tournaments.map((item) => {
         item.firstPlace = getPlayerName(item.players[0]?.id);
@@ -17,7 +20,8 @@ export default (params: RouteParams) => {
         tournaments: optimizedData,
         season_id: season_id,
         seasonName: getSeasonName(season_id!, state.seasons),
-        seasons: state.seasons
+        seasons: state.seasons,
+        tenant_id: params.get('tenant_id')
     }
 
     return tournamentsData;

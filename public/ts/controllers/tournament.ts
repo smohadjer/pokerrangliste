@@ -10,12 +10,12 @@ import {
 } from '../utils';
 import { store } from '../lib/store';
 
-export default (params: RouteParams) => {
+export default (params: URLSearchParams) => {
     const state = store.getState();
     const tournaments: Tournament[] = getTournaments(state.tournaments, 'all-time');
 
     const tournament = tournaments.find((item) => {
-        return item._id === params.tournament_id
+        return item._id === params.get('tournament_id')
     })
     if (!tournament) return;
 
@@ -42,7 +42,8 @@ export default (params: RouteParams) => {
         players: players,
         hasBounty: cloneTournament.bounties ? 'Yes' : 'No',
         status: cloneTournament.status,
-        round: cloneTournament.round
+        round: cloneTournament.round,
+        tenant_id: params.get('tenant_id')
     }
 
     return tournamentData;

@@ -7,6 +7,7 @@
         {{> adminNav id="add-player"}}
         <section>
             <form class="form-ajax" method="POST" action="/api/players">
+                <input type="hidden" name="tenant_id" value="{{tenant_id}}">
                 <div class="row">
                     <label>Player *</label>
                     <input required name="name">
@@ -19,4 +20,4 @@
         </section>
     </main>
 </div>
-{{> footer season_id=season_id view="admin"}}
+{{> footer tenant_id=tenant_id season_id=season_id view="admin"}}

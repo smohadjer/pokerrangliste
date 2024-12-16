@@ -1,6 +1,5 @@
 import { renderPage } from './renderPage.js';
 import { RenderPageOptions, Route } from './types.js';
-import { getRouteParams } from '../utils.js';
 import { isAuthenticated } from '../utils.js';
 import { State } from './types';
 import { store } from './store.js';
@@ -42,13 +41,13 @@ const clickHandler = async (event: MouseEvent) => {
     }
 
     if (requiresAuth && !store.getState().authenticated) {
-        const route: Route = {view: '/login', params: {}};
+        const route: Route = {view: '/login', params: ''};
         await renderPage(route);
         window.history.replaceState(route, '', route.view);
     } else {
         const route: Route = {
             view: link.pathname,
-            params: getRouteParams(link.search)
+            params: link.search
         };
         window.scrollTo(0, 0);
         await renderPage(route, options);

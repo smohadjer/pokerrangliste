@@ -7,6 +7,7 @@
         {{> adminNav id="edit-tournament"}}
         <section>
             <form class="form-ajax" id="post-tournament" method="POST" action="/api/tournament">
+                <input type="hidden" name="tenant_id" value="{{tenant_id}}">
                 <div class="row">
                     <label>Select tournament:</label>
                     <select id="tournament_edit_dropdown" name="tournament_id">
@@ -17,4 +18,4 @@
         </section>
     </main>
 </div>
-{{> footer season_id=season_id view="admin"}}
+{{> footer tenant_id=tenant_id season_id=season_id view="admin"}}

@@ -8,6 +8,7 @@
         <section>
             <form class="form-ajax" method="DELETE" action="/api/players">
                 <p>Only palyers who have never played in a tournament can be deleted.</p>
+                <input type="hidden" name="tenant_id" value="{{tenant_id}}">
                 <div class="row">
                     <label>Players</label>
                     <select id="player_delete_dropdown" name="player_id">
@@ -21,4 +22,4 @@
         </section>
     </main>
 </div>
-{{> footer season_id=season_id view="admin"}}
+{{> footer tenant_id=tenant_id season_id=season_id view="admin"}}

@@ -81,5 +81,6 @@ export type RouteParams = {
 
 export type Route = {
   view: string;
-  params: RouteParams;
+  //params: RouteParams;
+  params: string;
 }
