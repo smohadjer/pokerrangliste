@@ -47,9 +47,11 @@ const init = async () => {
             }
 
             // fetch app data from server and storing it in state
-            const stateData: State | undefined = await fetchData(tenant_id);
-            store.setState(stateData);
-            console.log('state before page render: ', store.getState());
+            if (tenant_id ) {
+                const stateData: State | undefined = await fetchData(tenant_id);
+                store.setState(stateData);
+                console.log('state before page render: ', store.getState());
+            }
 
             // calling renderPage to generate HTML for current route
             // we convert params to string since history methods throw error when

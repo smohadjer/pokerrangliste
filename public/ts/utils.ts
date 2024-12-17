@@ -22,7 +22,7 @@ const sortByDate = (tournaments: Tournament[]) => {
 
 export const getRebuys = (tournament: Tournament) => {
     let rebuys = 0;
-    tournament.players.forEach((player) => {
+    tournament.players?.forEach((player) => {
         rebuys += player.rebuys;
     });
     return rebuys;
@@ -60,13 +60,13 @@ export const getPlayerName = (id: string) => {
 }
 
 // Deep cloning arrays and objects with support for older browsers
-export const deepClone = (arrayOrObject) => {
+export const deepClone = (item: {} | []) => {
     if (typeof structuredClone === 'function') {
-        return structuredClone(arrayOrObject);
+        return structuredClone(item);
     } else {
-        return JSON.parse(JSON.stringify(arrayOrObject));
+        return JSON.parse(JSON.stringify(item));
     }
- }
+}
 
 export const getPlayers = (tournaments: Tournament[]) => {
     const players: Player[] = [];
@@ -205,15 +205,17 @@ function generatePlayerFields(
                     name,
                     ranking: 0,
                     rebuys: 0,
-                    prize: 0
+                    prize: 0,
+                    points: 0,
+                    bounty: 0
                 };
                 addPlayer(player);
             }
         });
     }
 
-    if (data) {
-        for (let i = 0; i<data.players.length; i++) {
+    if (data && data.players) {
+        for (let i = 0; i<data.players?.length; i++) {
             const playerName = getPlayerName(data.players[i].id);
             data.players[i].name = playerName;
             const player = data.players[i];

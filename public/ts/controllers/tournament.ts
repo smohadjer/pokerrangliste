@@ -22,21 +22,26 @@ export default (params: URLSearchParams) => {
     const cloneTournament: Tournament = deepClone(tournament);
 
     // if players have same points, list them sorted by their ranking
-    cloneTournament.players.sort((player1: Player, player2: Player) => {
-        return player1.ranking - player2.ranking;
-    });
+    if (cloneTournament.players && cloneTournament.players.length > 1) {
+        cloneTournament.players.sort((player1: Player, player2: Player) => {
+            return player1.ranking - player2.ranking;
+        });
+    }
 
-    const players: Player[] = cloneTournament.players.map((player: Player) => {
-        player.prize =  (cloneTournament.status === 'upcoming') ? 0 : getPrize(player, cloneTournament);
-        player.bounty =  (cloneTournament.status === 'upcoming') ? 0 : getBounty(player, cloneTournament);
-        player.points = (cloneTournament.status === 'upcoming') ? 0 : getPoints(player, cloneTournament);
-        player.name = getPlayerName(player.id);
-        return player;
-    });
+    let players: Player[] = cloneTournament.players;
+    if (players && players.length > 0) {
+        players.map((player: Player) => {
+            player.prize = (cloneTournament.status === 'upcoming') ? 0 : getPrize(player, cloneTournament);
+            player.bounty = (cloneTournament.status === 'upcoming') ? 0 : getBounty(player, cloneTournament);
+            player.points = (cloneTournament.status === 'upcoming') ? 0 : getPoints(player, cloneTournament);
+            player.name = getPlayerName(player.id);
+            return player;
+        });
+    }
 
     const tournamentData = {
         date: cloneTournament.date,
-        playersCount: cloneTournament.players.length,
+        playersCount: players?.length ?? 0,
         buyin: cloneTournament.buyin,
         rebuys: getRebuys(cloneTournament),
         players: players,

@@ -54,6 +54,7 @@ export default async (req, res) => {
         const tournament_id = await insertTournament(tournamentsCol, req);
         if (tournament_id) {
           // return all tournaments so state in app can be updated from response
+
           const tournamentsData = await getTournaments(tournamentsCol, tenant_id);
           res.json({
             data: {
@@ -61,7 +62,7 @@ export default async (req, res) => {
             }
           });
         } else {
-          throw new Error('Invalid data');
+          throw new Error('Failed to insert tournament');
         }
       }
     }

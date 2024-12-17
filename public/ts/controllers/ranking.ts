@@ -14,7 +14,7 @@ export default (params: URLSearchParams) => {
         season_id = state.seasons[state.seasons.length - 1]._id;
     }
     const tournaments = getTournaments(state.tournaments, season_id!);
-    const tournamentsNormalized = tournaments.filter((tournament) => tournament.status !== 'upcoming')
+    const tournamentsNormalized = tournaments.filter((tournament) => tournament.status === 'done')
 
     return {
         players: getPlayers(tournamentsNormalized),

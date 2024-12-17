@@ -11,8 +11,10 @@ export default (params: URLSearchParams) => {
     const tournaments = getTournaments(state.tournaments, season_id);
 
     const optimizedData = tournaments.map((item) => {
-        item.firstPlace = getPlayerName(item.players[0]?.id);
-        item.secondPlace = getPlayerName(item.players[1]?.id);
+        if (item.status === 'done') {
+            item.firstPlace = getPlayerName(item.players[0]?.id);
+            item.secondPlace = getPlayerName(item.players[1]?.id);
+        }
         return item;
     });
 

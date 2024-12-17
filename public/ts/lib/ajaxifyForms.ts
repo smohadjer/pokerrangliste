@@ -1,6 +1,7 @@
 import { renderPage } from './renderPage.js';
-import { State, Route, RouteParams } from './types.js';
+import { State, Route } from './types.js';
 import { store } from '../lib/store';
+import fetchData from '../lib/fetchData.js';
 
 export function ajaxifyForms(form: HTMLFormElement) {
     form.addEventListener('submit', (e) => {
@@ -59,6 +60,9 @@ export function ajaxifyForms(form: HTMLFormElement) {
                     store.setState(res.data);
                     // after successful login tenanat_id is returned
                     if (res.data.tenant_id) {
+                        // fetch app data from server and storing it in state
+                        const stateData: State | undefined = await fetchData(res.data.tenant_id);
+                        store.setState(stateData);
                         store.setState({
                             authenticated: true
                         });

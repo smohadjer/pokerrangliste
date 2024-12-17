@@ -25,7 +25,7 @@
     </tr>
     {{#each results}}
       <tr>
-        <td><a data-animation="slideInRTL" href="/tournament?tenant_id={{tenant_id}}&tournament_id={{this._id}}">{{this.date}}</a></td>
+        <td><a data-animation="slideInRTL" href="/tournament?tenant_id={{../tenant_id}}&tournament_id={{this._id}}">{{this.date}}</a></td>
         <td>{{this.points}}</td>
         <td>{{this.ranking}}</td>
         <!--<td>{{this.players}}</td>-->
