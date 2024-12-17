@@ -2,13 +2,13 @@
   <nav>
     <ul>
       {{#if season_id}}
-        <li><a class="icon icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?season_id={{season_id}}">Ranking</a></li>
-        <li><a class="icon icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?season_id={{season_id}}">Games</a></li>
+        <li><a class="icon icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?tenant_id={{tenant_id}}&season_id={{season_id}}">Ranking</a></li>
+        <li><a class="icon icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?tenant_id={{tenant_id}}&season_id={{season_id}}">Games</a></li>
       {{else}}
-        <li><a class="icon icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking">Ranking</a></li>
-        <li><a class="icon icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments">Games</a></li>
+        <li><a class="icon icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?tenant_id={{tenant_id}}">Ranking</a></li>
+        <li><a class="icon icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?tenant_id={{tenant_id}}">Games</a></li>
       {{/if}}
-      <li><a class="icon icon--admin {{#ifEquals view 'admin'}}active{{/ifEquals}}" href="/admin/home">Admin</a></li>
+      <li><a class="icon icon--admin {{#ifEquals view 'admin'}}active{{/ifEquals}}" href="/admin/home?tenant_id={{tenant_id}}">Admin</a></li>
     </ul>
   </nav>
 </footer>

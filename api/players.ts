@@ -11,10 +11,17 @@ export default async (req, res) => {
     const collection = database.collection('players');
 
     if (req.method === 'GET') {
+      const tenant_id = req.query.tenant_id;
       const id = req.query?.id;
       const name = req.query?.name;
       if (id || name) {
-        const query = id ? { _id: new ObjectId(id)} : { name: name };
+        const query = id ? {
+          tenant_id,
+          _id: new ObjectId(id)
+        } : {
+          tenant_id,
+          name: name
+        };
         const doc = await collection.findOne(query);
         if (doc) {
           res.json(doc);
@@ -22,15 +29,19 @@ export default async (req, res) => {
           res.status(404).end();
         }
       } else {
-        const docs = await fetchAllPlayers(collection);
+        const docs = await fetchAllPlayers(collection, tenant_id);
         res.json(docs);
       }
     }
 
     if (req.method === 'POST') {
+      const tenant_id = req.body.tenant_id;
+      if (!tenant_id || tenant_id.length === 0) {
+        throw new Error('No tenant ID provided');
+      }
       const name = req.body.name;
       const playerId = req.body.player_id;
-      const doc = await collection.findOne({ name: name });
+      const doc = await collection.findOne({ tenant_id, name });
 
       if (doc) {
         res.status(500).json({error: `Name ${name} is already taken`});
@@ -38,13 +49,13 @@ export default async (req, res) => {
       }
 
       if (playerId) {
-        await editPlayerName(name, playerId, collection);
+        await editPlayerName(name, playerId, collection, tenant_id);
       } else {
-        await addNewPlayer(name, collection);
+        await addNewPlayer(name, collection, tenant_id);
       }
 
       // return all players so state in app can be updated from response
-      const players = await fetchAllPlayers(collection);
+      const players = await fetchAllPlayers(collection, tenant_id);
       res.json({
         data: { players }
       });

@@ -19,49 +19,50 @@ export default async (req, res) => {
     const playersCol = database.collection('players');
 
     if (req.method === 'GET') {
+      const tenant_id = req.query.tenant_id;
       const tournaments = req.query.tournament_id
-        ? await getTournament(tournamentsCol, req.query.tournament_id)
-        : await getTournaments(tournamentsCol, req.body.season_id);
+        ? await getTournament(tournamentsCol, tenant_id, req.query.tournament_id)
+        : await getTournaments(tournamentsCol, tenant_id, req.body.season_id);
       const data = {
-        seasons: await seasonsCol.find().toArray(),
-        players: await playersCol.find().sort({ name: 1 }).toArray(),
+        seasons: await seasonsCol.find({tenant_id}).toArray(),
+        players: await playersCol.find({tenant_id}).sort({ name: 1 }).toArray(),
         tournaments: tournaments
       };
       res.json(data);
     }
 
     if (req.method === 'POST') {
-      console.log(req.body);
+      const tenant_id = req.body.tenant_id;
+      if (!tenant_id || tenant_id.length === 0) {
+        throw new Error('No tenant ID provided');
+      }
       if (req.body.tournament_id) {
         const response = await editTournament(tournamentsCol, req, req.body.tournament_id);
         if (response && response.modifiedCount > 0) {
           console.log('edited tournament successfully');
           // return all tournaments so state in app can be updated from response
-          const tournamentsData = await getTournaments(tournamentsCol);
+          const tournamentsData = await getTournaments(tournamentsCol, tenant_id);
           res.json({
             data: {
               tournaments: tournamentsData
             }
           });
         } else {
-          res.status(500).send({
-            error: 'Invalid data!'
-          });
+          throw new Error('Invalid data');
         }
       } else {
         const tournament_id = await insertTournament(tournamentsCol, req);
         if (tournament_id) {
           // return all tournaments so state in app can be updated from response
-          const tournamentsData = await getTournaments(tournamentsCol);
+
+          const tournamentsData = await getTournaments(tournamentsCol, tenant_id);
           res.json({
             data: {
               tournaments: tournamentsData
             }
           });
         } else {
-          res.status(500).send({
-            error: 'Invalid data!'
-          });
+          throw new Error('Failed to insert tournament');
         }
       }
     }

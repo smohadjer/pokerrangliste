@@ -1,6 +1,7 @@
 import { renderPage } from './renderPage.js';
-import { Route } from './types.js';
+import { State, Route } from './types.js';
 import { store } from '../lib/store';
+import fetchData from '../lib/fetchData.js';
 
 export function ajaxifyForms(form: HTMLFormElement) {
     form.addEventListener('submit', (e) => {
@@ -40,6 +41,7 @@ export function ajaxifyForms(form: HTMLFormElement) {
             })
             .then(response => response.json())
             .then(async (res) => {
+                console.log(res);
                 form.querySelector('.submit')!.classList.remove('loading');
                 if (res.error) {
                     console.error(res.error);
@@ -56,15 +58,38 @@ export function ajaxifyForms(form: HTMLFormElement) {
                 // if response returns data, update the state with it
                 if (res.data) {
                     store.setState(res.data);
+                    // after successful login tenanat_id is returned
+                    if (res.data.tenant_id) {
+                        // fetch app data from server and storing it in state
+                        const stateData: State | undefined = await fetchData(res.data.tenant_id);
+                        store.setState(stateData);
+                        store.setState({
+                            authenticated: true
+                        });
+                    }
+                    console.log(store.getState())
                 }
 
                 if (redirect) {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (res.data && res.data.tenant_id) {
+                        urlParams.set('tenant_id', (res.data.tenant_id));
+                    }
+                    console.log({urlParams})
+
                     const route: Route = {
                         view: redirect,
-                        params: {}
+                        params: urlParams.toString()
                     };
                     await renderPage(route);
-                    window.history.pushState(route, '', route.view);
+
+                    let url = redirect;
+                    if (route.params.length > 0) {
+                      url += '?' + urlParams.toString();
+                    }
+
+                    console.log({url})
+                    window.history.pushState(route, '', url);
                 }
             })
         }

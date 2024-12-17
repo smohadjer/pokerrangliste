@@ -1,4 +1,4 @@
-import { Tournament, Profile, RouteParams } from '../lib/types';
+import { Tournament, Profile } from '../lib/types';
 import {
     getPoints,
     getPlayers,
@@ -7,26 +7,36 @@ import {
 } from '../utils';
 import { store } from '../lib/store';
 
-export default (params: RouteParams) => {
+export default (params: URLSearchParams) => {
     const state = store.getState();
-    const season_id = params.season_id || state.seasons[state.seasons.length - 1]._id;
+    let season_id = params.get('season_id') ?? undefined;
+    if (!season_id && state.seasons?.length > 0) {
+        season_id = state.seasons[state.seasons.length - 1]._id;
+    }
     const tournaments = getTournaments(state.tournaments, season_id);
-    const tournamentsNormalized = tournaments.filter((tournament) => tournament.status !== 'upcoming')
+    const tournamentsNormalized = tournaments.filter(
+        tournament => tournament.status !== 'upcoming')
+    const playerId = params.get('player_id');
 
-    if (!params.player_id) return;
+    if (!playerId) return;
 
     const enhancedPlayers = getPlayers(tournamentsNormalized);
     const player = enhancedPlayers.find((player) =>
-        player.id === params.player_id);
-    const ranking = enhancedPlayers.findIndex((player) =>
-        player.id === params.player_id) + 1;
-    const playerTournaments = tournamentsNormalized.filter((tournament: Tournament) => {
-        return tournament.players.find((player) => player.id === params.player_id)
-    });
+        player.id === playerId);
+    const ranking = enhancedPlayers.findIndex(
+        player => player.id === playerId
+    ) + 1;
+    const playerTournaments = tournamentsNormalized.filter(
+        tournament => tournament.players.find(
+            player => player.id === playerId
+        )
+    );
     const results: Profile[] = [];
 
     playerTournaments.forEach((item: Tournament) => {
-        const index = item.players.findIndex((player) => player.id === params.player_id);
+        const index = item.players.findIndex(
+            player => player.id === playerId
+        );
         const result: Profile = {
             date: item.date,
             _id: item._id,
@@ -47,7 +57,8 @@ export default (params: RouteParams) => {
         results: results,
         season_id: season_id,
         seasonName:  getSeasonName(season_id!, state.seasons),
-        seasons: state.seasons
+        seasons: state.seasons,
+        tenant_id: params.get('tenant_id')
     };
 
     return profileData;

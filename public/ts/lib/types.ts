@@ -1,13 +1,13 @@
-export interface Player {
-  id: any,
-  name?: string,
-  rebuys: number,
-  ranking: number,
-  points?: number,
-  bounty?: number,
-  prize: number,
-  games?: number
-}
+export type Player = {
+  id: string;
+  name?: string;
+  rebuys: number;
+  ranking: number;
+  points: number;
+  bounty: number;
+  prize: number;
+  games?: number;
+};
 
 export type PlayerDB = {
   readonly _id: string;
@@ -81,5 +81,6 @@ export type RouteParams = {
 
 export type Route = {
   view: string;
-  params: RouteParams;
+  //params: RouteParams;
+  params: string;
 }
