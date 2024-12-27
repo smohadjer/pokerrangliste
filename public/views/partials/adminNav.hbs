@@ -1,10 +1,10 @@
 <ul class="admin__nav">
-    <li><a {{#ifEquals id 'add-tournament'}}class="active"{{/ifEquals}} href="/admin/add-tournament">Add new tournament</a></li>
-    <li><a {{#ifEquals id 'edit-tournament'}}class="active"{{/ifEquals}} href="/admin/edit-tournament">Edit tournament</a></li>
-    <li><a {{#ifEquals id 'add-season'}}class="active"{{/ifEquals}} href="/admin/add-season">Add new season</a></li>
-    <li><a {{#ifEquals id 'edit-season'}}class="active"{{/ifEquals}} href="/admin/edit-season">Edit season</a></li>
-    <li><a {{#ifEquals id 'add-player'}}class="active"{{/ifEquals}} href="/admin/add-player">Add new player</a></li>
-    <li><a {{#ifEquals id 'edit-player'}}class="active"{{/ifEquals}} href="/admin/edit-player">Edit player</a></li>
+    <li><a class="icon icon--inline icon--game_add {{#ifEquals id 'add-tournament'}}active{{/ifEquals}}" href="/admin/add-tournament?tenant_id={{tenant_id}}">Add new tournament</a></li>
+    <li><a class="icon icon--inline icon--game_edit {{#ifEquals id 'edit-tournament'}}active{{/ifEquals}}" href="/admin/edit-tournament?tenant_id={{tenant_id}}">Edit tournament</a></li>
+    <li><a class="icon icon--inline icon--season_add {{#ifEquals id 'add-season'}}active{{/ifEquals}}" href="/admin/add-season?tenant_id={{tenant_id}}">Add new season</a></li>
+    <li><a class="icon icon--inline icon--season_edit {{#ifEquals id 'edit-season'}}active{{/ifEquals}}" href="/admin/edit-season?tenant_id={{tenant_id}}">Edit season</a></li>
+    <li><a class="icon icon--inline icon--person_add {{#ifEquals id 'add-player'}}active{{/ifEquals}}" href="/admin/add-player?tenant_id={{tenant_id}}">Add new player</a></li>
+    <li><a class="icon icon--inline icon--person_edit {{#ifEquals id 'edit-player'}}active{{/ifEquals}}" href="/admin/edit-player?tenant_id={{tenant_id}}">Edit player</a></li>
     <!--
         <li><a href="/admin/delete-player">Delete player</a></li>
     -->

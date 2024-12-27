@@ -1,6 +1,8 @@
 <header>
   <h1>Games</h1>
-  {{> seasonSelector seasons=seasons season_id=season_id }}
+  {{#if seasons}}
+    {{> seasonSelector seasons=seasons season_id=season_id }}
+  {{/if}}
 </header>
 <div class="wrapper">
   <table class="table-results">
@@ -15,7 +17,7 @@
         <td>
            {{reverseIndex ../tournaments.length @index}}</td>
         </td>
-        <td class="name"><a data-animation="slideInRTL" href="/tournament?tournament_id={{this._id}}">{{this.date}}</a>
+        <td class="name"><a data-animation="slideInRTL" href="/tournament?tenant_id={{tenant_id}}&season_id={{../season_id}}&tournament_id={{this._id}}">{{this.date}}</a>
         <span class="status {{#if this.status}}{{this.status}}{{/if}}"></span></td>
         <td>{{this.players.length}}</td>
         <td>
@@ -29,5 +31,8 @@
       </tr>
     {{/each}}
   </table>
+  {{#ifCond tournaments.length '==' 0}}
+    <p style="text-align: center">No data available!</p>
+  {{/ifCond}}
 </div>
-{{> footer season_id=season_id view="tournaments"}}
+{{> footer tenant_id=tenant_id season_id=season_id view="tournaments"}}

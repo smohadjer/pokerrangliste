@@ -1,13 +1,15 @@
 
 <header>
-  <h1>Edit Season</h1>
+  <h1>Admin</h1>
   {{> logout }}
 </header>
 <div class="wrapper">
     <main class="admin">
-        {{> adminNav id="edit-season"}}
+        <p><a class="icon icon--inline icon--back" href="/admin/home?tenant_id={{tenant_id}}">Back</a></p>
         <section>
+            <h2>Edit seasons</h2>
             <form class="form-ajax" method="POST" action="/api/seasons">
+                <input type="hidden" name="tenant_id" value="{{tenant_id}}">
                 <div class="row">
                     <label>Seasons</label>
                     <select id="season_edit_dropdown" name="season_id">
@@ -26,4 +28,4 @@
         </section>
     </main>
 </div>
-{{> footer season_id=season_id view="admin"}}
+{{> footer tenant_id=tenant_id season_id=season_id view="admin"}}

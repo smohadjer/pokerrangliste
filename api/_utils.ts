@@ -15,16 +15,16 @@ export const sanitize = (item) => {
   }
 };
 
-export const fetchAllPlayers = async (collection) => {
-    return await collection.find()
+export const fetchAllPlayers = async (collection, tenant_id) => {
+    return await collection.find({tenant_id})
       // using collation so sort is case insensitive
       .collation({ locale: 'en' })
       .sort({ name: 1 })
       .toArray();
 };
 
-export const fetchAllSeasons = async (collection) => {
-  return await collection.find()
+export const fetchAllSeasons = async (collection, tenant_id) => {
+  return await collection.find({tenant_id})
     // using collation so sort is case insensitive
     .collation({ locale: 'en' })
     .sort({ name: 1 })
@@ -39,13 +39,18 @@ export const fetchPlayerById = async (collection, playerId) => {
 
 export const getTournaments = async (
   collection: Collection,
+  tenant_id: string,
   seasonId?: string) => {
-  const query = (seasonId) ? {'season_id': seasonId} : {};
+  const query = seasonId ? { tenant_id, 'season_id': seasonId } : { tenant_id} ;
   return await collection.find(query).sort({date: -1}).toArray();
 };
 
-export const getTournament = async (collection: Collection, tournamentId: string) => {
+export const getTournament = async (
+  collection: Collection,
+  tenant_id: string,
+  tournamentId: string) => {
   const tournament = await collection.findOne({
+    tenant_id,
     _id: new ObjectId(tournamentId)
   });
   return [tournament];
@@ -69,63 +74,78 @@ const validateTournament = (count, buyin, prizes, players) => {
 };
 
 const createTournamentDocument = (req) => {
-  console.log(req.body);
-  // req.body.players is an array of all players IDs
-  const count = Number(req.body.players.length);
   const buyin = Number(req.body.buyin);
   const status = sanitize(req.body.status);
   const season_id = req.body.season_id;
+  const tenant_id = req.body.tenant_id;
   const date = sanitize(req.body.date);
-  const round = sanitize(req.body.round);
-  const players: Player[] = [];
-  const prizes: number[] = [];
 
-  // set players and prizes
-  for (let i=0; i<count; i++) {
-    const player: Player = <Player>{};
-    player.id = req.body.players[i];
-    const prize = Number(sanitize(req.body[`player_${player.id}_prize`]));
-    player.rebuys = Number(sanitize(req.body[`player_${player.id}_rebuys`]));
-    player.ranking = Number(sanitize(req.body[`player_${player.id}_ranking`]));
-    player.prize = prize;
-    players.push(player);
-    if (prize > 0) {
-      prizes.push(prize);
+ // req.body.players is either undefined (when no player has been added to a tournament yet) or a string equal to id of a single player or an array of ids of multiple players
+
+  // normalize req.body.players into an array
+  if (req.body.players) {
+    const playerIDs = (typeof req.body.players === 'string')
+      ? [req.body.players]
+      : req.body.players;
+    const count = playerIDs.length;
+    const players: Player[] = [];
+    const prizes: number[] = [];
+
+    // set players and prizes
+    for (let i=0; i<count; i++) {
+      const player: Player = <Player>{};
+      player.id = playerIDs[i];
+      const prize = Number(sanitize(req.body[`player_${player.id}_prize`]));
+      player.rebuys = Number(sanitize(req.body[`player_${player.id}_rebuys`]));
+      player.ranking = Number(sanitize(req.body[`player_${player.id}_ranking`]));
+      player.prize = prize;
+      players.push(player);
+      if (prize > 0) {
+        prizes.push(prize);
+      }
     }
+
+    // sort players based on ranking for backward compatibility
+    players.sort((player1, player2) => player1.ranking - player2.ranking)
+
+    // if tournament is done validate data
+    const isValid =  (status === 'done') ? validateTournament(count, buyin, prizes, players) : true;
+
+    if (isValid) return {
+      season_id,
+      tenant_id,
+      date,
+      status,
+      buyin,
+      prizes,
+      players
+    };
+  } else {
+    return {
+      season_id,
+      tenant_id,
+      date,
+      status,
+      buyin,
+    };
   }
-
-  // sort players based on ranking for backward compatibility
-  players.sort((player1, player2) => player1.ranking - player2.ranking)
-
-  // if tournament is done validate data
-  const isValid =  (status === 'done') ? validateTournament(count, buyin, prizes, players) : true;
-
-  if (isValid) return {
-    season_id,
-    date,
-    round,
-    status,
-    buyin,
-    prizes,
-    players
-  };
 };
 
-export const insertTournament = async (tournamentsCol, req) => {
+export const insertTournament = async (collection: Collection, req) => {
   const tournamentDoc = createTournamentDocument(req);
-
   if (tournamentDoc) {
-    const respnose = await tournamentsCol.insertOne(tournamentDoc);
+    const respnose = await collection.insertOne(tournamentDoc);
     return respnose.insertedId;
   } else {
     return;
   }
 };
 
-export const editTournament = async (tournamentsCol, req, tournamentId) => {
+export const editTournament = async (
+  tournamentsCol: Collection,
+  req,
+  tournamentId: string) => {
   const tournamentDoc = createTournamentDocument(req);
-  console.log('------------- EDITING ', tournamentDoc);
-
   if (tournamentDoc) {
     const query = { _id: new ObjectId(tournamentId) };
     const response = await tournamentsCol.replaceOne(query, tournamentDoc);
@@ -135,32 +155,43 @@ export const editTournament = async (tournamentsCol, req, tournamentId) => {
   }
 };
 
-export const editPlayerName = async (name, playerId, collection) => {
-  const query = { _id: new ObjectId(playerId) };
-  await collection.updateOne(query, {
-      $set: {
-        name: name
-      }
+export const addNewPlayer = async (
+  name: string,
+  collection: Collection,
+  tenant_id: string) => {
+  const response = await collection.insertOne({name, tenant_id});
+  console.log(response);
+};
+
+export const addNewSeason = async (
+  name: string,
+  collection: Collection,
+  tenant_id: string) => {
+  const response = await collection.insertOne({name, tenant_id});
+  console.log(response);
+};
+
+export const editPlayerName = async (
+  name: string,
+  id: string,
+  collection: Collection,
+  tenant_id: string) => {
+  const query = {tenant_id, _id: new ObjectId(id)};
+  const response = await collection.updateOne(query, {
+    $set: {name: name}
   });
-  console.log(`Changed name of an existing player to ${name}`);
+  console.log(response);
 };
 
-export const addNewPlayer = async (name, collection) => {
-  const insertResponse = await collection.insertOne({ name: name });
-  console.log(`Added new player with name ${name} and id `, insertResponse.insertedId);
-};
-
-export const editSeasonName = async (name, seasonId, collection) => {
-  const query = { _id: new ObjectId(seasonId) };
-  await collection.updateOne(query, {
-      $set: {
-        name: name
-      }
+export const editSeasonName = async (
+  name: string,
+  id: string,
+  collection: Collection,
+  tenant_id: string) => {
+  const query = {tenant_id, _id: new ObjectId(id)};
+  const response = await collection.updateOne(query, {
+      $set: {name: name}
   });
-  console.log(`Changed name of an existing season to ${name}`);
+  console.log(response);
 };
 
-export const addNewSeason = async (name, collection) => {
-  const insertResponse = await collection.insertOne({ name: name });
-  console.log(`Added new season with name ${name} and id `, insertResponse.insertedId);
-};

@@ -4,9 +4,9 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "bundle:index": "esbuild public/ts/index.ts --bundle --format=esm --sourcemap --outfile=public/js/index.js --minify",
-    "build": "npm run bundle:index",
-    "start": "npm run bundle:index -- --watch=forever"
+    "bundle:app": "esbuild public/ts/app.ts --bundle --format=esm --sourcemap --outfile=public/js/app.js --minify",
+    "build": "npm run bundle:app",
+    "start": "npm run bundle:app -- --watch=forever"
 
   },
   "author": "Saeid Mohadjer",
@@ -22,7 +22,8 @@
     "dotenv": "^16.0.3",
     "handlebars": "^4.7.8",
     "jose": "^5.1.0",
-    "mongodb": "^5.8.1"
+    "mongodb": "^5.8.1",
+    "bcrypt": "^5.1.1"
   },
   "engines": {
     "node": ">=18.18.0"

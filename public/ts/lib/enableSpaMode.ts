@@ -1,9 +1,9 @@
 import { renderPage } from './renderPage.js';
 import { RenderPageOptions, Route } from './types.js';
-import { getRouteParams } from '../utils.js';
-import { isAuthenticated } from '../utils.js';
-import { State } from './types';
-import { store } from './store.js';
+// import { isAuthenticated } from '../utils.js';
+// import { State } from './types';
+// import { store } from './store.js';
+import { router } from './router.js';
 
 const results = document.querySelector('#results');
 
@@ -26,34 +26,38 @@ const clickHandler = async (event: MouseEvent) => {
     window.history.replaceState(tempState, '');
 
     // const href = link.getAttribute('href')!;
-    const options: RenderPageOptions = {};
+    const options: RenderPageOptions = {
+        type: 'click'
+    };
     const animationClass = link.getAttribute('data-animation');
     if (animationClass) {
         options.animation = animationClass;
     }
 
-    const requiresAuth = link.href.indexOf('admin') > -1;
-    const state: State = store.getState();
+    // const requiresAuth = link.href.indexOf('admin') > -1;
+    // const state: State = store.getState();
 
-    // authenticate with server
-    if (requiresAuth && !state.authenticated) {
-        const authenticated = await isAuthenticated();
-        store.setState({ authenticated });
-    }
+    // // authenticate with server
+    // if (requiresAuth && !state.authenticated) {
+    //     const authenticated = await isAuthenticated();
+    //     store.setState({ authenticated });
+    // }
 
-    if (requiresAuth && !store.getState().authenticated) {
-        const route: Route = {view: '/login', params: {}};
-        await renderPage(route);
-        window.history.replaceState(route, '', route.view);
-    } else {
-        const route: Route = {
-            view: link.pathname,
-            params: getRouteParams(link.search)
-        };
-        window.scrollTo(0, 0);
-        await renderPage(route, options);
-        window.history.pushState(route, '', link.href);
-    }
+    // if (requiresAuth && !store.getState().authenticated) {
+    //     const route: Route = {view: '/login', params: ''};
+    //     await renderPage(route);
+    //     window.history.replaceState(route, '', route.view);
+    // } else {
+    //     const route: Route = {
+    //         view: link.pathname,
+    //         params: link.search
+    //     };
+    //     window.scrollTo(0, 0);
+    //     await renderPage(route, options);
+    //     window.history.pushState(route, '', link.href);
+    // }
+
+    router(link.pathname, link.search, options);
 };
 
 export default function enableSpaMode() {
@@ -63,7 +67,11 @@ export default function enableSpaMode() {
 
 
     window.addEventListener("popstate", async (event) => {
-        await renderPage(event.state);
+        console.log(event.state);
+        const options: RenderPageOptions = {
+            type: 'click'
+        };
+        await renderPage(event.state, options);
         if (event.state.scroll) {
             results?.querySelector('.wrapper')!.scrollTo(0, event.state.scroll);
         }

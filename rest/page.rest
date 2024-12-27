@@ -1,0 +1,12 @@
+GET http://localhost:3000/login
+
+###
+
+GET http://localhost:3000/login
+Cookie: jwt=eyJhbGciOiJIUzI1NiJ9.eyJ1c2VybmFtZSI6InRlc3QiLCJleHAiOjE3NDEwODc1NTd9.WYkbbb0rOwa_w_crBYtp0Vx8EP8lS5E8Qs4J8Y3gSRk
+
+###
+
+GET http://localhost:3000/admin/home
+
+###

@@ -1,7 +1,9 @@
 
 <header>
   <h1 {{#ifEquals ranking 1}}class="first-place"{{/ifEquals}} {{#ifEquals ranking 2}}class="second-place"{{/ifEquals}} {{#ifEquals ranking 3}}class="third-place"{{/ifEquals}}>{{player_name}}</h1>
-  {{> seasonSelector seasons=seasons season_id=season_id }}
+  {{#if seasons}}
+    {{> seasonSelector seasons=seasons season_id=season_id }}
+  {{/if}}
 </header>
 <div class="wrapper">
   <table class="details">
@@ -23,7 +25,7 @@
     </tr>
     {{#each results}}
       <tr>
-        <td><a data-animation="slideInRTL" href="/tournament?tournament_id={{this._id}}">{{this.date}}</a></td>
+        <td><a data-animation="slideInRTL" href="/tournament?tenant_id={{../tenant_id}}&tournament_id={{this._id}}">{{this.date}}</a></td>
         <td>{{this.points}}</td>
         <td>{{this.ranking}}</td>
         <!--<td>{{this.players}}</td>-->
@@ -32,5 +34,5 @@
     {{/each}}
   </table>
 </div>
-{{> footer season_id=season_id view="profile"}}
+{{> footer tenant_id=tenant_id season_id=season_id view="profile"}}
 

@@ -1,11 +1,11 @@
 
 <header>
-  <h1>Admin</h1>
+  <h1>Admin ({{tenant_name}})</h1>
   {{> logout }}
 </header>
 <div class="wrapper">
     <main class="admin">
-      {{> adminNav }}
+      {{> adminNav tenant_id=tenant_id }}
     </main>
 </div>
-{{> footer season_id=season_id view="admin"}}
+{{> footer tenant_id=tenant_id season_id=season_id view="admin"}}

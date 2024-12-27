@@ -2,9 +2,9 @@ import { State } from './lib/types';
 import { store } from './lib/store.js';
 import {
     populateSelectTournaments,
-    generateHTML,
     initTournamentForm
 } from './utils.js';
+import { generateHTML } from './components/generateHTML.js';
 
 export function initEditTournament(container: HTMLElement) {
     const tournamentDropdown: HTMLSelectElement = container.querySelector('#tournament_edit_dropdown')!;
