@@ -1,8 +1,5 @@
 import { renderPage } from './renderPage.js';
 import { RenderPageOptions, Route } from './types.js';
-// import { isAuthenticated } from '../utils.js';
-// import { State } from './types';
-// import { store } from './store.js';
 import { router } from './router.js';
 
 const results = document.querySelector('#results');
@@ -33,29 +30,6 @@ const clickHandler = async (event: MouseEvent) => {
     if (animationClass) {
         options.animation = animationClass;
     }
-
-    // const requiresAuth = link.href.indexOf('admin') > -1;
-    // const state: State = store.getState();
-
-    // // authenticate with server
-    // if (requiresAuth && !state.authenticated) {
-    //     const authenticated = await isAuthenticated();
-    //     store.setState({ authenticated });
-    // }
-
-    // if (requiresAuth && !store.getState().authenticated) {
-    //     const route: Route = {view: '/login', params: ''};
-    //     await renderPage(route);
-    //     window.history.replaceState(route, '', route.view);
-    // } else {
-    //     const route: Route = {
-    //         view: link.pathname,
-    //         params: link.search
-    //     };
-    //     window.scrollTo(0, 0);
-    //     await renderPage(route, options);
-    //     window.history.pushState(route, '', link.href);
-    // }
 
     router(link.pathname, link.search, options);
 };

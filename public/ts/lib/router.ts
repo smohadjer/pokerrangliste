@@ -18,7 +18,11 @@ export async function router(
     const tenant_id = state.tenant.id || params.get('tenant_id');
 
     if (!tenant_id) {
-        renderRoute('/login', '', options);
+        if (path === '/register') {
+            renderRoute('/register', '', options);
+        } else {
+            renderRoute('/login', '', options);
+        }
         return;
     }
 
@@ -43,7 +47,11 @@ export async function router(
         }
     } else {
         if (requiresAuth || loginOrRegisterPage) {
-            renderRoute('/login', '', options);
+            if (path === '/register') {
+                renderRoute(path, '', options);
+            } else {
+                renderRoute('/login', '', options);
+            }
         } else {
             renderRoute(path, params.toString(), options);
         }

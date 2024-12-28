@@ -2,7 +2,6 @@ import enableSpaMode from './lib/enableSpaMode.js';
 import { setHandlebars } from './lib/setHandlebars.js';
 import { router } from './lib/router.js';
 import { RenderPageOptions } from './lib/types.js';
-//import { isAuthenticated } from './utils.js';
 import { store } from './lib/store.js';
 
 (async () => {
@@ -23,20 +22,11 @@ import { store } from './lib/store.js';
         name: string;
     }
 
-    // if user has a valid token save tenant from token to state
-    // const data: {tenant: Tenant} = await isAuthenticated();
-    // if (data?.tenant) {
-    //     store.setState(data);
-    // }
-
-    // if user has tenant in local storage we save it to state
-    const tenant = localStorage.getItem('tenant');
-    console.log({tenant});
-    if (tenant) {
-        const tenantObject = JSON.parse(tenant);
-        store.setState({
-            tenant: tenantObject
-        });
+    // if user has tenant in local storage, save it to state
+    const tenantString = localStorage.getItem('tenant');
+    if (tenantString) {
+        const tenant: Tenant = JSON.parse(tenantString);
+        store.setState({tenant});
     }
 
     router(window.location.pathname, window.location.search, options);
