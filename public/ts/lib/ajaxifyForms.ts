@@ -1,17 +1,21 @@
 import { renderPage } from './renderPage.js';
-import { State, Route } from './types.js';
+import { State, Route, RenderPageOptions} from './types.js';
 import { store } from '../lib/store';
 import fetchData from '../lib/fetchData.js';
+import { router } from '../lib/router.js';
 
 export function ajaxifyForms(form: HTMLFormElement) {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const form = e.target;
         if (form && form instanceof HTMLFormElement) {
-            form.querySelector('.submit')!.classList.add('loading');
+            const submitButton = form.querySelector('.submit');
+
+            if (submitButton) {
+                submitButton.classList.add('loading');
+            }
             const redirect = form.dataset.redirect;
             const formData = new FormData(form);
-
 
             // let object: { [key: string]: FormDataEntryValue; } = {};
             // for (const pair of formData.entries()) {
@@ -41,8 +45,7 @@ export function ajaxifyForms(form: HTMLFormElement) {
             })
             .then(response => response.json())
             .then(async (res) => {
-                console.log(res);
-
+                console.log(res)
                 if (res.error) {
                     console.error(res.error);
                     form.classList.add('error');
@@ -50,15 +53,32 @@ export function ajaxifyForms(form: HTMLFormElement) {
                     if (errorElm) {
                         errorElm.innerHTML = res.error;
                     }
-                    form.querySelector('.submit')!.classList.remove('loading');
+                    if (submitButton) {
+                        submitButton.classList.remove('loading');
+                    }
                     return;
                 } else {
                     form.classList.remove('error');
                 }
 
+
+                // on logout clear state and local storage from tenant
+                if (url.indexOf('logout') > -1) {
+                    console.log('Removing tenant from state and local storage');
+                    localStorage.removeItem('tenant');
+                    store.setState({
+                        tenant: {
+                            id: undefined,
+                            name: undefined
+                        }
+                    });
+                }
+
                 if (res.data) {
                     // after successful login tenant is returned
                     if (res.data.tenant) {
+                        localStorage.setItem('tenant', JSON.stringify(res.data.tenant));
+
                         // fetch app data from server and storing it in state
                         const data: State | undefined = await fetchData(res.data.tenant.id);
                         store.setState(data);
@@ -66,31 +86,36 @@ export function ajaxifyForms(form: HTMLFormElement) {
 
                     // Update the state with data returned from api
                     store.setState(res.data);
-                    console.log('Updated state after call to api:', store.getState());
                 }
 
-                form.querySelector('.submit')!.classList.remove('loading');
+                if (submitButton) {
+                    submitButton.classList.remove('loading');
+                }
 
                 if (redirect) {
-                    const urlParams = new URLSearchParams(window.location.search);
-                    if (res.data && res.data.tenant.id) {
-                        urlParams.set('tenant_id', (res.data.tenant.id));
-                    }
-                    console.log({urlParams})
+                    // const urlParams = new URLSearchParams(window.location.search);
+                    // if (res.data && res.data.tenant.id) {
+                    //     urlParams.set('tenant_id', (res.data.tenant.id));
+                    // }
 
-                    const route: Route = {
-                        view: redirect,
-                        params: urlParams.toString()
+                    // const route: Route = {
+                    //     view: redirect,
+                    //     params: urlParams.toString()
+                    // };
+
+                    const options: RenderPageOptions = {
+                        type: 'click'
                     };
-                    await renderPage(route);
+                    // await renderPage(route, options);
 
-                    let url = redirect;
-                    if (route.params.length > 0) {
-                      url += '?' + urlParams.toString();
-                    }
+                    // let url = redirect;
+                    // if (route.params.length > 0) {
+                    //   url += '?' + urlParams.toString();
+                    // }
 
-                    console.log({url})
-                    window.history.pushState(route, '', url);
+                    // window.history.pushState(route, '', url);
+
+                    router(redirect, '', options);
                 }
             }).catch(error => {
                 console.log(error);

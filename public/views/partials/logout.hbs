@@ -1,1 +1,5 @@
-<a class="no-ajax icon icon--inline icon--logout" href="/api/logout" title="Logout">Sign out</a>
+<form method="POST" action="/api/logout" class="form-ajax" id="logout" data-redirect="/login">
+    <button>Sign out</button>
+</form>
+
+{{!-- <a class="icon icon--inline icon--logout" href="/api/logout" title="Logout">Sign out</a> --}}

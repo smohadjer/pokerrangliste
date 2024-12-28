@@ -2,7 +2,7 @@ import enableSpaMode from './lib/enableSpaMode.js';
 import { setHandlebars } from './lib/setHandlebars.js';
 import { router } from './lib/router.js';
 import { RenderPageOptions } from './lib/types.js';
-import { isAuthenticated } from './utils.js';
+//import { isAuthenticated } from './utils.js';
 import { store } from './lib/store.js';
 
 (async () => {
@@ -24,9 +24,19 @@ import { store } from './lib/store.js';
     }
 
     // if user has a valid token save tenant from token to state
-    const data: {tenant: Tenant} = await isAuthenticated();
-    if (data?.tenant) {
-        store.setState(data);
+    // const data: {tenant: Tenant} = await isAuthenticated();
+    // if (data?.tenant) {
+    //     store.setState(data);
+    // }
+
+    // if user has tenant in local storage we save it to state
+    const tenant = localStorage.getItem('tenant');
+    console.log({tenant});
+    if (tenant) {
+        const tenantObject = JSON.parse(tenant);
+        store.setState({
+            tenant: tenantObject
+        });
     }
 
     router(window.location.pathname, window.location.search, options);

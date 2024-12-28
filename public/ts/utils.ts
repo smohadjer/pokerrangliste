@@ -157,8 +157,8 @@ export function initTournamentForm(
     generatePlayerFields(form, playerDropdown, data);
 }
 
-export const isAuthenticated = async () => {
-    const response = await fetch('/api/verifyAuth');
-    const json = await response.json();
-    return json.data;
-}
+// export const isAuthenticated = async () => {
+//     const response = await fetch('/api/verifyAuth');
+//     const json = await response.json();
+//     return json.data;
+// }

@@ -67,7 +67,6 @@ export default function enableSpaMode() {
 
 
     window.addEventListener("popstate", async (event) => {
-        console.log(event.state);
         const options: RenderPageOptions = {
             type: 'click'
         };

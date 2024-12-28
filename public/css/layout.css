@@ -18,7 +18,3 @@ html, body {
 main {
     padding: 0 1em;
 }
-
-header, footer {
-    flex-grow: 0;
-}

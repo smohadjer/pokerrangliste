@@ -1,0 +1,26 @@
+header {
+    padding: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background:
+    radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 100%);
+    flex-grow: 0;
+
+    .pending {
+        background: #1d5410;
+    }
+
+    .align-right {
+        text-align: right;
+    }
+
+    form {
+        margin: 0;
+    }
+
+    p {
+        margin: 0 0 0.5em;
+    }
+}
+

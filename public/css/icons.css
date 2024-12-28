@@ -43,6 +43,10 @@ a.icon:hover {
     background-image: url(../images/login.svg);
 }
 
+.icon--account {
+    background-image: url(../images/account.svg);
+}
+
 .icon--back {
     background-image: url(../images/back.svg);
 }

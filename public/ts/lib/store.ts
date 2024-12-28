@@ -25,7 +25,6 @@ export const store: Store = {
         return deepClone(store.state);
     },
     setState: (options: StateOptions) => {
-        console.log(options)
         for (const key in options) {
             if (store.state.hasOwnProperty(key)) {
                 store.state[key] = options[key];
