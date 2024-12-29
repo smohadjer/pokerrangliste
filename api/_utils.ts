@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from 'mongodb';
 
-interface Player {
+type Player = {
   id: string;
   rebuys: number;
   ranking: number;
@@ -64,10 +64,11 @@ const getRebuys = (players) => {
   return rebuys;
 };
 
-const validateTournament = (count, buyin, prizes, players) => {
-  const totalprize = prizes.reduce((accumulator, currentValue) => {
-    return accumulator + currentValue
+const validateTournament = (count, buyin, players: Player[]) => {
+  const totalprize = players.reduce((accumulator, player) => {
+    return accumulator + player.prize
   }, 0);
+
   const buyIns = count * buyin;
   const rebuysTotal = getRebuys(players) * buyin;
   return totalprize === buyIns + rebuysTotal;
@@ -80,8 +81,7 @@ const createTournamentDocument = (req) => {
   const tenant_id = req.body.tenant_id;
   const date = sanitize(req.body.date);
 
- // req.body.players is either undefined (when no player has been added to a tournament yet) or a string equal to id of a single player or an array of ids of multiple players
-
+  // req.body.players is either undefined (when no player has been added to a tournament yet) or a string equal to id of a single player or an array of ids of multiple players
   // normalize req.body.players into an array
   if (req.body.players) {
     const playerIDs = (typeof req.body.players === 'string')
@@ -89,27 +89,22 @@ const createTournamentDocument = (req) => {
       : req.body.players;
     const count = playerIDs.length;
     const players: Player[] = [];
-    const prizes: number[] = [];
 
     // set players and prizes
     for (let i=0; i<count; i++) {
       const player: Player = <Player>{};
       player.id = playerIDs[i];
-      const prize = Number(sanitize(req.body[`player_${player.id}_prize`]));
       player.rebuys = Number(sanitize(req.body[`player_${player.id}_rebuys`]));
       player.ranking = Number(sanitize(req.body[`player_${player.id}_ranking`]));
-      player.prize = prize;
+      player.prize = Number(sanitize(req.body[`player_${player.id}_prize`]));
       players.push(player);
-      if (prize > 0) {
-        prizes.push(prize);
-      }
     }
 
     // sort players based on ranking for backward compatibility
     players.sort((player1, player2) => player1.ranking - player2.ranking)
 
     // if tournament is done validate data
-    const isValid =  (status === 'done') ? validateTournament(count, buyin, prizes, players) : true;
+    const isValid =  (status === 'done') ? validateTournament(count, buyin, players) : true;
 
     if (isValid) return {
       season_id,
@@ -117,7 +112,6 @@ const createTournamentDocument = (req) => {
       date,
       status,
       buyin,
-      prizes,
       players
     };
   } else {
