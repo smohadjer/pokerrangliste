@@ -93,29 +93,16 @@ export function ajaxifyForms(form: HTMLFormElement) {
                 }
 
                 if (redirect) {
-                    // const urlParams = new URLSearchParams(window.location.search);
-                    // if (res.data && res.data.tenant.id) {
-                    //     urlParams.set('tenant_id', (res.data.tenant.id));
-                    // }
-
-                    // const route: Route = {
-                    //     view: redirect,
-                    //     params: urlParams.toString()
-                    // };
-
                     const options: RenderPageOptions = {
                         type: 'click'
                     };
-                    // await renderPage(route, options);
-
-                    // let url = redirect;
-                    // if (route.params.length > 0) {
-                    //   url += '?' + urlParams.toString();
-                    // }
-
-                    // window.history.pushState(route, '', url);
-
                     router(redirect, '', options);
+                } else {
+                    // update current page
+                    const options: RenderPageOptions = {
+                        type: 'reload'
+                    };
+                    router(window.location.pathname, window.location.search, options);
                 }
             }).catch(error => {
                 console.log(error);
