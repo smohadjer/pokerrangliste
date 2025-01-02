@@ -1,16 +1,21 @@
 import { renderPage } from './renderPage.js';
-import { Route } from './types.js';
+import { State, Route, RenderPageOptions} from './types.js';
 import { store } from '../lib/store';
+import fetchData from '../lib/fetchData.js';
+import { router } from '../lib/router.js';
 
 export function ajaxifyForms(form: HTMLFormElement) {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const form = e.target;
         if (form && form instanceof HTMLFormElement) {
-            form.querySelector('.submit')!.classList.add('loading');
+            const submitButton = form.querySelector('.submit');
+
+            if (submitButton) {
+                submitButton.classList.add('loading');
+            }
             const redirect = form.dataset.redirect;
             const formData = new FormData(form);
-
 
             // let object: { [key: string]: FormDataEntryValue; } = {};
             // for (const pair of formData.entries()) {
@@ -40,7 +45,7 @@ export function ajaxifyForms(form: HTMLFormElement) {
             })
             .then(response => response.json())
             .then(async (res) => {
-                form.querySelector('.submit')!.classList.remove('loading');
+                console.log(res)
                 if (res.error) {
                     console.error(res.error);
                     form.classList.add('error');
@@ -48,24 +53,59 @@ export function ajaxifyForms(form: HTMLFormElement) {
                     if (errorElm) {
                         errorElm.innerHTML = res.error;
                     }
+                    if (submitButton) {
+                        submitButton.classList.remove('loading');
+                    }
                     return;
                 } else {
                     form.classList.remove('error');
                 }
 
-                // if response returns data, update the state with it
+
+                // on logout clear state and local storage from tenant
+                if (url.indexOf('logout') > -1) {
+                    console.log('Removing tenant from state and local storage');
+                    localStorage.removeItem('tenant');
+                    store.setState({
+                        tenant: {
+                            id: undefined,
+                            name: undefined
+                        }
+                    });
+                }
+
                 if (res.data) {
+                    // after successful login tenant is returned
+                    if (res.data.tenant) {
+                        localStorage.setItem('tenant', JSON.stringify(res.data.tenant));
+
+                        // fetch app data from server and storing it in state
+                        const data: State | undefined = await fetchData(res.data.tenant.id);
+                        store.setState(data);
+                    }
+
+                    // Update the state with data returned from api
                     store.setState(res.data);
                 }
 
-                if (redirect) {
-                    const route: Route = {
-                        view: redirect,
-                        params: {}
-                    };
-                    await renderPage(route);
-                    window.history.pushState(route, '', route.view);
+                if (submitButton) {
+                    submitButton.classList.remove('loading');
                 }
+
+                if (redirect) {
+                    const options: RenderPageOptions = {
+                        type: 'click'
+                    };
+                    router(redirect, '', options);
+                } else {
+                    // update current page
+                    const options: RenderPageOptions = {
+                        type: 'reload'
+                    };
+                    router(window.location.pathname, window.location.search, options);
+                }
+            }).catch(error => {
+                console.log(error);
             })
         }
     });

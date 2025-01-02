@@ -1,12 +1,14 @@
 <header>
-  <h1>Edit Tournament</h1>
+  <h1>Admin</h1>
   {{> logout }}
 </header>
 <div class="wrapper">
     <main class="admin">
-        {{> adminNav id="edit-tournament"}}
+        <p><a class="icon icon--inline icon--back" href="/admin/home?tenant_id={{tenant_id}}">Back</a></p>
         <section>
+            <h2>Edit tournaments</h2>
             <form class="form-ajax" id="post-tournament" method="POST" action="/api/tournament">
+                <input type="hidden" name="tenant_id" value="{{tenant_id}}">
                 <div class="row">
                     <label>Select tournament:</label>
                     <select id="tournament_edit_dropdown" name="tournament_id">
@@ -17,4 +19,4 @@
         </section>
     </main>
 </div>
-{{> footer season_id=season_id view="admin"}}
+{{> footer tenant_id=tenant_id season_id=season_id view="admin"}}

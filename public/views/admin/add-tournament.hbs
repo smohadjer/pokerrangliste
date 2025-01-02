@@ -1,17 +1,19 @@
 <header>
-  <h1>Add Tournament</h1>
+    <h1>Admin</h1>
   {{> logout }}
 </header>
 <div class="wrapper">
     <main class="admin">
-        {{> adminNav id="add-tournament"}}
+        <p><a class="icon icon--inline icon--back" href="/admin/home?tenant_id={{tenant_id}}">Back</a></p>
         <section>
+            <h2>Add new tournament</h2>
             <form class="form-ajax" id="post-tournament" data-redirect="/tournaments" method="POST" action="/api/tournament">
+                <input type="hidden" name="tenant_id" value="{{tenant_id}}">
                 <fieldset id="tournament-fieldset">
-                    {{> tournamentForm round="1" buyin="10" status="upcoming" }}
+                    {{> tournamentForm buyin="10" status="upcoming" seasons="seasons" players="players" tenant_id=tenant_id }}
                 </fieldset>
             </form>
         </section>
     </main>
 </div>
-{{> footer season_id=season_id view="admin"}}
+{{> footer tenant_id=tenant_id season_id=season_id view="admin"}}

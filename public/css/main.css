@@ -11,15 +11,6 @@ body {
     font-size: 16px;
 }
 
-header {
-    padding: 1em;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background:
-    radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 100%);
-}
-
 #season-selector label {
     font-size: 1.3rem;
 }
@@ -49,12 +40,12 @@ table.details {
 
 
 h1 {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
     margin: 0;
     font-weight: 500;
 
     span {
-        font-size: 1rem;
+        font-size: 1em;
         font-weight: normal;
     }
 }
@@ -264,10 +255,6 @@ ul {
     vertical-align: baseline;
     margin-right: 0.25rem;
     animation: 1.5s blinking ease infinite;
-}
-
-header .pending {
-    background: #1d5410;
 }
 
 .status.pending {

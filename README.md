@@ -1,6 +1,13 @@
 https://tournaments.saeidmohadjer.com/
 
+
+
 # Run on localhost using Vercel serverless
+Before you can run the app you need to install Vercel CLI:
+````
+npm i -g vercel
+````
+
 - git clone https://github.com/smohadjer/pokerrangliste.git
 - npm install
 - npm start

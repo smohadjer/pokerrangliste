@@ -1,10 +1,10 @@
 /*** Only pure functions in this file! ***/
-import { State, Tournament, Player, PlayerDB, Season, RouteParams} from './lib/types';
-import { getHandlebarsTemplate } from './lib/setHandlebars.js';
-import { store } from './lib/store';
+import { State, Tournament, Player, PlayerDB, Season } from './lib/types';
+import { generatePlayerFields } from './components/generatePlayerFields';
+import getPlayerName from './components/getPlayerName';
 
 export const getSeasonName = (season_id: string, seasons: Season[]) => {
-    if (season_id === 'all-time') {
+    if (!season_id) {
         return 'All-Time';
     } else {
         return seasons.find(item => item._id == season_id)?.name;
@@ -22,7 +22,7 @@ const sortByDate = (tournaments: Tournament[]) => {
 
 export const getRebuys = (tournament: Tournament) => {
     let rebuys = 0;
-    tournament.players.forEach((player) => {
+    tournament.players?.forEach((player) => {
         rebuys += player.rebuys;
     });
     return rebuys;
@@ -37,10 +37,14 @@ export const getPoints = (player: Player, tournament: Tournament) => {
 };
 
 export const getPrize = (player: Player, tournament: Tournament) => {
-    if ( tournament.prizes.length === 0) return 0;
-    const prize = (player.ranking <= tournament.prizes.length)
-    ? tournament.prizes[player.ranking - 1] : 0;
-    return prize;
+    // only old tournaments have a prizes property
+    if (tournament.prizes && tournament.prizes.length) {
+        const prize = (player.ranking <= tournament.prizes.length)
+        ? tournament.prizes[player.ranking - 1] : 0;
+        return prize;
+    } else {
+        return player.prize;
+    }
 };
 
 export const getBounty = (player: Player, tournament: Tournament) => {
@@ -52,21 +56,14 @@ export const getBounty = (player: Player, tournament: Tournament) => {
     return bountyWinner ? bountyWinner.prize : 0;
 };
 
-export const getPlayerName = (id: string) => {
-    const state = store.getState();
-    const players: PlayerDB[] = state.players;
-    const player = players.find(player => player._id === id);
-    return player?.name;
-}
-
 // Deep cloning arrays and objects with support for older browsers
-export const deepClone = (arrayOrObject) => {
+export const deepClone = (item: {} | []) => {
     if (typeof structuredClone === 'function') {
-        return structuredClone(arrayOrObject);
+        return structuredClone(item);
     } else {
-        return JSON.parse(JSON.stringify(arrayOrObject));
+        return JSON.parse(JSON.stringify(item));
     }
- }
+}
 
 export const getPlayers = (tournaments: Tournament[]) => {
     const players: Player[] = [];
@@ -100,9 +97,9 @@ export const getPlayers = (tournaments: Tournament[]) => {
     return players;
 };
 
-export const getTournaments = (tournaments: Tournament[], season_id: string) => {
+export const getTournaments = (tournaments: Tournament[], season_id: string | undefined) => {
     let clone: Tournament[] = deepClone(tournaments);
-    if (season_id !== 'all-time') {
+    if (season_id) {
         clone = clone.filter((tour) => {
             return tour.season_id === season_id;
         });
@@ -111,34 +108,19 @@ export const getTournaments = (tournaments: Tournament[], season_id: string) => 
     return clone;
 };
 
-export const getRouteParams = (paramsString: string) => {
-    const params = new URLSearchParams(paramsString);
-    const temp: RouteParams = {};
-
-    // for browsers not supporting URLSearchParams's size property
-    const size = (params.size) ? params.size : params.toString().length;
-
-    if (size > 0) {
-        for (const [key, value] of params) {
-            temp[key] = value;
-        }
-    }
-
-    return temp;
-};
-
-export const isAuthenticated = async () => {
-    const response = await fetch('/api/verifyAuth');
-    const isAuthenticated = await response.json();
-    return isAuthenticated.valid;
-}
-
 export const enablePasswordToggle = (container: HTMLElement) => {
     const toggle = container.querySelector('#togglePassword');
     const passwordField = container.querySelector('#password');
     if (toggle) {
         toggle.addEventListener('click', (e) => {
             const type = passwordField?.getAttribute('type') === 'text' ? 'password' : 'text';
+            if (type === 'text') {
+                toggle.classList.remove('icon--show');
+                toggle.classList.add('icon--hide');
+            } else {
+                toggle.classList.remove('icon--hide');
+                toggle.classList.add('icon--show');
+            }
             passwordField?.setAttribute('type', type);
         });
     }
@@ -156,17 +138,9 @@ export function populateSelect(select: HTMLSelectElement, data: PlayerDB[] | Sea
 export function populateSelectTournaments(select: HTMLSelectElement, data: Tournament[]) {
     let options = '<option selected disabled option="">Select</option>';
     data.forEach(item => {
-        options += `<option value="${item._id}">${item.date} (${item.round})</option>`
+        options += `<option value="${item._id}">${item.date}</option>`
     });
     select.innerHTML = options;
-}
-
-export async function generateHTML(templateFile: string, data: Tournament) {
-    const template = await getHandlebarsTemplate(templateFile);
-    const htmlString = template(data);
-    const html = new DOMParser().parseFromString(htmlString,
-        'text/html').body.children;
-    return html;
 }
 
 export function initTournamentForm(
@@ -184,90 +158,5 @@ export function initTournamentForm(
     const playerDropdown: HTMLSelectElement = form.querySelector('#player_dropdown')!;
     populateSelect(playerDropdown, state.players);
 
-    generatePlayerFields(form, data);
+    generatePlayerFields(form, playerDropdown, data);
 }
-
-function generatePlayerFields(
-    container: HTMLElement,
-    data?: Tournament) {
-    const playersElm = container.querySelector('#players')!;
-    const playerDropdown: HTMLSelectElement = container.querySelector('#player_dropdown')!;
-
-    // click handler for player delete button
-    playersElm.addEventListener('click', (event) => {
-        if (event.target instanceof HTMLButtonElement &&
-        event.target.classList.contains('button-delete')) {
-            const row = event.target.closest('.row-player');
-            row?.remove();
-        }
-    });
-
-    const addPlayer = (player: Player) => {
-        const htmlString = getPlayersList(player);
-        const htmlElement = new DOMParser().parseFromString(htmlString,
-            'text/html').body.children;
-        playersElm.append(...htmlElement);
-    }
-
-    const addPlayerButton = container.querySelector('#add-player')!;
-    if (addPlayerButton) {
-        addPlayerButton.addEventListener('click', (event) => {
-            if (event.target instanceof HTMLButtonElement) {
-                const id = playerDropdown.value;
-                if (id === 'Select') return;
-                const name = playerDropdown.options[playerDropdown.selectedIndex].text;
-                const player: Player = {
-                    id,
-                    name,
-                    ranking: 0,
-                    rebuys: 0,
-                    prize: 0
-                };
-                addPlayer(player);
-            }
-        });
-    }
-
-    if (data) {
-        for (let i = 0; i<data.players.length; i++) {
-            const playerName = getPlayerName(data.players[i].id);
-            data.players[i].name = playerName;
-            const player = data.players[i];
-            addPlayer(player);
-        }
-    }
-}
-
-function getPlayersList(player: Player) {
-    let html = `<div class="row-player">
-        <div class="row">
-            <label><strong>${player.name}</strong></label>
-            <input hidden name="players" value="${player.id}"
-        </div>`;
-
-    html +=
-        `<div class="row">
-            <label class="label">Ranking:</label>
-            <input name="player_${player.id}_ranking" value="${player.ranking}" type="number" min="0">
-        </div>`;
-
-    html +=
-        `<div class="row">
-            <label class="label">Rebuys:</label>
-            <input name="player_${player.id}_rebuys" value="${player.rebuys}" type="number" min="0">
-        </div>`;
-
-    html +=
-        `<div class="row">
-            <label class="label">Prize:</label>
-            <input name="player_${player.id}_prize" value="${player.prize}" type="number" min="0">
-        </div>
-        <div class="row">
-            <label></label>
-            <button class="button-delete" type="button">Remove</button>
-        </div>
-    </div>`;
-
-    return html;
-}
-

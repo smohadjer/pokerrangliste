@@ -1,14 +1,22 @@
-a.icon {
+.icon {
     color: #666;
     text-decoration: none;
     background-repeat: no-repeat;
+    font-weight: bold;
+}
+
+.icon--inline {
+    padding-left: 30px;
+    background-position: left center;
+}
+
+.icon--block {
     background-position: center top;
     background-size: 32px;
     padding-top: 32px;
     min-width: 32px;
     display: inline-block;
     text-align: center;
-    font-weight: bold;
 }
 
 a.icon:hover {
@@ -29,4 +37,65 @@ a.icon:hover {
 
 .icon--admin {
     background-image: url(../images/admin.svg);
+}
+
+.icon--login {
+    background-image: url(../images/login.svg);
+}
+
+.icon--account {
+    background-image: url(../images/account.svg);
+}
+
+.icon--back {
+    background-image: url(../images/back.svg);
+}
+
+.icon--show {
+    background-image: url(../images/show.svg);
+    margin-left: 0.5em;
+}
+
+.icon--hide {
+    background-image: url(../images/hide.svg);
+    margin-left: 0.5em;
+}
+
+.icon--person_add {
+    background-image: url(../images/person_add.svg);
+    background-size: 32px;
+    padding-left: 38px;
+}
+
+.icon--person_edit {
+    background-image: url(../images/person_edit.svg);
+    background-size: 34px;
+    padding-left: 38px;
+    margin-left: -2px;
+}
+
+.icon--person_remove {
+    background-image: url(../images/person_remove.svg);
+    background-size: 32px;
+}
+
+button.icon {
+    background-color: transparent;
+    border: 0;
+    display: block;
+    margin-top: 5px;
+}
+
+.icon--season_add,
+.icon--season_edit {
+    background-image: url(../images/ranking.svg);
+    background-size: 32px;
+    padding-left: 38px;
+}
+
+.icon--game_add,
+.icon--game_edit {
+    background-image: url(../images/chip.svg);
+    background-size: 32px;
+    padding-left: 38px;
 }

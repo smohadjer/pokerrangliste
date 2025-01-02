@@ -3,21 +3,20 @@
   <h1>
     {{#ifCond status '==' 'pending'}}
       <span class="pending"></span>
-    {{/ifCond}} Game {{round}}
+    {{/ifCond}} Game
   </h1>
-  {{#ifCond status '==' 'pending'}}
-    <span>Status: In progress</span>
-  {{/ifCond}}
-  {{#ifCond status '==' 'upcoming'}}
-    <span>Status: Upcoming</span>
-  {{/ifCond}}
-  {{#unless status}}
-    <span>Status: Completed</span>
-  {{/unless}}
 </header>
 <div class="wrapper">
   <table class="details">
     <tr><td>Date:</td><td>{{date}}</td></tr>
+    <tr>
+      <td>Status:</td>
+      <td>
+        {{#ifCond status '==' 'pending'}}In progress{{/ifCond}}
+        {{#ifCond status '==' 'upcoming'}}Upcoming{{/ifCond}}
+        {{#ifCond status '==' 'done'}}Completed{{/ifCond}}
+      </td>
+    </tr>
     <tr><td>Players:</td><td>{{playersCount}}</td></tr>
     <tr><td>Rebuys:</td><td>{{rebuys}}</td></tr>
     <tr><td>Buyin:</td><td>{{buyin}}</td></tr>
@@ -68,4 +67,4 @@
     {{/each}}
   </table>
 </div>
-{{> footer season_id=season_id view="tournament"}}
+{{> footer tenant_id=tenant_id season_id=season_id view="tournament"}}

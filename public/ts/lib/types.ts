@@ -1,13 +1,13 @@
-export interface Player {
-  id: any,
-  name?: string,
-  rebuys: number,
-  ranking: number,
-  points?: number,
-  bounty?: number,
-  prize: number,
-  games?: number
-}
+export type Player = {
+  id: string;
+  name?: string;
+  rebuys: number;
+  ranking: number;
+  points: number;
+  bounty: number;
+  prize: number;
+  games?: number;
+};
 
 export type PlayerDB = {
   readonly _id: string;
@@ -27,7 +27,6 @@ export type bounty = {
 export interface Tournament {
   readonly _id: {};
   date: string;
-  round: number;
   buyin: number;
   rebuys: number;
   prizes: number[];
@@ -58,21 +57,27 @@ export interface Json extends State {
   message? : string
 }
 
+export type Tenant = {
+  id?: string;
+  name?: string
+}
+
 export type State = {
   tournaments: Tournament[];
   seasons: Season[];
   players: PlayerDB[];
-  authenticated: boolean;
+  tenant: Tenant;
 }
 
 export type RenderPageOptions =  {
   animation?: string;
+  type: string;
 }
 
 export type RenderOptions = {
   view: string;
   templateData: any;
-  options: any;
+  renderOptions: RenderPageOptions;
 };
 
 export type RouteParams = {
@@ -81,5 +86,6 @@ export type RouteParams = {
 
 export type Route = {
   view: string;
-  params: RouteParams;
+  //params: RouteParams;
+  params: string;
 }

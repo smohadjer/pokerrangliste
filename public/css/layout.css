@@ -15,6 +15,6 @@ html, body {
     background-color: #f4efc0;
 }
 
-header, footer {
-    flex-grow: 0;
+main {
+    padding: 0 1em;
 }

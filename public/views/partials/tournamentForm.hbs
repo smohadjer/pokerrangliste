@@ -1,13 +1,35 @@
 <div class="row">
-    <label>Season *</label>
-    <select id="season_dropdown" required name="season_id">
-    </select>
-</div>
-<div class="row">
     <label>Date *</label>
     <input required name="date" type="date" value="{{date}}"/>
 </div>
 <div class="row">
+    <label>Buyin *</label>
+    <input required name="buyin" type="number" value="{{buyin}}"/>
+</div>
+<div class="row">
+    <label>Season</label>
+    <select id="season_dropdown" name="season_id">
+    </select>
+</div>
+<div class="row">
+    <label>Status *</label>
+    <div class="wrapper-status">
+        <div>
+            <input required {{#ifCond status '==' 'upcoming'}} checked {{/ifCond}} name="status" id="upcoming" type="radio" value="upcoming">
+            <label for="upcoming">Upcoming</label>
+        </div>
+        <div>
+            <input required {{#ifCond status '==' 'pending'}} checked {{/ifCond}} name="status" id="pending" type="radio" value="pending">
+            <label for="pending">Live</label>
+        </div>
+        <div>
+            <input required {{#ifCond status '==' 'done'}} checked {{/ifCond}} name="status" id="done" type="radio" value="done">
+            <label  for="done">Completed</label>
+        </div>
+    </div>
+</div>
+
+{{!-- <div class="row">
     <label>Round *</label>
     <select required name="round">
         <option {{#ifCond round '==' 1}}selected{{/ifCond}} value="1">1</option>
@@ -22,47 +44,42 @@
         <option {{#ifCond round '==' 10}}selected{{/ifCond}} value="10">10</option>
     </select>
 </div>
-<div class="row">
-    <label>Buyin *</label>
-    <input required name="buyin" type="number" value="{{buyin}}"/>
-</div>
-<div class="row">
-    <label>Bounty Winner</label>
-    <input name="bounty_winner">
-</div>
-<div class="row">
-    <label>Bounty Prize</label>
-    <input name="bountry_prize" type="number">
-</div>
-<div class="row">
-    <label>Status</label>
-    <div class="wrapper-status">
+<fieldset id="bounty-fields">
+    <div class="row">
+        <label>Has bounty?</label>
         <div>
-            <input {{#ifCond status '==' 'upcoming'}} checked {{/ifCond}} name="status" id="upcoming" type="radio" value="upcoming">
-            <label for="upcoming">Scheduled</label>
+            <label>
+                <input type="radio" checked name="bounty" value="no">
+                No
+            </label>
+            <label>
+                <input type="radio" name="bounty" value="yes">
+                Yes
+            </label>
         </div>
-        <div>
-            <input {{#ifCond status '==' 'pending'}} checked {{/ifCond}} name="status" id="pending" type="radio" value="pending">
-            <label for="pending">In-progress</label>
-        </div>
-        <div>
-            <input {{#ifCond status '==' 'done'}} checked {{/ifCond}} name="status" id="done" type="radio" value="done">
-            <label  for="done">Completed</label>
-        </div>
+    </div>
+    <div class="row" hidden>
+        <label>Bounty Winner</label>
+        <input name="bounty_winner">
+    </div>
+    <div class="row" hidden>
+        <label>Bounty Prize</label>
+        <input name="bountry_prize" type="number">
+    </div>
+</fieldset> --}}
+
+<div class="row row--mt2">
+    <label>Add players <span id="players-count"></span></label>
+    <div>
+        <select id="player_dropdown">
+            <!-- options added by js -->
+        </select>
     </div>
 </div>
 
 <div id="players"></div>
 
-<div class="row row--mt2">
-    <select id="player_dropdown">
-        <option value="">Select player</option>
-        <!-- options added by js -->
-    </select>
-    <button id="add-player" type="button">Add player</button>
-</div>
-
 <div class="submit">
-    <button>Submit</button>
+    <button>Save Tournament</button>
 </div>
 <p class="error"></p>

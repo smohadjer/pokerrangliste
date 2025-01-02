@@ -1,24 +1,36 @@
-import { getPlayerName, getTournaments, getSeasonName } from '../utils';
+import { getTournaments } from '../utils';
+import getPlayerName from '../components/getPlayerName';
 import { store } from '../lib/store';
-import { RouteParams } from '../lib/types';
+import { Tournament } from '../lib/types';
 
-export default (params: RouteParams) => {
+type TemplateData = {
+    tournaments: Tournament[];
+    season_id? : string;
+    seasons: any;
+    tenant_id: string | null;
+}
+
+export default (params: URLSearchParams) => {
     const state = store.getState();
-    const season_id = params.season_id || state.seasons[state.seasons.length - 1]._id;
-    const tournaments = getTournaments(state.tournaments, season_id!);
-
+    const season_id = params.get('season_id') ?? undefined;
+    const tournaments = getTournaments(state.tournaments, season_id);
     const optimizedData = tournaments.map((item) => {
-        item.firstPlace = getPlayerName(item.players[0]?.id);
-        item.secondPlace = getPlayerName(item.players[1]?.id);
+        if (item.status === 'done') {
+            item.firstPlace = getPlayerName(item.players[0]?.id);
+            item.secondPlace = getPlayerName(item.players[1]?.id);
+        }
         return item;
     });
 
-    const tournamentsData = {
+    const data: TemplateData = {
         tournaments: optimizedData,
-        season_id: season_id,
-        seasonName: getSeasonName(season_id!, state.seasons),
-        seasons: state.seasons
+        seasons: state.seasons,
+        tenant_id: params.get('tenant_id'),
     }
 
-    return tournamentsData;
+    if (season_id) {
+        data.season_id = season_id
+    }
+
+    return data;
 };
