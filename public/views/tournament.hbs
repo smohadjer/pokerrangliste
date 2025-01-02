@@ -26,9 +26,9 @@
     <tr>
       <th>Rank</th>
       <th>Player</th>
-      <th>Points</th>
       <th>Prize</th>
       <th>Rebuys</th>
+      <th>Points</th>
       {{#ifEquals hasBounty 'Yes'}}
         <th>Bounty</th>
       {{/ifEquals}}
@@ -57,9 +57,9 @@
             {{/ifCond}}
           {{/ifEquals}}>{{this.name}}</span>
         </td>
-        <td>{{this.points}}</td>
         <td>{{this.prize}}</td>
         <td>{{this.rebuys}}</td>
+        <td>{{this.points}}</td>
         {{#ifEquals ../hasBounty 'Yes'}}
           <td>{{this.bounty}}</td>
         {{/ifEquals}}
