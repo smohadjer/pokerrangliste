@@ -13,6 +13,7 @@ type Store = {
 
 export const store: Store = {
     state: {
+        dataIsStale: true,
         tournaments: [],
         players: [],
         seasons: [],

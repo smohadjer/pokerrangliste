@@ -63,6 +63,7 @@ export type Tenant = {
 }
 
 export type State = {
+  dataIsStale: boolean;
   tournaments: Tournament[];
   seasons: Season[];
   players: PlayerDB[];

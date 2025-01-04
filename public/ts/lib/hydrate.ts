@@ -7,6 +7,7 @@ import { ajaxifyForms } from './ajaxifyForms.js';
 import { populateSelect, enablePasswordToggle } from '../utils.js';
 import { State } from './types';
 import { router } from './router.js';
+import { store } from './store.js';
 
 const fetchTenants = async () => {
     try {
@@ -59,6 +60,7 @@ export async function hydrate(
         populateSelect(select, tenants);
         select.closest('form')?.classList.remove('loading');
         select.addEventListener('change', (event) => {
+            store.setState({ dataIsStale: true });
             select.closest('form')?.classList.add('loading');
             if (event.target instanceof HTMLSelectElement) {
                 router('/ranking', `?tenant_id=${select.value}`, {type: 'click'});

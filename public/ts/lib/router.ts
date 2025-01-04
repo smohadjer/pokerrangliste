@@ -3,8 +3,6 @@ import { State, RenderPageOptions } from './types.js';
 import { store } from './store.js';
 import { renderRoute } from './renderRoute.js';
 
-let dataIsInState = false;
-
 export async function router(
     path: string,
     urlParams: string,
@@ -30,11 +28,13 @@ export async function router(
         params.set('tenant_id', tenant_id);
     }
 
-    if (!dataIsInState) {
-        console.log('fetching data for the first time...');
+    if (state.dataIsStale) {
+        console.log('fetching data...');
         const data: State | undefined = await fetchData(tenant_id);
         store.setState(data);
-        dataIsInState = true;
+        store.setState({
+            dataIsStale: false
+        })
     }
 
     // routing logic
