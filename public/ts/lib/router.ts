@@ -10,8 +10,9 @@ export async function router(
     const state: State = store.getState();
     const params = new URLSearchParams(urlParams);
     const requiresAuth = path.indexOf('/admin') > -1;
-    const loginOrRegisterPage = path.indexOf('login') > -1
-        || path.indexOf('register') > -1;
+    const loginOrRegisterOrTenantPage = path.indexOf('/login') > -1
+        || path.indexOf('/register') > -1
+        || path.indexOf('/tenant') > -1;
     const isLoggedIn = state.tenant.id ? true : false;
     const tenant_id = state.tenant.id || params.get('tenant_id');
 
@@ -39,19 +40,17 @@ export async function router(
 
     // routing logic
     if (isLoggedIn) {
-        if (loginOrRegisterPage) {
+        if (loginOrRegisterOrTenantPage) {
             renderRoute('/admin/home', `tenant_id=${tenant_id}`, options);
         } else {
             // we convert params to string since history methods throw error when cloning a URLSearchParam object
             renderRoute(path, params.toString(), options);
         }
     } else {
-        if (requiresAuth || loginOrRegisterPage) {
-            if (path === '/register') {
-                renderRoute(path, '', options);
-            } else {
-                renderRoute('/login', '', options);
-            }
+        if (requiresAuth) {
+            renderRoute('/login', '', options);
+        } else if (loginOrRegisterOrTenantPage) {
+            renderRoute(path, '', options);
         } else {
             renderRoute(path, params.toString(), options);
         }
