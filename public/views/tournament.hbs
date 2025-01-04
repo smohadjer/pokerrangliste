@@ -42,17 +42,17 @@
         </td>
         <td class="name"><span
           {{#ifEquals this.ranking 1}}
-            {{#ifCond this.points '>' 0}}
+            {{#ifCond this.prize '>' 0}}
               class="first-place"
             {{/ifCond}}
           {{/ifEquals}}
           {{#ifEquals this.ranking 2}}
-            {{#ifCond this.points '>' 0}}
+            {{#ifCond this.prize '>' 0}}
               class="second-place"
             {{/ifCond}}
           {{/ifEquals}}
           {{#ifEquals this.ranking 3}}
-            {{#ifCond this.points '>' 0}}
+            {{#ifCond this.prize '>' 0}}
               class="third-place"
             {{/ifCond}}
           {{/ifEquals}}>{{this.name}}</span>

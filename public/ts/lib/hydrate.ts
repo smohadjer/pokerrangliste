@@ -1,71 +1,43 @@
 
 import { renderChart } from './drawChart.js';
-import { initAddTournament } from '../add-tournament.js';
-import { initEditTournament } from '../edit-tournament.js';
+import { initAddTournament } from '../hydration/add-tournament.js';
+import { initEditTournament } from '../hydration/edit-tournament.js';
 import { onChangeEventHandler } from './nav.js';
 import { ajaxifyForms } from './ajaxifyForms.js';
-import { populateSelect, enablePasswordToggle } from '../utils.js';
+import { populateSelect, enablePasswordToggle } from './utils.js';
 import { State } from './types';
-import { router } from './router.js';
-import { store } from './store.js';
-
-const fetchTenants = async () => {
-    try {
-        const response = await fetch(`/api/tenants`, {
-            method: 'GET',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            }
-        });
-        const json = await response.json();
-        if (!json) throw ('Failed to fetch tenants from server!');
-        if (json.error) {
-            throw(json.message);
-        } else {
-            return json;
-        }
-    } catch (e) {
-        console.error(` Error: ${e}`);
-    }
-};
+import { hydrateTenant } from '../hydration/tenant.js';
 
 export async function hydrate(
     view: string,
     container: HTMLElement,
     templateData: any,
     state: State) {
+
     if (view === '/profile') {
         renderChart(templateData);
     }
+
     if (view === '/admin/add-tournament') {
         initAddTournament(container);
     }
+
     if (view === '/admin/edit-tournament') {
         initEditTournament(container);
     }
+
     if (view === '/admin/edit-player') {
         const select: HTMLSelectElement = container.querySelector('#player_edit_dropdown')!;
         populateSelect(select, state.players);
     }
+
     if (view === '/admin/edit-season') {
         const select: HTMLSelectElement = container.querySelector('#season_edit_dropdown')!;
         populateSelect(select, state.seasons);
     }
 
     if (view === '/tenant') {
-        const select: HTMLSelectElement = container.querySelector('#tenant_dropdown')!;
-        const tenants = await fetchTenants();
-        console.log(tenants)
-        populateSelect(select, tenants);
-        select.closest('form')?.classList.remove('loading');
-        select.addEventListener('change', (event) => {
-            store.setState({ dataIsStale: true });
-            select.closest('form')?.classList.add('loading');
-            if (event.target instanceof HTMLSelectElement) {
-                router('/ranking', `?tenant_id=${select.value}`, {type: 'click'});
-            }
-        });
+        hydrateTenant(container);
     }
 
     if (view === '/login' || view === '/register') {
@@ -90,7 +62,6 @@ export async function hydrate(
     })
 
     document.getElementById('results')?.addEventListener('animationend', (event) => {
-        console.log('animaiton end');
         const container = event.target as HTMLElement;
         container.classList.remove('slideInRTL');
         container.classList.remove('slideInLTR');

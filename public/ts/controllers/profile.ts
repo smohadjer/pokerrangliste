@@ -4,7 +4,7 @@ import {
     getPlayers,
     getTournaments,
     getSeasonName
-} from '../utils';
+} from '../lib/utils';
 import { store } from '../lib/store';
 
 type TemplateData = {

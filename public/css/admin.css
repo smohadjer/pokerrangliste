@@ -79,6 +79,10 @@ form {
     box-sizing: border-box;
     font-size: inherit;
   }
+
+  button[disabled] {
+    opacity: 0.5;
+  }
 }
 
 form + p {

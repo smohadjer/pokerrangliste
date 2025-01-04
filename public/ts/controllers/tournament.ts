@@ -6,9 +6,9 @@ import {
     getPoints,
     getRebuys,
     getTournaments,
-} from '../utils';
+    getPlayerName
+} from '../lib/utils';
 import { store } from '../lib/store';
-import getPlayerName from '../components/getPlayerName';
 
 type TemplateData = {
     date: string;

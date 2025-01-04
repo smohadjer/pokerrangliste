@@ -18,15 +18,9 @@
           <td>{{inc @index}}</td>
           <td class="name">
             {{#if ../season_id}}
-              <a data-animation="slideInRTL" href="/profile?tenant_id={{../tenant_id}}&season_id={{../season_id}}&player_id={{this.id}}"
-              {{#ifEquals @index 0}}class="first-place"{{/ifEquals}}
-              {{#ifEquals @index 1}}class="second-place"{{/ifEquals}}
-              {{#ifEquals @index 2}}class="third-place"{{/ifEquals}}>{{this.name}}</a>
+              <a data-animation="slideInRTL" href="/profile?tenant_id={{../tenant_id}}&season_id={{../season_id}}&player_id={{this.id}}">{{this.name}}</a>
             {{else}}
-              <a data-animation="slideInRTL" href="/profile?tenant_id={{../tenant_id}}&player_id={{this.id}}"
-              {{#ifEquals @index 0}}class="first-place"{{/ifEquals}}
-              {{#ifEquals @index 1}}class="second-place"{{/ifEquals}}
-              {{#ifEquals @index 2}}class="third-place"{{/ifEquals}}>{{this.name}}</a>
+              <a data-animation="slideInRTL" href="/profile?tenant_id={{../tenant_id}}&player_id={{this.id}}">{{this.name}}</a>
             {{/if}}
           </td>
           <td>{{this.points}}</td>

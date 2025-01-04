@@ -2,7 +2,7 @@ import {
     getPlayers,
     getTournaments,
     getSeasonName
-} from '../utils';
+} from '../lib/utils';
 import { Player } from '../lib/types';
 import { store } from '../lib/store';
 

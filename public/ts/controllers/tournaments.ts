@@ -1,5 +1,4 @@
-import { getTournaments } from '../utils';
-import getPlayerName from '../components/getPlayerName';
+import { getTournaments, getPlayerName } from '../lib/utils';
 import { store } from '../lib/store';
 import { Tournament } from '../lib/types';
 

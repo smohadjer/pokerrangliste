@@ -1,8 +1,7 @@
 import {Tournament, Player } from '../lib/types';
-import getPlayerName from './getPlayerName';
-import { generateHTML } from './generateHTML.js';
+import { getPlayerName, generateHTML } from '../lib/utils.js';
 
-export function generatePlayerFields(
+export async function generatePlayerFields(
     container: HTMLElement,
     playerDropdown: HTMLSelectElement,
     data?: Tournament) {
@@ -65,7 +64,7 @@ export function generatePlayerFields(
             const playerName = getPlayerName(data.players[i].id);
             data.players[i].name = playerName;
             const player = data.players[i];
-            addPlayer(playersElm, player).then(() => {
+            await addPlayer(playersElm, player).then(() => {
                 updatePlayersCount();
             });
 

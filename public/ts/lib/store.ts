@@ -1,5 +1,5 @@
 import { State } from './types.js';
-import { deepClone } from '../utils.js';
+import { deepClone } from './utils.js';
 
 type StateOptions = {
     payload: any;

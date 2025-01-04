@@ -1,7 +1,7 @@
 /*** Only pure functions in this file! ***/
-import { State, Tournament, Player, PlayerDB, Season } from './lib/types';
-import { generatePlayerFields } from './components/generatePlayerFields';
-import getPlayerName from './components/getPlayerName';
+import { Tournament, Player, Season, PlayerDB } from './types';
+import { getHandlebarsTemplate } from './setHandlebars.js';
+import { store } from './store';
 
 export const getSeasonName = (season_id: string, seasons: Season[]) => {
     if (!season_id) {
@@ -148,20 +148,17 @@ export function populateSelectTournaments(select: HTMLSelectElement, data: Tourn
     select.innerHTML = options;
 }
 
-export function initTournamentForm(
-    form: HTMLElement,
-    state: State,
-    data?: Tournament) {
-    // populate season dropdown
-    const seasonDropdown: HTMLSelectElement = form.querySelector('#season_dropdown')!;
-    populateSelect(seasonDropdown, state.seasons);
-    if (data && data.season_id) {
-        seasonDropdown.value = data.season_id;
-    }
+export async function generateHTML(templateFile: string, data: any) {
+    const template = await getHandlebarsTemplate(templateFile);
+    const htmlString = template(data);
+    const html = new DOMParser().parseFromString(htmlString,
+        'text/html').body.children;
+    return html;
+}
 
-    // populate player dropdown
-    const playerDropdown: HTMLSelectElement = form.querySelector('#player_dropdown')!;
-    populateSelect(playerDropdown, state.players);
-
-    generatePlayerFields(form, playerDropdown, data);
+export const getPlayerName = (playerId: string) => {
+    const state = store.getState();
+    const players: PlayerDB[] = state.players;
+    const player = players.find(player => player._id === playerId);
+    return player?.name;
 }
