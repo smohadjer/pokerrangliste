@@ -126,9 +126,14 @@ export const enablePasswordToggle = (container: HTMLElement) => {
     }
 }
 
-// used to populate players and seasons select
-export function populateSelect(select: HTMLSelectElement, data: PlayerDB[] | Season[]) {
-    let options = '<option selected disabled option="">Select</option>';
+type SelectData = {
+    _id: string;
+    name: string;
+}
+
+// used to populate players, seasons and tenant select elements
+export function populateSelect(select: HTMLSelectElement, data: SelectData[]) {
+    let options = select.innerHTML;
     data.forEach(item => {
         options += `<option value="${item._id}">${item.name}</option>`
     });

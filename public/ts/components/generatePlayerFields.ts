@@ -76,7 +76,7 @@ export function generatePlayerFields(
 }
 
 const addPlayer = async (container: Element, player: Player) => {
-    const htmlElement = await generateHTML('/views/player.hbs', player);
+    const htmlElement = await generateHTML('/views/components/player.hbs', player);
     container.prepend(...htmlElement);
 };
 

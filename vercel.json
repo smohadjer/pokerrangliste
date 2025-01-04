@@ -20,6 +20,10 @@
             "destination": "/"
         },
         {
+            "source": "/tenant",
+            "destination": "/"
+        },
+        {
             "source": "/admin/(.*)",
             "destination": "/"
         },

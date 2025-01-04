@@ -18,10 +18,10 @@ export async function router(
     const tenant_id = state.tenant.id || params.get('tenant_id');
 
     if (!tenant_id) {
-        if (path === '/register') {
-            renderRoute('/register', '', options);
+        if (path === '/register' || path === '/login') {
+            renderRoute(path, '', options);
         } else {
-            renderRoute('/login', '', options);
+            renderRoute('/tenant', '', options);
         }
         return;
     }

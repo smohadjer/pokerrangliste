@@ -11,6 +11,10 @@ body {
     font-size: 16px;
 }
 
+.mg-top {
+    margin-top: 1em;
+}
+
 #season-selector label {
     font-size: 1.3rem;
 }

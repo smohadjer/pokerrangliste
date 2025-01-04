@@ -1,14 +1,8 @@
-import { RenderOptions, RenderPageOptions, Route } from './types.js';
-import { renderChart } from './drawChart.js';
-import { initAddTournament } from '../add-tournament.js';
-import { initEditTournament } from '../edit-tournament.js';
+import { RenderOptions, RenderPageOptions, Route, State } from './types.js';
 import { controller } from '../controllers/controller.js';
-import { onChangeEventHandler } from './nav.js';
-import { ajaxifyForms } from './ajaxifyForms.js';
 import { getHandlebarsTemplate } from './setHandlebars.js';
-import { State } from '../lib/types';
-import { store } from '../lib/store.js';
-import { populateSelect, enablePasswordToggle } from '../utils.js';
+import { store } from './store.js';
+import { hydrate } from './hydrate.js';
 
 export const renderPage = async (route: Route, options: RenderPageOptions) => {
     console.log('renderPage', route.view, route.params);
@@ -49,58 +43,6 @@ const render = async (options: RenderOptions) => {
             container.classList.add(renderOptions.animation);
         }
 
-        hydratePage(options.view, container, options.templateData, state);
+        hydrate(options.view, container, options.templateData, state);
     }
 };
-
-function hydratePage(
-    view: string,
-    container: HTMLElement,
-    templateData: any,
-    state: State) {
-    if (view === '/profile') {
-        renderChart(templateData);
-    }
-    if (view === '/admin/add-tournament') {
-        initAddTournament(container);
-    }
-    if (view === '/admin/edit-tournament') {
-        initEditTournament(container);
-    }
-    if (view === '/admin/edit-player') {
-        const select: HTMLSelectElement = container.querySelector('#player_edit_dropdown')!;
-        populateSelect(select, state.players);
-    }
-    if (view === '/admin/edit-season') {
-        const select: HTMLSelectElement = container.querySelector('#season_edit_dropdown')!;
-        populateSelect(select, state.seasons);
-    }
-    if (view === '/login' || view === '/register') {
-        enablePasswordToggle(container);
-    }
-
-    // init season select in header
-    const seasonSelector =  document.querySelector('header #season-selector');
-    if (seasonSelector) {
-        seasonSelector.addEventListener('change', (event) => {
-            if (event.target instanceof HTMLSelectElement) {
-                onChangeEventHandler(event.target);
-            }
-        });
-    }
-
-    // set all forms to use fetch
-    document.querySelectorAll('.form-ajax').forEach((form) => {
-        if (form instanceof HTMLFormElement) {
-            ajaxifyForms(form);
-        }
-    })
-
-    document.getElementById('results')?.addEventListener('animationend', (event) => {
-        console.log('animaiton end');
-        const container = event.target as HTMLElement;
-        container.classList.remove('slideInRTL');
-        container.classList.remove('slideInLTR');
-        container.classList.remove('fadeIn');
-    })
-}
