@@ -28,10 +28,13 @@ import { fetchEvents } from './lib/utils.js';
     if (tenantString) {
         const tenant: Tenant = JSON.parse(tenantString);
         store.setState({tenant});
-    }
 
-    // fetch and store events in state
-    await fetchEvents();
+        // fetch only events for logged-in user and store them in state
+        await fetchEvents(tenant.id);
+    } else {
+        // fetch all events for logged-out users
+        await fetchEvents();
+    }
 
     router(window.location.pathname, window.location.search, options);
 })();

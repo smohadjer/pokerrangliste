@@ -11,9 +11,9 @@ export default async (req, res) => {
     const collection = database.collection('events');
 
     if (req.method === 'GET') {
-      const docs = await collection.find({}).toArray();
-      console.log(docs);
-      res.json(docs);
+      const tenant_id = req.query.tenant_id;
+      const events = await fetchAllEvents(collection, tenant_id);
+      res.json(events);
     }
 
     if (req.method === 'POST') {

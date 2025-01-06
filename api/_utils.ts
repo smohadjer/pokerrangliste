@@ -32,7 +32,8 @@ export const fetchAllSeasons = async (collection, event_id) => {
 };
 
 export const fetchAllEvents = async (collection, tenant_id) => {
-  return await collection.find({tenant_id})
+  const filter = tenant_id ? { tenant_id } : {};
+  return await collection.find(filter)
     // using collation so sort is case insensitive
     .collation({ locale: 'en' })
     .sort({ name: 1 })
