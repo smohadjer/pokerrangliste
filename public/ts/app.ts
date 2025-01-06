@@ -28,6 +28,7 @@ import { fetchEvents } from './lib/utils.js';
     if (tenantString) {
         const tenant: Tenant = JSON.parse(tenantString);
         store.setState({tenant});
+<<<<<<< HEAD
 
         // fetch only events for logged-in user and store them in state
         await fetchEvents(tenant.id);
@@ -35,9 +36,15 @@ import { fetchEvents } from './lib/utils.js';
         // fetch all events for logged-out users
         await fetchEvents();
     }
+=======
+>>>>>>> 10a3bb9 (wip events)
 
-    // fetch and store events in state
-    await fetchEvents();
+        // fetch only events for logged-in user and store them in state
+        await fetchEvents(tenant.id);
+    } else {
+        // fetch all events for logged-out users
+        await fetchEvents();
+    }
 
     router(window.location.pathname, window.location.search, options);
 })();
