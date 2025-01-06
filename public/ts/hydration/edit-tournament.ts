@@ -23,7 +23,7 @@ export function initEditTournament(container: HTMLElement) {
             fieldset.append(...htmlElement);
 
             await initTournamentForm(fieldset, state, tournamentData);
-            const form = container.querySelector('form');
+            const form: HTMLFormElement | null = container.querySelector('#post-tournament');
             if (form) {
                 const formData = new FormData(form);
                 const status = formData.get('status') ?? '';

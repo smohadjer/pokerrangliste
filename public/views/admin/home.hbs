@@ -1,14 +1,8 @@
-
-<header>
-  <h1>Admin</h1>
-  <div class="align-right">
-     <p class="icon icon--inline icon--account">{{tenant_name}}</p>
-     {{> logout }}
-  </div>
-</header>
+{{> adminHeader event_name=event_name tenant_name=tenant_name}}
 <div class="wrapper">
     <main class="admin">
-      {{> adminNav tenant_id=tenant_id }}
+      <p><a href="/events">Change Event</a></p>
+      {{> adminNav event_id=event_id }}
     </main>
 </div>
-{{> footer tenant_id=tenant_id season_id=season_id view="admin"}}
+{{> footer event_id=event_id season_id=season_id view="admin"}}

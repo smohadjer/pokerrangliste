@@ -10,8 +10,6 @@ export async function renderRoute(
         params: params
     };
 
-    console.log(route);
-
     window.scrollTo(0, 0);
 
     // calling renderPage to generate HTML for current route

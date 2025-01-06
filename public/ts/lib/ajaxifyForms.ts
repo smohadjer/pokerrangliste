@@ -45,7 +45,6 @@ export function ajaxifyForms(form: HTMLFormElement) {
             })
             .then(response => response.json())
             .then(async (res) => {
-                console.log(res)
                 if (res.error) {
                     console.error(res.error);
                     form.classList.add('error');
@@ -64,13 +63,14 @@ export function ajaxifyForms(form: HTMLFormElement) {
 
                 // on logout clear state and local storage from tenant
                 if (url.indexOf('logout') > -1) {
-                    console.log('Removing tenant from state and local storage');
+                    console.log('Removing events and tenant from state and local storage');
                     localStorage.removeItem('tenant');
                     store.setState({
                         tenant: {
                             id: undefined,
                             name: undefined
-                        }
+                        },
+                        events: []
                     });
                 }
 
@@ -80,8 +80,8 @@ export function ajaxifyForms(form: HTMLFormElement) {
                         localStorage.setItem('tenant', JSON.stringify(res.data.tenant));
 
                         // fetch app data from server and storing it in state
-                        const data: State | undefined = await fetchData(res.data.tenant.id);
-                        store.setState(data);
+                        // const data: State | undefined = await fetchData(res.data.tenant.id);
+                        // store.setState(data);
                     }
 
                     // Update the state with data returned from api
@@ -96,7 +96,7 @@ export function ajaxifyForms(form: HTMLFormElement) {
                     const options: RenderPageOptions = {
                         type: 'click'
                     };
-                    router(redirect, '', options);
+                    router(redirect, window.location.search, options);
                 } else {
                     // update current page
                     const options: RenderPageOptions = {

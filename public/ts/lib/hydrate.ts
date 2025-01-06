@@ -6,7 +6,7 @@ import { onChangeEventHandler } from './nav.js';
 import { ajaxifyForms } from './ajaxifyForms.js';
 import { populateSelect, enablePasswordToggle } from './utils.js';
 import { State } from './types';
-import { hydrateTenant } from '../hydration/tenant.js';
+import { hydrateEvents } from '../hydration/events.js';
 
 export async function hydrate(
     view: string,
@@ -36,8 +36,8 @@ export async function hydrate(
         populateSelect(select, state.seasons);
     }
 
-    if (view === '/tenant') {
-        hydrateTenant(container);
+    if (view === '/events') {
+        hydrateEvents(container);
     }
 
     if (view === '/login' || view === '/register') {

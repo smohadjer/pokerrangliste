@@ -42,18 +42,6 @@ table.details {
     }
 }
 
-
-h1 {
-    font-size: 1.4rem;
-    margin: 0;
-    font-weight: 500;
-
-    span {
-        font-size: 1em;
-        font-weight: normal;
-    }
-}
-
 .first-place:after,
 .first-place.before:before {
     content: '🥇';

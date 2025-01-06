@@ -19,7 +19,7 @@ type TemplateData = {
     hasBounty: string;
     status?: 'upcoming' | 'pending' | 'done';
     season_id? : string;
-    tenant_id: string | null;
+    event_id: string | null;
 }
 
 export default (params: URLSearchParams) => {
@@ -60,7 +60,7 @@ export default (params: URLSearchParams) => {
         players: players,
         hasBounty: cloneTournament.bounties ? 'Yes' : 'No',
         status: cloneTournament.status,
-        tenant_id: params.get('tenant_id'),
+        event_id: params.get('event_id'),
     }
 
     if (season_id) {

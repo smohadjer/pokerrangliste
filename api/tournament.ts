@@ -19,21 +19,21 @@ export default async (req, res) => {
     const playersCol = database.collection('players');
 
     if (req.method === 'GET') {
-      const tenant_id = req.query.tenant_id;
+      const event_id = req.query.event_id;
       const tournaments = req.query.tournament_id
-        ? await getTournament(tournamentsCol, tenant_id, req.query.tournament_id)
-        : await getTournaments(tournamentsCol, tenant_id, req.body.season_id);
+        ? await getTournament(tournamentsCol, event_id, req.query.tournament_id)
+        : await getTournaments(tournamentsCol, event_id, req.body.season_id);
       const data = {
-        seasons: await seasonsCol.find({tenant_id}).toArray(),
-        players: await playersCol.find({tenant_id}).sort({ name: 1 }).toArray(),
+        seasons: await seasonsCol.find({event_id}).toArray(),
+        players: await playersCol.find({event_id}).sort({ name: 1 }).toArray(),
         tournaments: tournaments
       };
       res.json(data);
     }
 
     if (req.method === 'POST') {
-      const tenant_id = req.body.tenant_id;
-      if (!tenant_id || tenant_id.length === 0) {
+      const event_id = req.body.event_id;
+      if (!event_id || event_id.length === 0) {
         throw new Error('No tenant ID provided');
       }
       if (req.body.tournament_id) {
@@ -41,7 +41,7 @@ export default async (req, res) => {
         if (response && response.modifiedCount > 0) {
           console.log('edited tournament successfully');
           // return all tournaments so state in app can be updated from response
-          const tournamentsData = await getTournaments(tournamentsCol, tenant_id);
+          const tournamentsData = await getTournaments(tournamentsCol, event_id);
           res.json({
             data: {
               tournaments: tournamentsData
@@ -55,7 +55,7 @@ export default async (req, res) => {
         if (tournament_id) {
           // return all tournaments so state in app can be updated from response
 
-          const tournamentsData = await getTournaments(tournamentsCol, tenant_id);
+          const tournamentsData = await getTournaments(tournamentsCol, event_id);
           res.json({
             data: {
               tournaments: tournamentsData

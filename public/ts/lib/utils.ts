@@ -162,3 +162,21 @@ export const getPlayerName = (playerId: string) => {
     const player = players.find(player => player._id === playerId);
     return player?.name;
 }
+
+export const fetchEvents = async () => {
+    try {
+        const response = await fetch('/api/events');
+        const json = await response.json();
+        if (!json) throw ('Failed to fetch events from server!');
+        if (json.error) {
+            throw(json.message);
+        } else {
+            store.setState({
+                events: json
+            })
+            return json;
+        }
+    } catch (e) {
+        console.error(` Error: ${e}`);
+    }
+};

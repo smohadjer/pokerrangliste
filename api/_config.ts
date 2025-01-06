@@ -13,11 +13,6 @@ if (environment === 'local') {
     database_name = 'pokerrangliste';
 }
 
-if (environment === 'demo') {
-    database_uri = process.env.db_uri_demo;
-    database_name = 'pokerdemo';
-}
-
 if (environment === 'prod') {
     database_uri = process.env.db_uri_remote;
     database_name = 'pokerrangliste';

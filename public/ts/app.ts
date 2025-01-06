@@ -3,6 +3,7 @@ import { setHandlebars } from './lib/setHandlebars.js';
 import { router } from './lib/router.js';
 import { RenderPageOptions } from './lib/types.js';
 import { store } from './lib/store.js';
+import { fetchEvents } from './lib/utils.js';
 
 (async () => {
     console.log('initilizing app');
@@ -28,6 +29,9 @@ import { store } from './lib/store.js';
         const tenant: Tenant = JSON.parse(tenantString);
         store.setState({tenant});
     }
+
+    // fetch and store events in state
+    await fetchEvents();
 
     router(window.location.pathname, window.location.search, options);
 })();

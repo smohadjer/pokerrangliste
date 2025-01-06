@@ -28,9 +28,15 @@ const render = async (options: RenderOptions) => {
     const container = document.getElementById('results');
     const template = await getHandlebarsTemplate(templateFile);
     const state: State = store.getState();
+    const getEventName = (id: string) => {
+        const events = state.events;
+        const event = events.find(item => item._id === id);
+        return event?.name;
+    }
 
     if (templateData) {
         templateData.isLoggedIn = state.tenant.id ? true : false
+        templateData.event_name = getEventName(templateData.event_id);
     }
 
     const html = template(templateData);

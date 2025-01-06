@@ -9,13 +9,13 @@ export default (params: URLSearchParams) => {
 
     // set default date to today
     const isoDate = new Date().toISOString().split('T')[0];
-    console.log(isoDate)
 
     return {
+        tenant_name: state.tenant.name,
         players: state.players,
         seasons: state.seasons,
         season_id: season_id,
-        tenant_id: params.get('tenant_id'),
+        event_id: params.get('event_id'),
         date: isoDate
     };
 };

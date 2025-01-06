@@ -6,7 +6,7 @@ type TemplateData = {
     tournaments: Tournament[];
     season_id? : string;
     seasons: any;
-    tenant_id: string | null;
+    event_id: string | null;
 }
 
 export default (params: URLSearchParams) => {
@@ -24,7 +24,7 @@ export default (params: URLSearchParams) => {
     const data: TemplateData = {
         tournaments: optimizedData,
         seasons: state.seasons,
-        tenant_id: params.get('tenant_id'),
+        event_id: params.get('event_id'),
     }
 
     if (season_id) {

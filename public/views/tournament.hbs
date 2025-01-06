@@ -1,10 +1,12 @@
 
 <header>
-  <h1>
-    {{#ifCond status '==' 'pending'}}
-      <span class="pending"></span>
-    {{/ifCond}} Game
-  </h1>
+  <h1>{{event_name}}</h1>
+  <div class="flex">
+    <h2>
+      {{#ifCond status '==' 'pending'}}<span class="pending"></span>{{/ifCond}}
+      Game
+    </h2>
+  </div>
 </header>
 <div class="wrapper">
   <table class="details">
@@ -67,4 +69,4 @@
     {{/each}}
   </table>
 </div>
-{{> footer tenant_id=tenant_id season_id=season_id view="tournament"}}
+{{> footer event_id=event_id season_id=season_id view="tournament"}}

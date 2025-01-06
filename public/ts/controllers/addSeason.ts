@@ -8,7 +8,8 @@ export default (params: URLSearchParams) => {
     }
 
     return {
+        tenant_name: state.tenant.name,
         season_id: season_id,
-        tenant_id: params.get('tenant_id')
+        event_id: params.get('event_id')
     };
 };

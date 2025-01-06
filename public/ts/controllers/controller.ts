@@ -9,9 +9,11 @@ import addSeason from './addSeason';
 import addPlayer from './addPlayer';
 import editSeason from './editSeason';
 import editPlayer from './editPlayer';
+import events from './events';
 
 /* controllers provide data to views */
 export const controller = {
+    '/events': events,
     '/profile': profile,
     '/tournament': tournament,
     '/tournaments': tournaments,
