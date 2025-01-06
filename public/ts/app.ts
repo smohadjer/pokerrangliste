@@ -36,5 +36,8 @@ import { fetchEvents } from './lib/utils.js';
         await fetchEvents();
     }
 
+    // fetch and store events in state
+    await fetchEvents();
+
     router(window.location.pathname, window.location.search, options);
 })();
