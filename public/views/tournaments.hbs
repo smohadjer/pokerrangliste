@@ -1,9 +1,13 @@
 <header>
-  <h1>Games</h1>
-  {{#if seasons}}
-    {{> seasonSelector seasons=seasons season_id=season_id }}
-  {{/if}}
+  <h1>{{event_name}}</h1>
+  <div class="flex">
+    <h1>Games</h1>
+    {{#if seasons}}
+      {{> seasonSelector seasons=seasons season_id=season_id }}
+    {{/if}}
+  </div>
 </header>
+
 <div class="wrapper">
   <table class="table-results">
     <tr>
@@ -17,7 +21,7 @@
         <td>
            {{reverseIndex ../tournaments.length @index}}</td>
         </td>
-        <td class="name"><a data-animation="slideInRTL" href="/tournament?tenant_id={{tenant_id}}&season_id={{../season_id}}&tournament_id={{this._id}}">{{this.date}}</a>
+        <td class="name"><a data-animation="slideInRTL" href="/tournament?event_id={{event_id}}&season_id={{../season_id}}&tournament_id={{this._id}}">{{this.date}}</a>
         <span class="status {{#if this.status}}{{this.status}}{{/if}}"></span></td>
         <td>{{this.players.length}}</td>
         <td>
@@ -35,4 +39,4 @@
     <p style="text-align: center">No data available!</p>
   {{/ifCond}}
 </div>
-{{> footer tenant_id=tenant_id season_id=season_id view="tournaments"}}
+{{> footer event_id=event_id season_id=season_id view="tournaments"}}

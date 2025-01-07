@@ -1,8 +1,11 @@
 <header>
-  <h1>Ranking</h1>
-  {{#if seasons}}
-    {{> seasonSelector seasons=seasons season_id=season_id }}
-  {{/if}}
+  <h1>{{event_name}}</h1>
+  <div class="flex">
+    <h2>Ranking</h2>
+    {{#if seasons}}
+      {{> seasonSelector seasons=seasons season_id=season_id }}
+    {{/if}}
+  </div>
 </header>
 <div class="wrapper">
   <table class="table-results">
@@ -18,9 +21,9 @@
           <td>{{inc @index}}</td>
           <td class="name">
             {{#if ../season_id}}
-              <a data-animation="slideInRTL" href="/profile?tenant_id={{../tenant_id}}&season_id={{../season_id}}&player_id={{this.id}}">{{this.name}}</a>
+              <a data-animation="slideInRTL" href="/profile?event_id={{../event_id}}&season_id={{../season_id}}&player_id={{this.id}}">{{this.name}}</a>
             {{else}}
-              <a data-animation="slideInRTL" href="/profile?tenant_id={{../tenant_id}}&player_id={{this.id}}">{{this.name}}</a>
+              <a data-animation="slideInRTL" href="/profile?event_id={{../event_id}}&player_id={{this.id}}">{{this.name}}</a>
             {{/if}}
           </td>
           <td>{{this.points}}</td>
@@ -33,4 +36,4 @@
     <p style="text-align: center">No data available!</p>
   {{/ifCond}}
 </div>
-{{> footer tenant_id=tenant_id season_id=season_id view="ranking"}}
+{{> footer event_id=event_id season_id=season_id view="ranking"}}

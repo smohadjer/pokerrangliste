@@ -1,8 +1,8 @@
 import { Json } from './types.js';
 
-export default async function fetchData(tenant_id: string) {
+export default async function fetchData(event_id: string) {
     try {
-        const response = await fetch(`/api/tournament?tenant_id=${tenant_id}`, {
+        const response = await fetch(`/api/tournament?event_id=${event_id}`, {
             method: 'GET',
             headers: {
               'Accept': 'application/json',

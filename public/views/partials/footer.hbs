@@ -3,14 +3,14 @@
     <ul>
       {{#if season_id}}
         <li>
-          <a class="icon icon--block icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?tenant_id={{tenant_id}}&season_id={{season_id}}">Ranking</a>
+          <a class="icon icon--block icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?event_id={{event_id}}&season_id={{season_id}}">Ranking</a>
         </li>
         <li>
-          <a class="icon icon--block icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?tenant_id={{tenant_id}}&season_id={{season_id}}">Games</a>
+          <a class="icon icon--block icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?event_id={{event_id}}&season_id={{season_id}}">Games</a>
         </li>
         {{#if isLoggedIn}}
           <li>
-            <a class="icon icon--block icon--admin {{#ifEquals view 'admin'}}active{{/ifEquals}}" href="/admin/home?tenant_id={{tenant_id}}&season_id={{season_id}}">Admin</a>
+            <a class="icon icon--block icon--admin {{#ifEquals view 'admin'}}active{{/ifEquals}}" href="/admin/home?event_id={{event_id}}&season_id={{season_id}}">Admin</a>
           </li>
         {{else}}
           <li>
@@ -19,14 +19,14 @@
         {{/if}}
       {{else}}
         <li>
-          <a class="icon icon--block icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?tenant_id={{tenant_id}}">Ranking</a>
+          <a class="icon icon--block icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?event_id={{event_id}}">Ranking</a>
           </li>
         <li>
-          <a class="icon icon--block icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?tenant_id={{tenant_id}}">Games</a>
+          <a class="icon icon--block icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?event_id={{event_id}}">Games</a>
         </li>
         {{#if isLoggedIn}}
           <li>
-            <a class="icon icon--block icon--admin {{#ifEquals view 'admin'}}active{{/ifEquals}}" href="/admin/home?tenant_id={{tenant_id}}">Admin</a>
+            <a class="icon icon--block icon--admin {{#ifEquals view 'admin'}}active{{/ifEquals}}" href="/admin/home?event_id={{event_id}}">Admin</a>
           </li>
         {{else}}
           <li>

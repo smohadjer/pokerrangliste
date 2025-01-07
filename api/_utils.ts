@@ -15,16 +15,25 @@ export const sanitize = (item) => {
   }
 };
 
-export const fetchAllPlayers = async (collection, tenant_id) => {
-    return await collection.find({tenant_id})
+export const fetchAllPlayers = async (collection, event_id) => {
+    return await collection.find({event_id})
       // using collation so sort is case insensitive
       .collation({ locale: 'en' })
       .sort({ name: 1 })
       .toArray();
 };
 
-export const fetchAllSeasons = async (collection, tenant_id) => {
-  return await collection.find({tenant_id})
+export const fetchAllSeasons = async (collection, event_id) => {
+  return await collection.find({event_id})
+    // using collation so sort is case insensitive
+    .collation({ locale: 'en' })
+    .sort({ name: 1 })
+    .toArray();
+};
+
+export const fetchAllEvents = async (collection, tenant_id) => {
+  const filter = tenant_id ? { tenant_id } : {};
+  return await collection.find(filter)
     // using collation so sort is case insensitive
     .collation({ locale: 'en' })
     .sort({ name: 1 })
@@ -39,18 +48,18 @@ export const fetchPlayerById = async (collection, playerId) => {
 
 export const getTournaments = async (
   collection: Collection,
-  tenant_id: string,
+  event_id: string,
   seasonId?: string) => {
-  const query = seasonId ? { tenant_id, 'season_id': seasonId } : { tenant_id} ;
+  const query = seasonId ? { event_id, 'season_id': seasonId } : { event_id} ;
   return await collection.find(query).sort({date: -1}).toArray();
 };
 
 export const getTournament = async (
   collection: Collection,
-  tenant_id: string,
+  event_id: string,
   tournamentId: string) => {
   const tournament = await collection.findOne({
-    tenant_id,
+    event_id,
     _id: new ObjectId(tournamentId)
   });
   return [tournament];
@@ -78,7 +87,7 @@ const createTournamentDocument = (req) => {
   const buyin = Number(req.body.buyin);
   const status = sanitize(req.body.status);
   const season_id = req.body.season_id;
-  const tenant_id = req.body.tenant_id;
+  const event_id = req.body.event_id;
   const date = sanitize(req.body.date);
 
   // req.body.players is either undefined (when no player has been added to a tournament yet) or a string equal to id of a single player or an array of ids of multiple players
@@ -108,7 +117,7 @@ const createTournamentDocument = (req) => {
 
     if (isValid) return {
       season_id,
-      tenant_id,
+      event_id,
       date,
       status,
       buyin,
@@ -117,7 +126,7 @@ const createTournamentDocument = (req) => {
   } else {
     return {
       season_id,
-      tenant_id,
+      event_id,
       date,
       status,
       buyin,
@@ -152,12 +161,20 @@ export const editTournament = async (
 export const addNewPlayer = async (
   name: string,
   collection: Collection,
-  tenant_id: string) => {
-  const response = await collection.insertOne({name, tenant_id});
+  event_id: string) => {
+  const response = await collection.insertOne({name, event_id});
   console.log(response);
 };
 
 export const addNewSeason = async (
+  name: string,
+  collection: Collection,
+  event_id: string) => {
+  const response = await collection.insertOne({name, event_id});
+  console.log(response);
+};
+
+export const addNewEvent = async (
   name: string,
   collection: Collection,
   tenant_id: string) => {
@@ -169,8 +186,8 @@ export const editPlayerName = async (
   name: string,
   id: string,
   collection: Collection,
-  tenant_id: string) => {
-  const query = {tenant_id, _id: new ObjectId(id)};
+  event_id: string) => {
+  const query = {event_id, _id: new ObjectId(id)};
   const response = await collection.updateOne(query, {
     $set: {name: name}
   });
@@ -178,6 +195,18 @@ export const editPlayerName = async (
 };
 
 export const editSeasonName = async (
+  name: string,
+  id: string,
+  collection: Collection,
+  event_id: string) => {
+  const query = {event_id, _id: new ObjectId(id)};
+  const response = await collection.updateOne(query, {
+      $set: {name: name}
+  });
+  console.log(response);
+};
+
+export const editEventName = async (
   name: string,
   id: string,
   collection: Collection,

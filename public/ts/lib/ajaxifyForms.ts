@@ -1,8 +1,6 @@
-import { renderPage } from './renderPage.js';
-import { State, Route, RenderPageOptions} from './types.js';
-import { store } from '../lib/store';
-import fetchData from '../lib/fetchData.js';
-import { router } from '../lib/router.js';
+import { store } from './store';
+import { router } from './router.js';
+import { fetchEvents } from './utils.js';
 
 export function ajaxifyForms(form: HTMLFormElement) {
     form.addEventListener('submit', (e) => {
@@ -37,15 +35,10 @@ export function ajaxifyForms(form: HTMLFormElement) {
 
             fetch(url, {
                 method: form.method,
-                headers: {
-                    // 'Accept': 'application/json',
-                    // 'Content-Type': 'application/json'
-                },
                 body: data
             })
             .then(response => response.json())
             .then(async (res) => {
-                console.log(res)
                 if (res.error) {
                     console.error(res.error);
                     form.classList.add('error');
@@ -61,17 +54,20 @@ export function ajaxifyForms(form: HTMLFormElement) {
                     form.classList.remove('error');
                 }
 
-
                 // on logout clear state and local storage from tenant
                 if (url.indexOf('logout') > -1) {
-                    console.log('Removing tenant from state and local storage');
+                    console.log('Removing events and tenant from state and local storage');
                     localStorage.removeItem('tenant');
                     store.setState({
                         tenant: {
                             id: undefined,
                             name: undefined
-                        }
+                        },
+                        events: []
                     });
+
+                    // update events in state
+                    await fetchEvents();
                 }
 
                 if (res.data) {
@@ -80,8 +76,11 @@ export function ajaxifyForms(form: HTMLFormElement) {
                         localStorage.setItem('tenant', JSON.stringify(res.data.tenant));
 
                         // fetch app data from server and storing it in state
-                        const data: State | undefined = await fetchData(res.data.tenant.id);
-                        store.setState(data);
+                        // const data: State | undefined = await fetchData(res.data.tenant.id);
+                        // store.setState(data);
+
+                        // update events in state after login
+                        await fetchEvents(res.data.tenant.id);
                     }
 
                     // Update the state with data returned from api
@@ -93,16 +92,14 @@ export function ajaxifyForms(form: HTMLFormElement) {
                 }
 
                 if (redirect) {
-                    const options: RenderPageOptions = {
+                    router(redirect, window.location.search, {
                         type: 'click'
-                    };
-                    router(redirect, '', options);
+                    });
                 } else {
                     // update current page
-                    const options: RenderPageOptions = {
+                    router(window.location.pathname, window.location.search, {
                         type: 'reload'
-                    };
-                    router(window.location.pathname, window.location.search, options);
+                    });
                 }
             }).catch(error => {
                 console.log(error);

@@ -59,6 +59,7 @@ export const setHandlebars = async () => {
     registerPartial('seasonSelector');
     registerPartial('footer');
     registerPartial('adminNav');
+    registerPartial('adminHeader');
     registerPartial('tournamentForm');
     registerPartial('logout');
 };

@@ -2,10 +2,6 @@
     "cleanUrls": true,
     "redirects": [
         {
-            "source": "/",
-            "destination": "/ranking"
-        },
-        {
             "source": "/admin",
             "destination": "/admin/home"
         }
@@ -20,7 +16,7 @@
             "destination": "/"
         },
         {
-            "source": "/tenant",
+            "source": "/events",
             "destination": "/"
         },
         {

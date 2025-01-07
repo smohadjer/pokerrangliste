@@ -1,14 +1,11 @@
-<header>
-  <h1>Admin</h1>
-  {{> logout }}
-</header>
+{{> adminHeader event_name=event_name tenant_name=tenant_name}}
 <div class="wrapper">
     <main class="admin">
-        <p><a class="icon icon--inline icon--back" href="/admin/home?tenant_id={{tenant_id}}">Back</a></p>
+        <p><a class="icon icon--inline icon--back" href="/admin/home?event_id={{event_id}}">Back</a></p>
         <section>
             <h2>Add new player</h2>
             <form class="form-ajax" method="POST" action="/api/players">
-                <input type="hidden" name="tenant_id" value="{{tenant_id}}">
+                <input type="hidden" name="event_id" value="{{event_id}}">
                 <div class="row">
                     <label>Player *</label>
                     <input required name="name">
@@ -21,4 +18,4 @@
         </section>
     </main>
 </div>
-{{> footer tenant_id=tenant_id season_id=season_id view="admin"}}
+{{> footer event_id=event_id season_id=season_id view="admin"}}

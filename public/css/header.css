@@ -1,11 +1,31 @@
 header {
     padding: 1em;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
     background:
     radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 100%);
-    flex-grow: 0;
+
+    h1 {
+        font-size: 1.4rem;
+        margin: 0;
+        text-align: center;
+
+        span {
+            font-size: 1em;
+            font-weight: normal;
+        }
+    }
+
+    h2 {
+        margin: 0;
+        font-weight: 500;
+    }
+
+    .flex {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-grow: 0;
+        margin-top: 0.5em;
+    }
 
     .pending {
         background: #1d5410;

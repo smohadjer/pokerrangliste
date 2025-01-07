@@ -11,15 +11,15 @@ export default async (req, res) => {
     const collection = database.collection('players');
 
     if (req.method === 'GET') {
-      const tenant_id = req.query.tenant_id;
+      const event_id = req.query.event_id;
       const id = req.query?.id;
       const name = req.query?.name;
       if (id || name) {
         const query = id ? {
-          tenant_id,
+          event_id,
           _id: new ObjectId(id)
         } : {
-          tenant_id,
+          event_id,
           name: name
         };
         const doc = await collection.findOne(query);
@@ -29,19 +29,19 @@ export default async (req, res) => {
           res.status(404).end();
         }
       } else {
-        const docs = await fetchAllPlayers(collection, tenant_id);
+        const docs = await fetchAllPlayers(collection, event_id);
         res.json(docs);
       }
     }
 
     if (req.method === 'POST') {
-      const tenant_id = req.body.tenant_id;
-      if (!tenant_id || tenant_id.length === 0) {
+      const event_id = req.body.event_id;
+      if (!event_id || event_id.length === 0) {
         throw new Error('No tenant ID provided');
       }
       const name = req.body.name;
       const playerId = req.body.player_id;
-      const doc = await collection.findOne({ tenant_id, name });
+      const doc = await collection.findOne({ event_id, name });
 
       if (doc) {
         res.status(500).json({error: `Name ${name} is already taken`});
@@ -49,13 +49,13 @@ export default async (req, res) => {
       }
 
       if (playerId) {
-        await editPlayerName(name, playerId, collection, tenant_id);
+        await editPlayerName(name, playerId, collection, event_id);
       } else {
-        await addNewPlayer(name, collection, tenant_id);
+        await addNewPlayer(name, collection, event_id);
       }
 
       // return all players so state in app can be updated from response
-      const players = await fetchAllPlayers(collection, tenant_id);
+      const players = await fetchAllPlayers(collection, event_id);
       res.json({
         data: { players }
       });
