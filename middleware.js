@@ -34,8 +34,7 @@ export default async function middleware(req) {
   if (token) {
     const secret = new TextEncoder().encode(process.env.jwtSecret);
     try {
-      const payload = await jwtVerify(token, secret);
-      console.log(payload);
+      const response = await jwtVerify(token, secret);
       next();
     } catch(err) {
       return Response.json({

@@ -4,7 +4,8 @@ import {
   getTournament,
   getTournaments,
   insertTournament,
-  editTournament
+  editTournament,
+  userOwnsEvent
 } from './_utils.js';
 
 const client = new MongoClient(database_uri);
@@ -33,9 +34,11 @@ export default async (req, res) => {
 
     if (req.method === 'POST') {
       const event_id = req.body.event_id;
-      if (!event_id || event_id.length === 0) {
-        throw new Error('No tenant ID provided');
+      const events = database.collection('events');
+      if (!userOwnsEvent(event_id, req.cookies.jwt, events)) {
+        throw new Error('Either event ID is not valid or Logged-in user is not owner of the event');
       }
+
       if (req.body.tournament_id) {
         const response = await editTournament(tournamentsCol, req, req.body.tournament_id);
         if (response && response.modifiedCount > 0) {
@@ -66,11 +69,10 @@ export default async (req, res) => {
         }
       }
     }
-  } catch (error) {
-    console.error(error);
+  } catch (e) {
+    console.error(e);
     res.status(500).send({
-      error: 500,
-      message: error
+      error: e.message
     });
   } finally {
     await client.close();

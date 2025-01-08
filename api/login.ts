@@ -21,7 +21,7 @@ export default async (req, res) => {
       } else {
         if (await bcrypt.compare(password, user.password)) {
           authenticated = true;
-          console.log(user._id);
+          console.log('user._id:', user._id);
         } else {
           throw new Error('login failed');
         }
@@ -30,7 +30,7 @@ export default async (req, res) => {
       if (authenticated) {
         const secret = new TextEncoder().encode(jwtSecret);
         const alg = 'HS256';
-        const token = await new SignJWT({ 'username': username })
+        const token = await new SignJWT({ id: user._id })
           .setProtectedHeader({ alg })
           .setExpirationTime('10w')
           .sign(secret);

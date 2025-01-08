@@ -1,7 +1,7 @@
 import fetchData from './fetchData.js';
-import { State, RenderPageOptions } from './types.js';
+import { State, Route, RenderPageOptions } from './types.js';
 import { store } from './store.js';
-import { renderRoute } from './renderRoute.js';
+import { renderPage } from './renderPage.js';
 
 export async function router(
     path: string,
@@ -11,34 +11,18 @@ export async function router(
     const state: State = store.getState();
     const params = new URLSearchParams(urlParams);
     const requiresAuth = path.indexOf('/admin') > -1;
-    const loginOrRegisterOrTenantPage = path.indexOf('/login') > -1
-        || path.indexOf('/register') > -1
-        || path.indexOf('/events') > -1;
+    const loginOrRegister = path === '/login' || path === '/register';
     const isLoggedIn = state.tenant.id ? true : false;
-    // const tenant_id = state.tenant.id || params.get('tenant_id');
     const event_id = params.get('event_id');
 
-    // if (!tenant_id) {
-    //     if (path === '/register' || path === '/login') {
-    //         renderRoute(path, '', options);
-    //     } else {
-    //         renderRoute('/tenant', '', options);
-    //     }
-    //     return;
-    // }
-
     if (!event_id) {
-        if (path === '/register' || path === '/login') {
+        if (loginOrRegister) {
             renderRoute(path, '', options);
         } else {
             renderRoute('/events', '', options);
         }
         return;
     }
-
-    // if (requiresAuth) {
-    //     params.set('tenant_id', tenant_id);
-    // }
 
     if (state.dataIsStale) {
         console.log('fetching data...');
@@ -51,19 +35,48 @@ export async function router(
 
     // routing logic
     if (isLoggedIn) {
-        if (loginOrRegisterOrTenantPage) {
+        if (loginOrRegister) {
             renderRoute('/admin/home', `event_id=${event_id}`, options);
         } else {
-            // we convert params to string since history methods throw error when cloning a URLSearchParam object
-            renderRoute(path, params.toString(), options);
+            renderRoute(path, urlParams, options);
         }
     } else {
         if (requiresAuth) {
             renderRoute('/login', '', options);
-        } else if (loginOrRegisterOrTenantPage) {
+        } else if (loginOrRegister) {
             renderRoute(path, '', options);
         } else {
-            renderRoute(path, params.toString(), options);
+            renderRoute(path, urlParams, options);
         }
+    }
+}
+
+async function renderRoute(
+    path: string,
+    params: string,
+    options: RenderPageOptions) {
+    const route: Route = {
+        view: path,
+        params: params
+    };
+
+    window.scrollTo(0, 0);
+
+    // calling renderPage to generate HTML for current route
+    await renderPage(route, options);
+
+    const url = (route.params.length > 0)
+        ? route.view + route.params
+        : route.view;
+
+    // When the app loads from server we need to update browser history
+    // by adding state to it, so when user returns to entry page via
+    // back button, popState handler can access history to render page.
+    // Here we use replaceState instead of pushState as we don't want
+    // to add a new entry to history stack.
+    if (options.type === 'click') {
+        window.history.pushState(route, '', url);
+    } else {
+        window.history.replaceState(route, '', url);
     }
 }
