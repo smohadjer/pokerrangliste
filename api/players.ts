@@ -41,7 +41,7 @@ export default async (req, res) => {
     if (req.method === 'POST') {
       const event_id = req.body.event_id;
       const events = database.collection('events');
-      if (!userOwnsEvent(event_id, req.cookies.jwt, events)) {
+      if (!await userOwnsEvent(event_id, req.cookies.jwt, events)) {
         throw new Error('Either event ID is not valid or Logged-in user is not owner of the event');
       }
 
