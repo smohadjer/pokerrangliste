@@ -30,7 +30,10 @@ export default async (req, res) => {
       if (authenticated) {
         const secret = new TextEncoder().encode(jwtSecret);
         const alg = 'HS256';
-        const token = await new SignJWT({ id: user._id })
+        const token = await new SignJWT({
+            name: user.username,
+            id: user._id
+          })
           .setProtectedHeader({ alg })
           .setExpirationTime('10w')
           .sign(secret);

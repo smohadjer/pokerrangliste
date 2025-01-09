@@ -72,15 +72,6 @@ export function ajaxifyForms(form: HTMLFormElement) {
                 if (res.data) {
                     // after successful login tenant is returned
                     if (res.data.tenant) {
-<<<<<<< HEAD
-=======
-                        localStorage.setItem('tenant', JSON.stringify(res.data.tenant));
-
-                        // fetch app data from server and storing it in state
-                        // const data: State | undefined = await fetchData(res.data.tenant.id);
-                        // store.setState(data);
-
->>>>>>> 10a3bb9 (wip events)
                         // update events in state after login
                         await fetchEvents(res.data.tenant.id);
                     }

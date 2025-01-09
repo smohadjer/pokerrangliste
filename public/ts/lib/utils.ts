@@ -108,6 +108,12 @@ export const getTournaments = (tournaments: Tournament[], season_id: string | un
     return clone;
 };
 
+export const isAuthenticated = async () => {
+    const response = await fetch('/api/verifyAuth');
+    const isAuthenticated = await response.json();
+    return isAuthenticated;
+}
+
 export const enablePasswordToggle = (container: HTMLElement) => {
     const toggle = container.querySelector('#togglePassword');
     const passwordField = container.querySelector('#password');
