@@ -1,5 +1,5 @@
 /*
-Run this script in terminal from root of porject using command `node migrationes/[script.js]`. Rename `api/_config.ts` to `api/_config.js` before running script and undo afterwards.
+Run this script in terminal from root of porject using command `node migrations/[script.js]`. Rename `api/_config.ts` to `api/_config.js` before running script and undo afterwards.
 */
 
 import { MongoClient } from 'mongodb';
@@ -12,8 +12,8 @@ async function run() {
     const database = client.db(database_name);
     const collection = database.collection('tournaments');
     const result = await collection.updateMany({}, {
-      $set: {
-        event_id: '677a4f585462214b2a1ac77e'
+      $unset: {
+        'tenant_id': 1
       }
     });
     console.log(`Updated ${result.modifiedCount} documents`);

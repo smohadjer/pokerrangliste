@@ -1,5 +1,5 @@
 /*
-Run this script in terminal from root of porject using command `node migrationes/[script.js]`. Rename `api/_config.ts` to `api/_config.js` before running script and undo afterwards.
+Run this script in terminal from root of porject using command `node migrations/[script.js]`. Rename `api/_config.ts` to `api/_config.js` before running script and undo afterwards.
 */
 
 import { MongoClient } from 'mongodb';
