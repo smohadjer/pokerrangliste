@@ -1,6 +1,10 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { database_uri, database_name } from './_config.js';
-import { fetchAllPlayers, editPlayerName, addNewPlayer } from './_utils.js';
+import {
+  fetchAllPlayers,
+  editPlayerName,
+  addNewPlayer,
+  userOwnsEvent } from './_utils.js';
 
 const client = new MongoClient(database_uri);
 
@@ -36,16 +40,17 @@ export default async (req, res) => {
 
     if (req.method === 'POST') {
       const event_id = req.body.event_id;
-      if (!event_id || event_id.length === 0) {
-        throw new Error('No tenant ID provided');
+      const events = database.collection('events');
+      if (!userOwnsEvent(event_id, req.cookies.jwt, events)) {
+        throw new Error('Either event ID is not valid or Logged-in user is not owner of the event');
       }
+
       const name = req.body.name;
       const playerId = req.body.player_id;
       const doc = await collection.findOne({ event_id, name });
 
       if (doc) {
-        res.status(500).json({error: `Name ${name} is already taken`});
-        return;
+        throw new Error(`Name ${name} is already taken`);
       }
 
       if (playerId) {
@@ -77,6 +82,7 @@ export default async (req, res) => {
     }
   } catch (e) {
     console.error(e);
+    res.status(500).json({error: e.message});
   } finally {
     await client.close();
   }

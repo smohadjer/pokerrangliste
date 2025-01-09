@@ -2,7 +2,7 @@
 import { renderChart } from './drawChart.js';
 import { initAddTournament } from '../hydration/add-tournament.js';
 import { initEditTournament } from '../hydration/edit-tournament.js';
-import { onChangeEventHandler } from './nav.js';
+import { initSeasonSelector } from '../hydration/seasonSelector.js';
 import { ajaxifyForms } from './ajaxifyForms.js';
 import { populateSelect, enablePasswordToggle } from './utils.js';
 import { State } from './types';
@@ -44,14 +44,9 @@ export async function hydrate(
         enablePasswordToggle(container);
     }
 
-    // init season select in header
-    const seasonSelector =  document.querySelector('header #season-selector');
+    const seasonSelector: HTMLSelectElement | null =  document.querySelector('header #season-selector');
     if (seasonSelector) {
-        seasonSelector.addEventListener('change', (event) => {
-            if (event.target instanceof HTMLSelectElement) {
-                onChangeEventHandler(event.target);
-            }
-        });
+        initSeasonSelector(seasonSelector);
     }
 
     // set all forms to use fetch

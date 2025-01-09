@@ -1,6 +1,11 @@
 import { MongoClient } from 'mongodb';
 import { database_uri, database_name } from './_config.js';
-import { fetchAllEvents, editEventName, addNewEvent } from './_utils.js';
+import {
+  fetchAllEvents,
+  editEventName,
+  addNewEvent,
+  getIdFromToken
+} from './_utils.js';
 
 const client = new MongoClient(database_uri);
 
@@ -17,7 +22,7 @@ export default async (req, res) => {
     }
 
     if (req.method === 'POST') {
-      const tenant_id = req.body.tenant_id;
+      const tenant_id = await getIdFromToken(req.cookies.jwt);
       if (!tenant_id) {
         throw new Error('No tenant ID provided');
       }
@@ -27,8 +32,7 @@ export default async (req, res) => {
       const doc = await collection.findOne({tenant_id, name});
 
       if (doc) {
-        res.status(500).json({error: `Name ${name} is already taken`});
-        return;
+        throw new Error(`Name ${name} is already taken`);
       }
 
       if (eventId) {
@@ -46,6 +50,7 @@ export default async (req, res) => {
     }
   } catch (e) {
     console.error(e);
+    res.status(500).json({error: e.message});
   } finally {
     await client.close();
   }

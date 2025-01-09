@@ -56,8 +56,7 @@ export function ajaxifyForms(form: HTMLFormElement) {
 
                 // on logout clear state and local storage from tenant
                 if (url.indexOf('logout') > -1) {
-                    console.log('Removing events and tenant from state and local storage');
-                    localStorage.removeItem('tenant');
+                    console.log('Removing events and tenant from state');
                     store.setState({
                         tenant: {
                             id: undefined,
@@ -73,12 +72,6 @@ export function ajaxifyForms(form: HTMLFormElement) {
                 if (res.data) {
                     // after successful login tenant is returned
                     if (res.data.tenant) {
-                        localStorage.setItem('tenant', JSON.stringify(res.data.tenant));
-
-                        // fetch app data from server and storing it in state
-                        // const data: State | undefined = await fetchData(res.data.tenant.id);
-                        // store.setState(data);
-
                         // update events in state after login
                         await fetchEvents(res.data.tenant.id);
                     }

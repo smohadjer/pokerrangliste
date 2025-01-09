@@ -1,4 +1,5 @@
 import { Collection, ObjectId } from 'mongodb';
+import {jwtVerify} from 'jose';
 
 type Player = {
   id: string;
@@ -6,6 +7,28 @@ type Player = {
   ranking: number;
   prize: number;
 }
+
+export const getIdFromToken = async (token) => {
+  const secret = new TextEncoder().encode(process.env.jwtSecret);
+  const response = await jwtVerify(token, secret);
+  return response.payload.id as string;
+};
+
+export const userOwnsEvent = async (
+  event_id: string,
+  token: string,
+  collection: Collection) => {
+  if (!event_id || event_id.length === 0) {
+    return;
+  }
+  if (!token) return;
+  const tenant_id = await getIdFromToken(token);
+  if (!tenant_id) return;
+  const event = await collection.findOne({
+    _id: new ObjectId(event_id)
+  });
+  return event.tenant_id === tenant_id ? true : false;
+};
 
 export const sanitize = (item) => {
   if (item && typeof item === 'string') {
