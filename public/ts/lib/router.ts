@@ -1,7 +1,7 @@
 import fetchData from './fetchData.js';
 import { State, Route, RenderPageOptions } from './types.js';
 import { store } from './store.js';
-import { renderPage } from './renderPage.js';
+import { render } from './render.js';
 
 export async function router(
     path: string,
@@ -38,7 +38,7 @@ export async function router(
         if (loginOrRegister) {
             renderRoute('/admin/home', `event_id=${event_id}`, options);
         } else {
-            renderRoute(path, urlParams, options);
+            renderRoute(path, params.toString(), options);
         }
     } else {
         if (requiresAuth) {
@@ -46,7 +46,7 @@ export async function router(
         } else if (loginOrRegister) {
             renderRoute(path, '', options);
         } else {
-            renderRoute(path, urlParams, options);
+            renderRoute(path, params.toString(), options);
         }
     }
 }
@@ -62,11 +62,11 @@ async function renderRoute(
 
     window.scrollTo(0, 0);
 
-    // calling renderPage to generate HTML for current route
-    await renderPage(route, options);
+    // calling render to generate HTML for current route
+    await render(route, options);
 
     const url = (route.params.length > 0)
-        ? route.view + route.params
+        ? `${route.view}?${route.params}`
         : route.view;
 
     // When the app loads from server we need to update browser history

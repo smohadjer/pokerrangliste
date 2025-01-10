@@ -24,7 +24,7 @@ export type bounty = {
   readonly id: {}
 }
 
-type Event = {
+export type Event = {
   _id: string;
   name: string;
   tenant_id: string;

@@ -1,4 +1,4 @@
-import { renderPage } from './renderPage.js';
+import { render } from './render.js';
 import { RenderPageOptions, Route } from './types.js';
 import { router } from './router.js';
 
@@ -44,7 +44,8 @@ export default function enableSpaMode() {
         const options: RenderPageOptions = {
             type: 'click'
         };
-        await renderPage(event.state, options);
+        const route: Route = event.state;
+        await render(route, options);
         if (event.state.scroll) {
             results?.querySelector('.wrapper')!.scrollTo(0, event.state.scroll);
         }

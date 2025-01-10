@@ -1,6 +1,7 @@
 html, body {
     height: 100%;
     margin: 0;
+    background-color: #f4efc0;
 }
 
 #results {
@@ -12,7 +13,6 @@ html, body {
 #results > .wrapper {
     overflow-y: auto;
     flex-grow: 1;
-    background-color: #f4efc0;
 }
 
 main {

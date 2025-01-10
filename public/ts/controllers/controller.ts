@@ -11,8 +11,12 @@ import editSeason from './editSeason';
 import editPlayer from './editPlayer';
 import events from './events';
 
+type Controller = {
+    [key:string]: Function;
+}
+
 /* controllers provide data to views */
-export const controller = {
+export const controller: Controller = {
     '/events': events,
     '/profile': profile,
     '/tournament': tournament,
