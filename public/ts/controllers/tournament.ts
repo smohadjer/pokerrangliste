@@ -1,4 +1,4 @@
-import { Tournament, Player, RouteParams } from '../lib/types';
+import { Tournament, Player, RouteParams } from '../types';
 import {
     deepClone,
     getPrize,

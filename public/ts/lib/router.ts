@@ -1,5 +1,4 @@
-import fetchData from './fetchData.js';
-import { State, Route, RenderPageOptions } from './types.js';
+import { State, Route, RenderPageOptions, Json } from '../types.js';
 import { store } from './store.js';
 import { render } from './render.js';
 
@@ -7,7 +6,6 @@ export async function router(
     path: string,
     urlParams: string,
     options: RenderPageOptions) {
-    console.log('router', path, urlParams);
     const state: State = store.getState();
     const params = new URLSearchParams(urlParams);
     const requiresAuth = path.indexOf('/admin') > -1;
@@ -27,10 +25,11 @@ export async function router(
     if (state.dataIsStale) {
         console.log('fetching data...');
         const data: State | undefined = await fetchData(event_id);
-        store.setState(data);
         store.setState({
+            ...state,
+            ...data,
             dataIsStale: false
-        })
+        });
     }
 
     // routing logic
@@ -80,3 +79,25 @@ async function renderRoute(
         window.history.replaceState(route, '', url);
     }
 }
+
+async function fetchData(event_id: string) {
+    try {
+        const response = await fetch(`/api/tournament?event_id=${event_id}`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }
+        });
+        const json: Json = await response.json();
+        if (!json) throw ('Failed to fetch data from server!');
+        if (json.error) {
+            throw(json.message);
+        } else {
+            return json;
+        }
+    } catch (e) {
+        console.error(` Error: ${e}`);
+    }
+}
+

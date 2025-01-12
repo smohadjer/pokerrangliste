@@ -1,18 +1,8 @@
-import { State } from './types.js';
+import { State } from '../types.js';
 import { deepClone } from './utils.js';
 
-type StateOptions = {
-    payload: any;
-};
-
-type Store = {
-    state: State,
-    getState: Function,
-    setState: Function
-};
-
-export const store: Store = {
-    state: {
+class Store {
+    #state: State = {
         dataIsStale: true,
         events: [],
         tournaments: [],
@@ -22,15 +12,15 @@ export const store: Store = {
             name: undefined,
             id: undefined
         }
-    },
-    getState: () => {
-        return deepClone(store.state);
-    },
-    setState: (options: StateOptions) => {
-        for (const key in options) {
-            if (store.state.hasOwnProperty(key)) {
-                store.state[key] = options[key];
-            }
-        }
+    };
+
+    getState() {
+        return deepClone(this.#state);
+    }
+
+    setState(state: State) {
+        this.#state = deepClone(state);
     }
 }
+
+export const store = new Store();

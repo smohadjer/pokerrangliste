@@ -1,4 +1,4 @@
-import { Tournament, Profile } from '../lib/types';
+import { Tournament, Profile } from '../types';
 import {
     getPoints,
     getPlayers,

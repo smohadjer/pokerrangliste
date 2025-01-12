@@ -1,4 +1,4 @@
-import {Tournament, Player } from '../lib/types';
+import {Tournament, Player } from '../types';
 import { getPlayerName, generateHTML } from '../lib/utils.js';
 
 export async function generatePlayerFields(

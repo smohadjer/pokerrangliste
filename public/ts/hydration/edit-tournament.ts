@@ -1,4 +1,4 @@
-import { State } from '../lib/types';
+import { State } from '../types';
 import { store } from '../lib/store.js';
 import { populateSelectTournaments, generateHTML } from '../lib/utils.js';
 import { initTournamentForm } from './initTournamentForm.js';

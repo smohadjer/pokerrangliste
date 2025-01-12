@@ -1,5 +1,5 @@
 import Chart from 'chart.js/auto';
-import { ChartData } from './types.js';
+import { ChartData } from '../types.js';
 
 const drawChart = (element: HTMLElement, data: ChartData[]) => {
     Chart.defaults.color = '#000';

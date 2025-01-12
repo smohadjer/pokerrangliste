@@ -3,7 +3,7 @@ import {
     getTournaments,
     getSeasonName
 } from '../lib/utils';
-import { Player } from '../lib/types';
+import { Player } from '../types';
 import { store } from '../lib/store';
 
 type TemplateData = {

@@ -9,7 +9,10 @@ export const hydrateEvents = async (container: HTMLElement) => {
     populateSelect(select, events);
     select.closest('form')?.classList.remove('loading');
     select.addEventListener('change', (event) => {
-        store.setState({ dataIsStale: true });
+        store.setState({
+            ...state,
+            dataIsStale: true
+        });
         select.closest('form')?.classList.add('loading');
         if (event.target instanceof HTMLSelectElement) {
             router('/ranking', `?event_id=${select.value}`, {type: 'click'});

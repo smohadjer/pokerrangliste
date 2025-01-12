@@ -1,5 +1,5 @@
 import { generatePlayerFields } from './generatePlayerFields';
-import { State, Tournament } from '../lib/types';
+import { State, Tournament } from '../types';
 import { populateSelect } from '../lib/utils';
 
 export async function initTournamentForm(

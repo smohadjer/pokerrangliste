@@ -1,5 +1,5 @@
 import { router } from '../lib/router.js';
-import { RenderPageOptions } from '../lib/types.js';
+import { RenderPageOptions } from '../types.js';
 
 export const initSeasonSelector = (seasonSelector: HTMLSelectElement) => {
   seasonSelector.addEventListener('change', (event) => {

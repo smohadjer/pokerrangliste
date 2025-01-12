@@ -45,6 +45,20 @@ export interface Tournament {
   status?: 'upcoming' | 'pending' | 'done';
 }
 
+export type State = {
+  dataIsStale: boolean;
+  events: Event[];
+  tournaments: Tournament[];
+  seasons: Season[];
+  players: PlayerDB[];
+  tenant: Tenant;
+}
+
+export interface Json extends State {
+  error? : string,
+  message? : string
+}
+
 export type Profile = {
   date: string;
   _id: {};
@@ -58,23 +72,9 @@ export type ChartData = Profile & {
   sum: number;
 }
 
-export interface Json extends State {
-  error? : string,
-  message? : string
-}
-
 export type Tenant = {
   id?: string;
   name?: string
-}
-
-export type State = {
-  dataIsStale: boolean;
-  events: Event[];
-  tournaments: Tournament[];
-  seasons: Season[];
-  players: PlayerDB[];
-  tenant: Tenant;
 }
 
 export type RenderPageOptions =  {

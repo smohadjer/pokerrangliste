@@ -4,7 +4,7 @@
         <p><a data-animation="slideInLTR" class="icon icon--inline icon--back" href="/admin/home?event_id={{event_id}}">Back</a></p>
         <section>
             <h2>Delete players</h2>
-            <form class="form-ajax" method="DELETE" action="/api/players">
+            <form method="DELETE" action="/api/players">
                 <p>Only palyers who have never played in a tournament can be deleted.</p>
                 <input type="hidden" name="event_id" value="{{event_id}}">
                 <div class="row">

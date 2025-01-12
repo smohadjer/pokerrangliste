@@ -1,6 +1,6 @@
 import { getTournaments, getPlayerName } from '../lib/utils';
 import { store } from '../lib/store';
-import { Tournament } from '../lib/types';
+import { Tournament } from '../types';
 
 type TemplateData = {
     tournaments: Tournament[];
