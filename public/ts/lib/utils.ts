@@ -15,23 +15,27 @@ export const getHandlebarsTemplate = async (templateFile: string) => {
 
 export const setHandlebars = async () => {
     // setting Handlebars helpers to help with compiling templates
-    Handlebars.registerHelper("inc", function(value: string, options) {
+    Handlebars.registerHelper("inc", function(value: string) {
         return parseInt(value) + 1;
     });
 
-    Handlebars.registerHelper("reverseIndex", function(v1: number, v2:string, options) {
+    Handlebars.registerHelper("reverseIndex", function(v1: number, v2:string) {
         return v1 - parseInt(v2);
     });
 
-    Handlebars.registerHelper('ifEquals', function(arg1: string, arg2: string, options) {
+    Handlebars.registerHelper('ifEquals', function(arg1: string, arg2: string, options: any) {
         return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
     });
 
-    Handlebars.registerHelper('_toInt', function(str) {
-        return parseInt(str, 10);
-    });
+    // Handlebars.registerHelper('_toInt', function(value: string) {
+    //     return parseInt(value, 10);
+    // });
 
-    Handlebars.registerHelper('ifCond', function (v1, operator, v2, options) {
+    Handlebars.registerHelper('ifCond', function (
+        v1: string | number,
+        operator: string,
+        v2: string | number,
+        options: any) {
         switch (operator) {
             case '==':
                 return (v1 == v2) ? options.fn(this) : options.inverse(this);
@@ -251,14 +255,10 @@ export const fetchEvents = async (tenant_id?: string) => {
         if (json.error) {
             throw(json.message);
         } else {
-            const state = store.getState();
-            store.setState({
-                ...state,
-                events: json
-            });
             return json;
         }
     } catch (e) {
         console.error(` Error: ${e}`);
+        return [];
     }
 };

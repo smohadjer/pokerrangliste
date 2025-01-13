@@ -1,5 +1,5 @@
 import { router } from './lib/router.js';
-import { RenderPageOptions, Route } from './types.js';
+import { RenderPageOptions, Route, Event } from './types.js';
 import { store } from './lib/store.js';
 import { fetchEvents, isAuthenticated, setHandlebars } from './lib/utils.js';
 import { render } from './lib/render.js';
@@ -13,21 +13,21 @@ import { render } from './lib/render.js';
 
     addSPAEventListeners(results);
 
-    // fetching and storing events in state
+    const state = store.getState();
     const authenticated = await isAuthenticated();
+
     if (authenticated.error) {
-        // user is not logged in, fetching all events
-        await fetchEvents();
+        // user is not logged-in, fetching all events
+        const events: Event[] = await fetchEvents();
+        store.setState({...state, events});
     } else {
-        // user is logged-in, saving user's name and id to state
-        const state = store.getState();
+        // user is logged-in, fetching only his events
+        const events: Event[] = await fetchEvents(authenticated.id);
         store.setState({
             ...state,
+            events,
             tenant: authenticated
         });
-
-        // fetch logged-in user's events
-        await fetchEvents(authenticated.id);
     }
 
     router(window.location.pathname, window.location.search, { type: 'reload'});
@@ -105,18 +105,15 @@ export function submitHandler(e: SubmitEvent) {
         const data = new URLSearchParams(formData as any);
 
         //const body = (form.method === 'DELETE') ? JSON.stringify({}) : JSON.stringify(object);
-
         //const url =  (form.method === 'DELETE') ? `${form.action}/${object.player_id}` : form.action;
-        const url = form.action;
 
-        fetch(url, {
+        fetch(form.action, {
             method: form.method,
             body: data
         })
         .then(response => response.json())
         .then(async (res) => {
             if (res.error) {
-                console.error(res.error);
                 form.classList.add('error');
                 const errorElm = form.querySelector('.error');
                 if (errorElm) {
@@ -131,34 +128,36 @@ export function submitHandler(e: SubmitEvent) {
             form.classList.remove('error');
             const state = store.getState();
 
-            // on logout clear state and local storage from tenant
-            if (url.indexOf('logout') > -1) {
-                console.log('Removing events and tenant from state');
+            // on logout remove tenant data from state and update events
+            if (form.action.indexOf('logout') > -1) {
+                const events = await fetchEvents();
                 store.setState({
                     ...state,
+                    events,
                     tenant: {
                         id: undefined,
                         name: undefined
-                    },
-                    events: []
+                    }
                 });
-
-                // update events in state
-                await fetchEvents();
             }
 
             if (res.data) {
                 // after successful login tenant is returned
                 if (res.data.tenant) {
                     // update events in state after login
-                    await fetchEvents(res.data.tenant.id);
+                    const events = await fetchEvents(res.data.tenant.id);
+                    store.setState({
+                        ...state,
+                        events,
+                        tenant: res.data.tenant
+                    });
+                } else {
+                    // Update the state with data returned from api
+                    store.setState({
+                        ...state,
+                        ...res.data
+                    });
                 }
-
-                // Update the state with data returned from api
-                store.setState({
-                    ...state,
-                    ...res.data
-                });
             }
 
             if (submitButton) {

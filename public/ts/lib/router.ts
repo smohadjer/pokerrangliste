@@ -14,7 +14,7 @@ export async function router(
     const event_id = params.get('event_id');
 
     if (!event_id) {
-        if (loginOrRegister) {
+        if (loginOrRegister && !isLoggedIn) {
             renderRoute(path, '', options);
         } else {
             renderRoute('/events', '', options);
