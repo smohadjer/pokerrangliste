@@ -161,24 +161,37 @@ export const insertTournament = async (collection: Collection, req) => {
   const tournamentDoc = createTournamentDocument(req);
   if (tournamentDoc) {
     const respnose = await collection.insertOne(tournamentDoc);
-    return respnose.insertedId;
+    return respnose;
   } else {
     return;
   }
 };
 
 export const editTournament = async (
-  tournamentsCol: Collection,
-  req,
-  tournamentId: string) => {
+  tournamentsCol: Collection, req) => {
+  const tournamentId = req.body.tournament_id;
   const tournamentDoc = createTournamentDocument(req);
   if (tournamentDoc) {
     const query = { _id: new ObjectId(tournamentId) };
     const response = await tournamentsCol.replaceOne(query, tournamentDoc);
     return response;
-  } else {
-    return;
   }
+};
+
+export const duplicateTournament = async (
+  collection: Collection, req) => {
+    const tournamentId = req.body.tournament_id;
+    const tournament = await collection.findOne(
+      {_id: new ObjectId(tournamentId)},
+      {projection: { _id: 0 }}
+    )
+
+    // reset status and date before inserting
+    tournament.status = 'upcoming';
+    tournament.date  = new Date().toISOString().split('T')[0];
+
+    const respnose = await collection.insertOne(tournament);
+    return respnose;
 };
 
 export const addNewPlayer = async (

@@ -4,6 +4,7 @@ import { store } from './store.js';
 import { renderChart } from '../hydration/drawChart.js';
 import { initAddTournament } from '../hydration/add-tournament.js';
 import { initEditTournament } from '../hydration/edit-tournament.js';
+import { initDuplicateTournament } from '../hydration/duplicate-tournament.js';
 import { initSeasonSelector } from '../hydration/seasonSelector.js';
 import { populateSelect, enablePasswordToggle, getHandlebarsTemplate } from './utils.js';
 import { hydrateEvents } from '../hydration/events.js';
@@ -53,6 +54,10 @@ function hydrate(
 
     if (view === '/admin/edit-tournament') {
         initEditTournament(container);
+    }
+
+    if (view === '/admin/duplicate-tournament') {
+        initDuplicateTournament(container);
     }
 
     if (view === '/admin/edit-player') {

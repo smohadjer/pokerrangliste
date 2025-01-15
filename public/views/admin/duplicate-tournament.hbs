@@ -1,0 +1,23 @@
+{{> adminHeader event_name=event_name tenant_name=tenant_name}}
+<div class="wrapper">
+    <main class="admin">
+        <p><a data-animation="slideInLTR" class="icon icon--inline icon--back" href="/admin/home?event_id={{event_id}}">Back</a></p>
+        <section>
+            <h2>Duplicate tournaments</h2>
+            <form id="post-tournament" method="POST" action="/api/tournament" data-redirect="/admin/edit-tournament">
+                <input type="hidden" name="event_id" value="{{event_id}}">
+                <input type="hidden" name="duplicate_tournament" value="true">
+                <div class="row">
+                    <label>Select tournament:</label>
+                    <select id="tournament_duplicate_dropdown" name="tournament_id">
+                    </select>
+                </div>
+                <div class="submit">
+                    <button>Duplicate Tournament</button>
+                </div>
+                <p class="error"></p>
+            </form>
+        </section>
+    </main>
+</div>
+{{> footer event_id=event_id season_id=season_id view="admin"}}

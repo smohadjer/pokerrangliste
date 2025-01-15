@@ -5,6 +5,7 @@ import {
   getTournaments,
   insertTournament,
   editTournament,
+  duplicateTournament,
   userOwnsEvent
 } from './_utils.js';
 
@@ -38,34 +39,40 @@ export default async (req, res) => {
       if (!await userOwnsEvent(event_id, req.cookies.jwt, events)) {
         throw new Error('Either event ID is not valid or Logged-in user is not owner of the event');
       }
+      const returnAllTournaments = async () => {
+        const tournamentsData = await getTournaments(tournamentsCol, event_id);
+        res.json({
+          data: {
+            tournaments: tournamentsData
+          }
+        });
+      };
 
       if (req.body.tournament_id) {
-        const response = await editTournament(tournamentsCol, req, req.body.tournament_id);
-        if (response && response.modifiedCount > 0) {
-          console.log('edited tournament successfully');
-          // return all tournaments so state in app can be updated from response
-          const tournamentsData = await getTournaments(tournamentsCol, event_id);
-          res.json({
-            data: {
-              tournaments: tournamentsData
-            }
-          });
+        if (req.body.duplicate_tournament) {
+          // duplicate tournament
+          const response = await duplicateTournament(tournamentsCol, req);
+          if (response && response.insertedId) {
+            await returnAllTournaments();
+          } else {
+            throw new Error('Failed to duplicate tournament');
+          }
         } else {
-          throw new Error('Invalid data');
+          // edit tournament
+          const response = await editTournament(tournamentsCol, req);
+          if (response && response.modifiedCount > 0) {
+            await returnAllTournaments();
+          } else {
+            throw new Error('Failed to edit tournament');
+          }
         }
       } else {
-        const tournament_id = await insertTournament(tournamentsCol, req);
-        if (tournament_id) {
-          // return all tournaments so state in app can be updated from response
-
-          const tournamentsData = await getTournaments(tournamentsCol, event_id);
-          res.json({
-            data: {
-              tournaments: tournamentsData
-            }
-          });
+        // add tournament
+        const response = await insertTournament(tournamentsCol, req);
+        if (response && response.insertedId) {
+          await returnAllTournaments();
         } else {
-          throw new Error('Failed to insert tournament');
+          throw new Error('Failed to add tournament');
         }
       }
     }
