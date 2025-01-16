@@ -15,7 +15,7 @@ export const hydrateEvents = async (container: HTMLElement) => {
         });
         select.closest('form')?.classList.add('loading');
         if (event.target instanceof HTMLSelectElement) {
-            router('/ranking', `?event_id=${select.value}`, {type: 'click'});
+            router('/tournaments', `?event_id=${select.value}`, {type: 'click'});
         }
     });
 }
