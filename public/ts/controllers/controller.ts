@@ -11,6 +11,7 @@ import addPlayer from './addPlayer';
 import editSeason from './editSeason';
 import editPlayer from './editPlayer';
 import events from './events';
+import home from './home';
 
 type Controller = {
     [key:string]: Function;
@@ -18,6 +19,7 @@ type Controller = {
 
 /* controllers provide data to views */
 export const controller: Controller = {
+    '/home': home,
     '/events': events,
     '/profile': profile,
     '/tournament': tournament,

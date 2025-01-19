@@ -1,36 +1,35 @@
 <header>
-  <h1>Tournament Organizer</h1>
-  <div class="flex">
-    <h2>Events</h2>
-    {{#if tenant_name}}
+    <h1>Turnies</h1>
+    <div class="flex">
+      <h2>Events</h2>
+      {{#if tenant_name}}
       <div class="align-right">
         <p class="icon icon--inline icon--account">{{tenant_name}}</p>
         {{> logout }}
       </div>
-    {{/if}}
-  </div>
+      {{/if}}
+    </div>
 </header>
 <div class="wrapper">
     <main>
-      <p>Select an event to see tournament results:</p>
-      <form class="mg-top loading">
-        <select id="events_dropdown">
-          <option selected option="">Select Event</option>
-        </select>
-      </form>
-
-      {{#if tenant_id}}
-        <section>
-          <form method="POST" action="/api/events">
-            <label>Create new event:</label>
-            <input name="name">
-            <div class="submit">
-              <button>Submit</button>
-            </div>
-          </form>
-        </section>
-      {{/if}}
-
-      <p><a href="/login">Login</a> or <a href="/register">register</a> to start creating or updating your own events.</p>
+      <section class="box">
+        <h2>Create new event</h2>
+        <form method="POST" action="/api/events">
+        <label>Event name:</label>
+        <input name="name">
+        <div class="submit">
+            <button>Submit</button>
+        </div>
+        </form>
+      </section>
+      <section class="box">
+        <h2>Select event</h2>
+        <form class="mg-top loading">
+          <select id="events_dropdown">
+            <option selected option="">Select Event</option>
+          </select>
+        </form>
+        <p>Selecting an event will load tournaments data for that event.</p>
+      </section>
     </main>
 </div>

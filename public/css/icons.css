@@ -31,6 +31,10 @@ a.icon:hover {
     background-image: url(../images/ranking.svg);
 }
 
+.icon--home {
+    background-image: url(../images/home.svg);
+}
+
 .icon--games {
     background-image: url(../images/chip.svg);
 }

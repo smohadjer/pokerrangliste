@@ -9,15 +9,15 @@ export async function router(
     const state: State = store.getState();
     const params = new URLSearchParams(urlParams);
     const requiresAuth = path.indexOf('/admin') > -1;
-    const loginOrRegister = path === '/login' || path === '/register';
+    const loginOrRegister = path === '/home' || path === '/register';
     const isLoggedIn = state.tenant.id ? true : false;
     const event_id = params.get('event_id');
 
     if (!event_id) {
-        if (loginOrRegister && !isLoggedIn) {
-            renderRoute(path, '', options);
-        } else {
+        if (isLoggedIn) {
             renderRoute('/events', '', options);
+        } else {
+            renderRoute('/home', '', options);
         }
         return;
     }
@@ -41,7 +41,7 @@ export async function router(
         }
     } else {
         if (requiresAuth) {
-            renderRoute('/login', '', options);
+            renderRoute('/home', '', options);
         } else if (loginOrRegister) {
             renderRoute(path, '', options);
         } else {

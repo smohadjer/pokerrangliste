@@ -1,0 +1,37 @@
+<header>
+    <h1>Turnies</h1>
+    {{#if tenant_name}}
+      <div class="align-right">
+        <p class="icon icon--inline icon--account">{{tenant_name}}</p>
+        {{> logout }}
+      </div>
+    {{/if}}
+</header>
+<div class="wrapper">
+    <main>
+      <h3>A tournament organizer for Poker enthusiasts</h3>
+      <section class="box">
+        <h2>Select Event</h2>
+        <form class="mg-top loading">
+          <select id="events_dropdown">
+            <option selected option="">Select Event</option>
+          </select>
+        </form>
+        <p>Selecting an event will load tournaments data for that event.</p>
+      </section>
+      <section class="box">
+        <h2>Login</h2>
+        <form class="form" id="login" data-redirect="/events" method="POST" action="/api/login">
+          <p><label>Username: <input required autocomplete="username" name="username"></label></p>
+          <p><label>Password: <input autocomplete="current-password" id="password" required name="password" type="password"></label>
+            <a href="javascript:void(0);" class="no-ajax icon icon--inline icon--show" title="Show password" id="togglePassword"></a>
+          </p>
+          <div class="submit">
+            <button>Login</button>
+          </div>
+          <p class="error"></p>
+        </form>
+        <p>Login to edit your exiting events or create new ones. If you don't have an account, <a href="/register">Register</a> first.</p>
+      </section>
+    </main>
+</div>
