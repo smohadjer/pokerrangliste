@@ -14,11 +14,6 @@ header {
         }
     }
 
-    h2 {
-        margin: 0;
-        font-weight: 500;
-    }
-
     .flex {
         display: flex;
         align-items: center;
@@ -37,11 +32,16 @@ header {
 
     form {
         margin: 0;
+        display: inline-block;
+    }
+
+    .icon--account {
+        display: inline-block;
     }
 
     p {
-        margin: 0 0 0.5em;
         text-align: left;
+        margin: 0;
     }
 }
 

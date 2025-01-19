@@ -8,11 +8,11 @@
     ],
     "rewrites": [
         {
-            "source": "/login",
+            "source": "/register",
             "destination": "/"
         },
         {
-            "source": "/register",
+            "source": "/home",
             "destination": "/"
         },
         {

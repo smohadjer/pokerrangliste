@@ -70,11 +70,11 @@ function hydrate(
         populateSelect(select, state.seasons);
     }
 
-    if (view === '/events') {
+    if (view === '/home' || view ==='/events') {
         hydrateEvents(container);
     }
 
-    if (view === '/login' || view === '/register') {
+    if (view === '/home' || view === '/register') {
         enablePasswordToggle(container);
     }
 
