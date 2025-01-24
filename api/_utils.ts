@@ -186,9 +186,16 @@ export const duplicateTournament = async (
       {projection: { _id: 0 }}
     )
 
-    // reset status and date before inserting
+    // reset status and players before inserting
     tournament.status = 'upcoming';
-    tournament.date  = new Date().toISOString().split('T')[0];
+    //tournament.date  = new Date().toISOString().split('T')[0];
+    if (tournament.players?.length > 0) {
+      tournament.players.forEach((player) => {
+        player.rebuys = 0;
+        player.ranking = 0;
+        player.prize = 0;
+      });
+    }
 
     const respnose = await collection.insertOne(tournament);
     return respnose;
