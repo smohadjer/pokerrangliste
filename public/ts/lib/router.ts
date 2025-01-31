@@ -17,7 +17,11 @@ export async function router(
         if (isLoggedIn) {
             renderRoute('/events', '', options);
         } else {
-            renderRoute('/home', '', options);
+            if (loginOrRegister) {
+                renderRoute(path, '', options);
+            } else {
+                renderRoute('/home', '', options);
+            }
         }
         return;
     }
