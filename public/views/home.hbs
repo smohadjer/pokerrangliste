@@ -1,29 +1,35 @@
 <header>
     <div class="flex">
-        <h3>turnies.de</h3>
-        <h2></h2>
+        {{#if event_name}}
+          <h3>{{event_name}}</h3>
+        {{else}}
+          <h3>turnies.de</h3>
+        {{/if}}
+        <h2>Home</h2>
         {{#if tenant_name}}
           <div class="align-right">
             <p class="icon icon--inline icon--account">{{tenant_name}}</p>
             {{> logout }}
           </div>
+        {{else}}
+          <div></div>
         {{/if}}
     </div>
 </header>
 <div class="wrapper">
     <main>
-      <h3>A tournament organizer for Poker enthusiasts</h3>
+      <p>Turnies app allows you to create and manage poker tournaments and share results with others.</p>
       <section class="box">
-        <h2>Select Event</h2>
+        <p>If you are here to see your tournament results, simply select your event from the list below.</p>
         <form class="mg-top loading">
           <select id="events_dropdown">
             <option selected option="">Select Event</option>
           </select>
         </form>
-        <p>Selecting an event will load tournaments data for that event.</p>
       </section>
+
       <section class="box">
-        <h2>Login</h2>
+        <p>Login to edit your exiting events or create new ones. If you don't have an account, <a href="/register">Register</a> first.</p>
         <form class="form" id="login" data-redirect="/events" method="POST" action="/api/login">
           <p><label>Username: <input required autocomplete="username" name="username"></label></p>
           <p><label>Password: <input autocomplete="current-password" id="password" required name="password" type="password"></label>
@@ -34,7 +40,10 @@
           </div>
           <p class="error"></p>
         </form>
-        <p>Login to edit your exiting events or create new ones. If you don't have an account, <a href="/register">Register</a> first.</p>
       </section>
     </main>
 </div>
+{{#if event_id}}
+  {{> footer event_id=event_id season_id=season_id view="home"}}
+{{/if}}
+

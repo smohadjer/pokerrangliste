@@ -1,12 +1,12 @@
 
 <header>
   <div class="flex">
-    <h3
+    <h3>{{event_name}}</h3>
+    <h2
       {{#ifEquals ranking 1}}class="first-place"{{/ifEquals}}
       {{#ifEquals ranking 2}}class="second-place"{{/ifEquals}}
       {{#ifEquals ranking 3}}class="third-place"{{/ifEquals}}>{{player_name}}
-    </h3>
-    <h2>{{event_name}}</h2>
+    </h2>
     {{#if seasons}}
       {{> seasonSelector seasons=seasons season_id=season_id }}
     {{/if}}

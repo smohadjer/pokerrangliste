@@ -18,7 +18,7 @@ h2 {
 }
 
 h3 {
-    font-size: 18px;
+    font-size: 16px;
     text-align: center;
     font-weight: 500;
     margin: 1em;
@@ -278,4 +278,8 @@ section.box {
     padding: 1em;
     background: rgba(255,255,255,0.5);
     margin: 1em 0;
+
+    :first-child {
+        margin-top: 0;
+    }
 }

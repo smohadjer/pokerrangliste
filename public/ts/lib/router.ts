@@ -8,7 +8,7 @@ export async function router(
     options: RenderPageOptions) {
     const state: State = store.getState();
     const params = new URLSearchParams(urlParams);
-    const requiresAuth = path.indexOf('/admin') > -1;
+    const requiresAuth = path.includes('/admin');
     const loginOrRegister = path === '/home' || path === '/register';
     const isLoggedIn = state.tenant.id ? true : false;
     const event_id = params.get('event_id');
@@ -46,8 +46,6 @@ export async function router(
     } else {
         if (requiresAuth) {
             renderRoute('/home', '', options);
-        } else if (loginOrRegister) {
-            renderRoute(path, '', options);
         } else {
             renderRoute(path, params.toString(), options);
         }
