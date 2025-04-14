@@ -1,11 +1,12 @@
 
 <header>
-  <h1>{{event_name}}</h1>
   <div class="flex">
-    <h2>
+    <h3>
       {{#ifCond status '==' 'pending'}}<span class="pending"></span>{{/ifCond}}
       Game
-    </h2>
+    </h3>
+    <h2>{{event_name}}</h2>
+    <div></div>
   </div>
 </header>
 <div class="wrapper">

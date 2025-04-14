@@ -1,9 +1,8 @@
 footer {
     margin: 0;
-    border-top: solid 1px #ccc;
     font-size: 14px;
-    background: #FFFFAC;
-    background: linear-gradient(180deg, #D1B464 0%, #FFFFAC 100%);
+    background: #fad673;
+    /* background: linear-gradient(0deg, #D1B464 0%, #FFFFAC 100%); */
 }
 
 footer ul {

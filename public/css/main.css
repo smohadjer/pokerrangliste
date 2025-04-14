@@ -14,10 +14,11 @@ body {
 h2 {
     margin: 0;
     font-weight: 500;
+    font-size: 20px;
 }
 
 h3 {
-    font-size: 21px;
+    font-size: 18px;
     text-align: center;
     font-weight: 500;
     margin: 1em;
