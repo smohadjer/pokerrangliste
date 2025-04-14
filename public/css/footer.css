@@ -1,10 +1,9 @@
 footer {
     margin: 0;
-    background: white;
     border-top: solid 1px #ccc;
     font-size: 14px;
-    background:
-    radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 100%);
+    background: #FFFFAC;
+    background: linear-gradient(180deg, #D1B464 0%, #FFFFAC 100%);
 }
 
 footer ul {

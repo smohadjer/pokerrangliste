@@ -1,7 +1,7 @@
 header {
     padding: 1em;
-    background:
-    radial-gradient(ellipse farthest-corner at left top, #FFFFAC 0%, #D1B464 100%);
+    background: #FFFFAC;
+    background: linear-gradient(0deg, #D1B464 0%, #FFFFAC 100%);
 
     h1 {
         font-size: 1.4rem;
