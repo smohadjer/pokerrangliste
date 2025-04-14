@@ -70,7 +70,7 @@ function hydrate(
         populateSelect(select, state.seasons);
     }
 
-    if (view === '/home' || view ==='/events') {
+    if (view === '/home') {
         hydrateEvents(container);
     }
 

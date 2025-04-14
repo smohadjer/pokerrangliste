@@ -2,42 +2,18 @@
   <nav>
     <ul>
       {{#if season_id}}
+        <li><a class="icon icon--block icon--home {{#ifEquals view 'home'}}active{{/ifEquals}}" href="/home?event_id={{event_id}}&season_id={{season_id}}">Home</a></li>
+        <li><a class="icon icon--block icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?event_id={{event_id}}&season_id={{season_id}}">Games</a></li>
+        <li><a class="icon icon--block icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?event_id={{event_id}}&season_id={{season_id}}">Ranking</a></li>
         {{#if isLoggedIn}}
-          <li><a class="icon icon--block icon--home {{#ifEquals view 'home'}}active{{/ifEquals}}" href="/events">Home</a></li>
-        {{else}}
-          <li><a class="icon icon--block icon--home {{#ifEquals view 'home'}}active{{/ifEquals}}" href="/home?event_id={{event_id}}&season_id={{season_id}}">Home</a></li>
-        {{/if}}
-        <li>
-          <a class="icon icon--block icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?event_id={{event_id}}&season_id={{season_id}}">Games</a>
-        </li>
-        <li>
-          <a class="icon icon--block icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?event_id={{event_id}}&season_id={{season_id}}">Ranking</a>
-        </li>
-        {{#if isLoggedIn}}
-          <li>
-            <a class="icon icon--block icon--admin {{#ifEquals view 'admin'}}active{{/ifEquals}}" href="/admin/home?event_id={{event_id}}&season_id={{season_id}}">Admin</a>
-          </li>
-        {{else}}
-          <li>
-            <a class="icon icon--block icon--login {{#ifEquals view 'login'}}active{{/ifEquals}}" href="/login">Login</a>
-          </li>
+          <li><a class="icon icon--block icon--admin {{#ifEquals view 'admin'}}active{{/ifEquals}}" href="/admin/home?event_id={{event_id}}&season_id={{season_id}}">Admin</a></li>
         {{/if}}
       {{else}}
+        <li><a class="icon icon--block icon--home {{#ifEquals view 'home'}}active{{/ifEquals}}" href="/home?event_id={{event_id}}">Home</a></li>
+        <li><a class="icon icon--block icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?event_id={{event_id}}">Games</a></li>
+        <li><a class="icon icon--block icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?event_id={{event_id}}">Ranking</a></li>
         {{#if isLoggedIn}}
-          <li><a class="icon icon--block icon--home {{#ifEquals view 'home'}}active{{/ifEquals}}" href="/events">Home</a></li>
-        {{else}}
-          <li><a class="icon icon--block icon--home {{#ifEquals view 'home'}}active{{/ifEquals}}" href="/home?event_id={{event_id}}">Home</a></li>
-        {{/if}}
-        <li>
-          <a class="icon icon--block icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?event_id={{event_id}}">Games</a>
-        </li>
-        <li>
-          <a class="icon icon--block icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?event_id={{event_id}}">Ranking</a>
-          </li>
-        {{#if isLoggedIn}}
-          <li>
-            <a class="icon icon--block icon--admin {{#ifEquals view 'admin'}}active{{/ifEquals}}" href="/admin/home?event_id={{event_id}}">Admin</a>
-          </li>
+          <li><a class="icon icon--block icon--admin {{#ifEquals view 'admin'}}active{{/ifEquals}}" href="/admin/home?event_id={{event_id}}">Admin</a></li>
         {{/if}}
       {{/if}}
     </ul>

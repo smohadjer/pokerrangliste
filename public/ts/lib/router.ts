@@ -15,7 +15,7 @@ export async function router(
 
     if (!event_id) {
         if (isLoggedIn) {
-            renderRoute('/events', '', options);
+            renderRoute('/home', '', options);
         } else {
             if (loginOrRegister) {
                 renderRoute(path, '', options);

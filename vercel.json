@@ -16,10 +16,6 @@
             "destination": "/"
         },
         {
-            "source": "/events",
-            "destination": "/"
-        },
-        {
             "source": "/admin/(.*)",
             "destination": "/"
         },
