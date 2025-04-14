@@ -13,6 +13,7 @@ html, body {
 #results > .wrapper {
     overflow-y: auto;
     flex-grow: 1;
+    overscroll-behavior: contain;
 }
 
 main {

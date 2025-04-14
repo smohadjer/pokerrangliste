@@ -39,10 +39,10 @@ h3 {
     font-size: 1rem;
 }
 
-.wrapper {
+/* .wrapper {
     width: 100%;
-    overflow: auto hidden; /* we need "hidden" to avoid vertical scrollbar showing due to space left between table element and div.wrapper */
-}
+    overflow: auto hidden; // we need "hidden" to avoid vertical scrollbar showing due to space left between table element and div.wrapper
+} */
 
 .wrapper-chart {
     margin: 1rem 0.5rem;
