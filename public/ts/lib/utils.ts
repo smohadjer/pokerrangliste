@@ -7,10 +7,21 @@ to avoid errors during build */
 import Handlebars from './ext/handlebars.min.cjs';
 
 export const getHandlebarsTemplate = async (templateFile: string) => {
-    const response = await fetch(templateFile);
-    const responseText = await response.text();
-    const template = Handlebars.compile(responseText);
-    return template;
+    try {
+        const response = await fetch(templateFile);
+        if (response.ok) {
+            const responseText = await response.text();
+            const template = Handlebars.compile(responseText);
+            return template;
+        } else {
+            if (response.status === 404) throw new Error('404, Not found');
+            if (response.status === 500) throw new Error('500, internal server error');
+            // For any other server error
+            throw new Error(response.status.toString());
+        }
+    } catch(error) {
+        console.error(error);
+    }
 };
 
 export const setHandlebars = async () => {

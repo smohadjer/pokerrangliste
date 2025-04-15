@@ -10,7 +10,6 @@ import { populateSelect, enablePasswordToggle, getHandlebarsTemplate } from './u
 import { hydrateEvents } from '../hydration/events.js';
 
 export const render = async (route: Route, options: RenderPageOptions) => {
-    console.log('render', route.view, route.params);
     const view = route.view;
     const urlParams = new URLSearchParams(route.params);
     const dataProvider: Function | undefined = controller[view];
@@ -22,19 +21,23 @@ export const render = async (route: Route, options: RenderPageOptions) => {
     const templateFile = `/views${view}.hbs`;
     const container = document.getElementById('results');
     const template = await getHandlebarsTemplate(templateFile);
-    const html = template({
-        ...templateData,
-        isLoggedIn,
-        event_name: event?.name
-    });
+    if (typeof template === 'function') {
+        const html = template({
+            ...templateData,
+            isLoggedIn,
+            event_name: event?.name
+        });
 
-    if (container) {
-        container.innerHTML = html;
-        container.classList.remove('empty');
-        if (options?.animation) {
-            container.classList.add(options.animation);
+        if (container) {
+            container.innerHTML = html;
+            container.classList.remove('empty');
+            if (options?.animation) {
+                container.classList.add(options.animation);
+            }
+            hydrate(view, container, templateData, state);
         }
-        hydrate(view, container, templateData, state);
+    } else {
+        console.error(`${templateFile} not found or parsed properly!`);
     }
 };
 
