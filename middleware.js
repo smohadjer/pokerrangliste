@@ -1,7 +1,7 @@
 /* middleware for vercel edge runtime */
-import { next } from '@vercel/edge';
+import { next } from '@vercel/functions';
 import {jwtVerify} from 'jose';
-import { RequestCookies } from '@edge-runtime/cookies'
+import { RequestCookies } from '@edge-runtime/cookies';
 
 // middleware only runs for these paths
 export const config = {

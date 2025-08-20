@@ -12,20 +12,20 @@
   "author": "Saeid Mohadjer",
   "license": "ISC",
   "devDependencies": {
-    "esbuild": "0.19.12"
+    "esbuild": "0.25.9"
   },
   "dependencies": {
-    "@types/node": "^22.4.2",
-    "@edge-runtime/cookies": "^4.0.2",
-    "@vercel/edge": "^1.1.0",
-    "chart.js": "^4.4.4",
-    "dotenv": "^16.0.3",
+    "@types/node": "^24.3.0",
+    "@edge-runtime/cookies": "^6.0.0",
+    "@vercel/functions": "^2.2.12",
+    "chart.js": "^4.5.0",
+    "dotenv": "^17.2.1",
     "handlebars": "^4.7.8",
-    "jose": "^5.1.0",
-    "mongodb": "^5.8.1",
-    "bcrypt": "^5.1.1"
+    "jose": "^6.0.12",
+    "mongodb": "^6.18.0",
+    "bcrypt": "^6.0.0"
   },
   "engines": {
-    "node": ">=18.18.0"
+    "node": ">=22"
   }
 }

@@ -8,7 +8,7 @@ export default async (request, response) => {
 
     try {
         const jwtResponse = await jwtVerify(jwt, secret);
-        console.log(jwtResponse.payload);
+        console.log('jwt payload: ', jwtResponse.payload);
         response.status(200).json({
             name: jwtResponse.payload.name,
             id: jwtResponse.payload.id

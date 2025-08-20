@@ -20,20 +20,20 @@
             "destination": "/"
         },
         {
-            "source": "/ranking:path*",
-            "destination": "/:path*"
+            "source": "/ranking",
+            "destination": "/"
         },
         {
-            "source": "/tournaments:path*",
-            "destination": "/:path*"
+            "source": "/tournaments",
+            "destination": "/"
         },
         {
-            "source": "/tournament:path*",
-            "destination": "/:path*"
+            "source": "/tournament",
+            "destination": "/"
         },
         {
-            "source": "/profile:path*",
-            "destination": "/:path*"
+            "source": "/profile",
+            "destination": "/"
         },
         {
             "source": "/api/players/:id",
