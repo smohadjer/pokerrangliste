@@ -30,9 +30,10 @@ export default async (req, res) => {
       if (authenticated) {
         const secret = new TextEncoder().encode(jwtSecret);
         const alg = 'HS256';
+        const userId = user._id.toString();
         const token = await new SignJWT({
             name: user.username,
-            id: user._id
+            id: userId
           })
           .setProtectedHeader({ alg })
           .setExpirationTime('10w')
@@ -42,7 +43,7 @@ export default async (req, res) => {
 
         // login form is submitted via ajax, redirect happens on client
         const tenant = {
-          id: user._id,
+          id: userId,
           name: user.username
         };
         res.json({
