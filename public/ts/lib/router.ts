@@ -22,7 +22,6 @@ export async function router(
     }
 
     if (state.dataIsStale) {
-        console.log('fetching data...');
         const data: State | undefined = await fetchData(event_id);
         store.setState({
             ...state,

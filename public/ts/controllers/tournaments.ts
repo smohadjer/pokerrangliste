@@ -1,35 +1,22 @@
-import { getTournaments, getPlayerName } from '../lib/utils';
+import { getTournaments, getPlayerName, allTimeSeason } from '../lib/utils';
 import { store } from '../lib/store';
-import { Tournament } from '../types';
-
-type TemplateData = {
-    tournaments: Tournament[];
-    season_id? : string;
-    seasons: any;
-    event_id: string | null;
-}
 
 export default (params: URLSearchParams) => {
     const state = store.getState();
-    const season_id = params.get('season_id') ?? undefined;
+    // Use the most recent season if none is provided
+    const season_id = params.get('season_id') ?? state.seasons[0]?._id;
     const tournaments = getTournaments(state.tournaments, season_id);
     const optimizedData = tournaments.map((item) => {
         if (item.status === 'done') {
-            item.firstPlace = getPlayerName(item.players[0]?.id);
-            item.secondPlace = getPlayerName(item.players[1]?.id);
+            item.firstPlace = getPlayerName(item.players[0]?.id, state.players);
+            item.secondPlace = getPlayerName(item.players[1]?.id, state.players);
         }
         return item;
     });
 
-    const data: TemplateData = {
+    return {
         tournaments: optimizedData,
-        seasons: state.seasons,
+        seasons: [...state.seasons, allTimeSeason],
         event_id: params.get('event_id'),
-    }
-
-    if (season_id) {
-        data.season_id = season_id
-    }
-
-    return data;
+    };
 };

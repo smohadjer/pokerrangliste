@@ -6,7 +6,8 @@ import { initAddTournament } from '../hydration/add-tournament.js';
 import { initEditTournament } from '../hydration/edit-tournament.js';
 import { initDuplicateTournament } from '../hydration/duplicate-tournament.js';
 import { initSeasonSelector } from '../hydration/seasonSelector.js';
-import { populateSelect, enablePasswordToggle, getHandlebarsTemplate } from './utils.js';
+import { populateSelect, enablePasswordToggle } from './utils.js';
+import { getHandlebarsTemplate } from './handlebars';
 import { hydrateEvents } from '../hydration/events.js';
 
 export const render = async (route: Route, options: RenderPageOptions) => {
@@ -16,14 +17,17 @@ export const render = async (route: Route, options: RenderPageOptions) => {
     const templateData = (typeof dataProvider === 'function')
         ? dataProvider(urlParams) : {};
     const state: State = store.getState();
+    // Use the most recent season if none is provided
+    const season_id = urlParams.get('season_id') ?? state.seasons[0]?._id;
     const isLoggedIn = state.tenant.id ? true : false;
-    const event = state.events.find(item => item._id === templateData.event_id);
+    const event = state.events.find(item => item._id === templateData?.event_id);
     const templateFile = `/views${view}.hbs`;
     const container = document.getElementById('results');
     const template = await getHandlebarsTemplate(templateFile);
     if (typeof template === 'function') {
         const html = template({
             ...templateData,
+            season_id,
             isLoggedIn,
             event_name: event?.name
         });

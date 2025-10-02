@@ -3,30 +3,19 @@ import {
     getPoints,
     getPlayers,
     getTournaments,
-    getSeasonName
+    getSeasonName,
+    getPlayerName,
+    allTimeSeason
 } from '../lib/utils';
 import { store } from '../lib/store';
 
-type TemplateData = {
-    player_name: string;
-    points: number;
-    gamesCount: number;
-    ranking: number;
-    results: Profile[];
-    seasonName?: string;
-    rebuys?: number;
-    status?: 'upcoming' | 'pending' | 'done';
-    season_id? : string;
-    event_id: string | null;
-    seasons: any;
-}
-
 export default (params: URLSearchParams) => {
     const state = store.getState();
-    const season_id = params.get('season_id') ?? undefined;
+    // Use the most recent season if none is provided
+    const season_id = params.get('season_id') ?? state.seasons[0]?._id;
     const tournaments = getTournaments(state.tournaments, season_id);
     const tournamentsNormalized = tournaments.filter(
-        tournament => tournament.status !== 'upcoming')
+        tournament => tournament.status !== 'upcoming' && tournament.status !== 'pending')
     const playerId = params.get('player_id');
 
     if (!playerId) return;
@@ -34,14 +23,15 @@ export default (params: URLSearchParams) => {
     const enhancedPlayers = getPlayers(tournamentsNormalized);
     const player = enhancedPlayers.find((player) =>
         player.id === playerId);
-    const ranking = enhancedPlayers.findIndex(
+    const playerFound = enhancedPlayers.some((player) => player.id === playerId);
+    const ranking = playerFound ? enhancedPlayers.findIndex(
         player => player.id === playerId
-    ) + 1;
-    const playerTournaments = tournamentsNormalized.filter(
+    ) + 1 : undefined;
+    const playerTournaments = playerFound ? tournamentsNormalized.filter(
         tournament => tournament.players.find(
             player => player.id === playerId
         )
-    );
+    ) : [];
     const results: Profile[] = [];
 
     playerTournaments.forEach((item: Tournament) => {
@@ -59,23 +49,15 @@ export default (params: URLSearchParams) => {
         results.push(result);
     });
 
-    if (!player) return;
-
-    const data: TemplateData = {
-        player_name: player.name!,
-        points: player.points,
+    return {
+        player_name: getPlayerName(playerId, state.players),
+        points: player?.points,
         gamesCount: playerTournaments.length,
         rebuys: player?.rebuys,
         ranking: ranking,
         results: results,
         seasonName: getSeasonName(season_id!, state.seasons),
-        seasons: state.seasons,
+        seasons: [...state.seasons, allTimeSeason],
         event_id: params.get('event_id')
     };
-
-    if (season_id) {
-        data.season_id = season_id
-    }
-
-    return data;
 };

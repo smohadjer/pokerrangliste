@@ -17,7 +17,7 @@ export default async (req, res) => {
 
     if (req.method === 'GET') {
       const event_id = req.query.event_id;
-      const docs = await collection.find({event_id}).sort({'name': 1}).toArray()
+      const docs = await collection.find({event_id}).sort({'name': -1}).toArray()
       res.json(docs);
     }
 

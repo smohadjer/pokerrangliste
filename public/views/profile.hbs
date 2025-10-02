@@ -1,7 +1,7 @@
 
 <header>
   <div class="flex">
-    <h3>{{event_name}}</h3>
+    {{!-- <h3>{{event_name}}</h3> --}}
     <h2
       {{#ifEquals ranking 1}}class="first-place"{{/ifEquals}}
       {{#ifEquals ranking 2}}class="second-place"{{/ifEquals}}
@@ -13,33 +13,37 @@
   </div>
 </header>
 <div class="wrapper">
-  <table class="details">
-    <tr><td>{{seasonName}} ranking:</td><td>{{ranking}} </td></tr>
-    <tr><td>Total points:</td><td>{{points}}</td></tr>
-    <tr><td>Total rebuys:</td><td>{{rebuys}}</td></tr>
-    <tr><td>Total games:</td><td>{{gamesCount}}</td></tr>
-  </table>
-  <div class="wrapper-chart">
-      <canvas id="chart"></canvas>
-  </div>
-  <table class="table-results">
-    <tr>
-      <th>Game</th>
-      <th>Points</th>
-      <th>Ranking</th>
-      <!--<th>Players</th>-->
-      <th>Rebuys</th>
-    </tr>
-    {{#each results}}
+  {{#if results}}
+    <table class="details">
+      <tr><td>{{seasonName}} ranking:</td><td>{{ranking}} </td></tr>
+      <tr><td>Total points:</td><td>{{points}}</td></tr>
+      <tr><td>Total rebuys:</td><td>{{rebuys}}</td></tr>
+      <tr><td>Total games:</td><td>{{gamesCount}}</td></tr>
+    </table>
+    <div class="wrapper-chart">
+        <canvas id="chart"></canvas>
+    </div>
+    <table class="table-results">
       <tr>
-        <td><a data-animation="slideInRTL" href="/tournament?event_id={{../event_id}}&tournament_id={{this._id}}">{{this.date}}</a></td>
-        <td>{{this.points}}</td>
-        <td>{{this.ranking}}</td>
-        <!--<td>{{this.players}}</td>-->
-        <td>{{this.rebuys}}</td>
+        <th>Game</th>
+        <th>Points</th>
+        <th>Ranking</th>
+        <!--<th>Players</th>-->
+        <th>Rebuys</th>
       </tr>
-    {{/each}}
-  </table>
+      {{#each results}}
+        <tr>
+          <td><a data-animation="slideInRTL" href="/tournament?event_id={{../event_id}}&tournament_id={{this._id}}">{{this.date}}</a></td>
+          <td>{{this.points}}</td>
+          <td>{{this.ranking}}</td>
+          <!--<td>{{this.players}}</td>-->
+          <td>{{this.rebuys}}</td>
+        </tr>
+      {{/each}}
+    </table>
+  {{else}}
+    <div class="details">No games found!</div>
+  {{/if}}
 </div>
 {{> footer event_id=event_id season_id=season_id view="profile"}}
 

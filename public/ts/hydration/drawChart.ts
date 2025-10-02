@@ -30,7 +30,7 @@ const drawChart = (element: HTMLElement, data: ChartData[]) => {
     });
 };
 
-export const renderChart = (templateData) => {
+export const renderChart = (templateData: any) => {
   const chartData: ChartData[] = templateData.results.reverse();
   chartData.forEach((item, index) => {
       if (index === 0) {

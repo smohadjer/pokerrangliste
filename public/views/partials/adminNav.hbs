@@ -2,13 +2,13 @@
 {{> logout }}
 </div>
 <ul class="admin__nav">
-    <li><a data-animation="slideInRTL" class="icon icon--inline icon--game_add" href="/admin/add-tournament?event_id={{event_id}}">Add new tournament</a></li>
-    <li><a data-animation="slideInRTL" class="icon icon--inline icon--game_edit" href="/admin/edit-tournament?event_id={{event_id}}">Edit tournament</a></li>
-    <li><a data-animation="slideInRTL" class="icon icon--inline icon--game_edit" href="/admin/duplicate-tournament?event_id={{event_id}}">Duplicate tournament</a></li>
-    <li><a data-animation="slideInRTL" class="icon icon--inline icon--season_add" href="/admin/add-season?event_id={{event_id}}">Add new season</a></li>
-    <li><a data-animation="slideInRTL" class="icon icon--inline icon--season_edit" href="/admin/edit-season?event_id={{event_id}}">Edit season</a></li>
-    <li><a data-animation="slideInRTL" class="icon icon--inline icon--person_add" href="/admin/add-player?event_id={{event_id}}">Add new player</a></li>
-    <li><a data-animation="slideInRTL" class="icon icon--inline icon--person_edit" href="/admin/edit-player?event_id={{event_id}}">Edit player</a></li>
+    <li><a data-animation="slideInRTL" class="icon icon--inline icon--game_add" href="/admin/add-tournament?event_id={{event_id}}&season_id={{season_id}}">Add new tournament</a></li>
+    <li><a data-animation="slideInRTL" class="icon icon--inline icon--game_edit" href="/admin/edit-tournament?event_id={{event_id}}&season_id={{season_id}}">Edit tournament</a></li>
+    <li><a data-animation="slideInRTL" class="icon icon--inline icon--game_edit" href="/admin/duplicate-tournament?event_id={{event_id}}&season_id={{season_id}}">Duplicate tournament</a></li>
+    <li><a data-animation="slideInRTL" class="icon icon--inline icon--season_add" href="/admin/add-season?event_id={{event_id}}&season_id={{season_id}}">Add new season</a></li>
+    <li><a data-animation="slideInRTL" class="icon icon--inline icon--season_edit" href="/admin/edit-season?event_id={{event_id}}&season_id={{season_id}}">Edit season</a></li>
+    <li><a data-animation="slideInRTL" class="icon icon--inline icon--person_add" href="/admin/add-player?event_id={{event_id}}&season_id={{season_id}}">Add new player</a></li>
+    <li><a data-animation="slideInRTL" class="icon icon--inline icon--person_edit" href="/admin/edit-player?event_id={{event_id}}&season_id={{season_id}}">Edit player</a></li>
     <!--
         <li><a href="/admin/delete-player">Delete player</a></li>
     -->

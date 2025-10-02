@@ -1,5 +1,6 @@
 import {Tournament, Player } from '../types';
 import { getPlayerName, generateHTML } from '../lib/utils.js';
+import { store } from '../lib/store';
 
 export async function generatePlayerFields(
     container: HTMLElement,
@@ -14,7 +15,6 @@ export async function generatePlayerFields(
     }
 
     playerDropdown.addEventListener('change', (event) => {
-        console.log(event.target);
         if (event.target instanceof HTMLSelectElement) {
             const id = playerDropdown.value;
             if (id === 'Select') return;
@@ -61,7 +61,7 @@ export async function generatePlayerFields(
 
     if (data && data.players) {
         for (let i = 0; i<data.players?.length; i++) {
-            const playerName = getPlayerName(data.players[i].id);
+            const playerName = getPlayerName(data.players[i].id, store.getState().players);
             data.players[i].name = playerName;
             const player = data.players[i];
             await addPlayer(playersElm, player).then(() => {

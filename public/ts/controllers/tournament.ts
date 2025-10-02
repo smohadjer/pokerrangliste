@@ -1,4 +1,4 @@
-import { Tournament, Player, RouteParams } from '../types';
+import { Tournament, Player } from '../types';
 import {
     deepClone,
     getPrize,
@@ -10,23 +10,11 @@ import {
 } from '../lib/utils';
 import { store } from '../lib/store';
 
-type TemplateData = {
-    date: string;
-    playersCount: number;
-    buyin: number;
-    rebuys: number;
-    players: Player[];
-    hasBounty: string;
-    status?: 'upcoming' | 'pending' | 'done';
-    season_id? : string;
-    event_id: string | null;
-}
-
 export default (params: URLSearchParams) => {
     const state = store.getState();
-    const season_id = params.get('season_id') ?? undefined;
+    // Use the most recent season if none is provided
+    const season_id = params.get('season_id') ?? state.seasons[0]?._id;
     const tournaments = getTournaments(state.tournaments, season_id);
-
     const tournament = tournaments.find((item) => {
         return item._id === params.get('tournament_id')
     })
@@ -47,12 +35,12 @@ export default (params: URLSearchParams) => {
             player.prize = (cloneTournament.status === 'upcoming') ? 0 : getPrize(player, cloneTournament);
             player.bounty = (cloneTournament.status === 'upcoming') ? 0 : getBounty(player, cloneTournament);
             player.points = (cloneTournament.status === 'upcoming') ? 0 : getPoints(player, cloneTournament);
-            player.name = getPlayerName(player.id);
+            player.name = getPlayerName(player.id, state.players);
             return player;
         });
     }
 
-    const data: TemplateData = {
+    return {
         date: cloneTournament.date,
         playersCount: players?.length ?? 0,
         buyin: cloneTournament.buyin,
@@ -62,10 +50,4 @@ export default (params: URLSearchParams) => {
         status: cloneTournament.status,
         event_id: params.get('event_id'),
     }
-
-    if (season_id) {
-        data.season_id = season_id
-    }
-
-    return data;
 };

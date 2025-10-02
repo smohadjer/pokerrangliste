@@ -1,7 +1,8 @@
 import { router } from './lib/router.js';
 import { RenderPageOptions, Route, Event } from './types.js';
 import { store } from './lib/store.js';
-import { fetchEvents, isAuthenticated, setHandlebars } from './lib/utils.js';
+import { fetchEvents, isAuthenticated } from './lib/utils.js';
+import { setHandlebars } from './lib/handlebars.js';
 import { render } from './lib/render.js';
 
 (async () => {
@@ -18,6 +19,7 @@ import { render } from './lib/render.js';
 
     if (authenticated.error) {
         // user is not logged-in, fetching all events
+        console.log('user is NOT logged-in');
         const events: Event[] = await fetchEvents();
         store.setState({...state, events});
     } else {

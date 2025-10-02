@@ -26,7 +26,7 @@ export default async (req, res) => {
         ? await getTournament(tournamentsCol, event_id, req.query.tournament_id)
         : await getTournaments(tournamentsCol, event_id, req.body.season_id);
       const data = {
-        seasons: await seasonsCol.find({event_id}).toArray(),
+        seasons: await seasonsCol.find({event_id}).sort({ name: -1 }).toArray(),
         players: await playersCol.find({event_id}).sort({ name: 1 }).toArray(),
         tournaments: tournaments
       };

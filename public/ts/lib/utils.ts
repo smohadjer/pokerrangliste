@@ -1,100 +1,22 @@
 /*** Only pure functions in this file! ***/
 import { Tournament, Player, Season, PlayerDB } from '../types';
 import { store } from './store';
-/* since importing from node_modules using a relative path throws error on Render.com
-I have copy/pasted dist/handlebars.min.js to ts/lib/ext and renamed it from .js to .cjs
-to avoid errors during build */
-import Handlebars from './ext/handlebars.min.cjs';
+import { getHandlebarsTemplate } from './handlebars';
 
-export const getHandlebarsTemplate = async (templateFile: string) => {
-    try {
-        const response = await fetch(templateFile);
-        if (response.ok) {
-            const responseText = await response.text();
-            const template = Handlebars.compile(responseText);
-            return template;
-        } else {
-            if (response.status === 404) throw new Error('404, Not found');
-            if (response.status === 500) throw new Error('500, internal server error');
-            // For any other server error
-            throw new Error(response.status.toString());
-        }
-    } catch(error) {
-        console.error(error);
-    }
-};
-
-export const setHandlebars = async () => {
-    // setting Handlebars helpers to help with compiling templates
-    Handlebars.registerHelper("inc", function(value: string) {
-        return parseInt(value) + 1;
-    });
-
-    Handlebars.registerHelper("reverseIndex", function(v1: number, v2:string) {
-        return v1 - parseInt(v2);
-    });
-
-    Handlebars.registerHelper('ifEquals', function(arg1: string, arg2: string, options: any) {
-        return (arg1 == arg2) ? options.fn(this) : options.inverse(this);
-    });
-
-    // Handlebars.registerHelper('_toInt', function(value: string) {
-    //     return parseInt(value, 10);
-    // });
-
-    Handlebars.registerHelper('ifCond', function (
-        v1: string | number,
-        operator: string,
-        v2: string | number,
-        options: any) {
-        switch (operator) {
-            case '==':
-                return (v1 == v2) ? options.fn(this) : options.inverse(this);
-            case '===':
-                return (v1 === v2) ? options.fn(this) : options.inverse(this);
-            case '!=':
-                return (v1 != v2) ? options.fn(this) : options.inverse(this);
-            case '!==':
-                return (v1 !== v2) ? options.fn(this) : options.inverse(this);
-            case '<':
-                return (v1 < v2) ? options.fn(this) : options.inverse(this);
-            case '<=':
-                return (v1 <= v2) ? options.fn(this) : options.inverse(this);
-            case '>':
-                return (v1 > v2) ? options.fn(this) : options.inverse(this);
-            case '>=':
-                return (v1 >= v2) ? options.fn(this) : options.inverse(this);
-            case '&&':
-                return (v1 && v2) ? options.fn(this) : options.inverse(this);
-            case '||':
-                return (v1 || v2) ? options.fn(this) : options.inverse(this);
-            default:
-                return options.inverse(this);
-        }
-    });
-
-    // registering Handlebars partials
-    registerPartial('seasonSelector');
-    registerPartial('footer');
-    registerPartial('adminNav');
-    registerPartial('adminHeader');
-    registerPartial('tournamentForm');
-    registerPartial('logout');
-};
-
-async function registerPartial(name: string) {
-    const res = await fetch(`/views/partials/${name}.hbs`);
-    const text = await res.text();
-    const template = Handlebars.compile(text);
-    Handlebars.registerPartial(name, template);
+export const allTimeSeason = {
+    _id: 'all-time',
+    name: 'All-Time'
 }
 
 export const getSeasonName = (season_id: string, seasons: Season[]) => {
-    if (!season_id) {
-        return 'All-Time';
-    } else {
-        return seasons.find(item => item._id == season_id)?.name;
-    }
+    return season_id
+        ? seasons.find(item => item._id == season_id)?.name
+        : allTimeSeason.name
+}
+
+export const getPlayerName = (playerId: string, players: PlayerDB[]) => {
+    const player = players.find(player => player._id === playerId);
+    return player?.name;
 }
 
 const sortByDate = (tournaments: Tournament[]) => {
@@ -160,7 +82,7 @@ export const getPlayers = (tournaments: Tournament[]) => {
             clone.bounty = getBounty(clone, tournament);
             clone.prize = getPrize(clone, tournament);
             clone.games = 1;
-            clone.name = getPlayerName(clone.id);
+            clone.name = getPlayerName(clone.id, store.getState().players);
 
             const foundPlayer = players.find(player => player.id === clone.id);
 
@@ -185,7 +107,7 @@ export const getPlayers = (tournaments: Tournament[]) => {
 
 export const getTournaments = (tournaments: Tournament[], season_id: string | undefined) => {
     let clone: Tournament[] = deepClone(tournaments);
-    if (season_id) {
+    if (season_id !== 'all-time') {
         clone = clone.filter((tour) => {
             return tour.season_id === season_id;
         });
@@ -246,13 +168,6 @@ export async function generateHTML(templateFile: string, data: any) {
     const html = new DOMParser().parseFromString(htmlString,
         'text/html').body.children;
     return html;
-}
-
-export const getPlayerName = (playerId: string) => {
-    const state = store.getState();
-    const players: PlayerDB[] = state.players;
-    const player = players.find(player => player._id === playerId);
-    return player?.name;
 }
 
 export const fetchEvents = async (tenant_id?: string) => {
