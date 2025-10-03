@@ -13,11 +13,13 @@ export async function router(
     const event_id = params.get('event_id');
 
     if (!event_id) {
-        if (!isLoggedIn && path.includes('/register')) {
+        if (!isLoggedIn &&
+            (path.includes('/register') || path.includes('/login'))) {
             renderRoute(path, '', options);
         } else {
             renderRoute('/home', '', options);
         }
+
         return;
     }
 

@@ -1,0 +1,23 @@
+<header>
+    <div class="flex">
+        <h3>turnies.de</h3>
+        <h2>Login</h2>
+        <div></div>
+    </div>
+</header>
+<div class="wrapper">
+    <main>
+      <form class="form" id="login" method="POST" action="/api/login">
+        <p><label>Username: <input required autocomplete="username" name="username"></label></p>
+        <p><label>Password: <input autocomplete="current-password" id="password" required name="password" type="password"></label>
+          <a href="javascript:void(0);" class="no-ajax icon icon--inline icon--show" title="Show password" id="togglePassword"></a>
+        </p>
+        <div class="submit">
+          <button>Login</button>
+        </div>
+        <p class="error"></p>
+      </form>
+      <p>If you don't have an account, <a href="/register">Register</a>.</p>
+    </main>
+</div>
+

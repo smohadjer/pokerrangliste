@@ -15,19 +15,15 @@
 </header>
 <div class="wrapper">
     <main>
-      {{#if isLoggedIn}}
-        {{> logout }}
-      {{/if}}
       <p>Turnies app allows you to create and manage poker tournaments and share results with others.</p>
       <section class="box">
-        <p>If you are here to see your tournament results, simply select your event from the list below.</p>
+        <p>Select event to see results:</p>
         <form class="mg-top loading">
           <select id="events_dropdown">
             <option selected option="">Select Event</option>
           </select>
         </form>
       </section>
-
       {{#if isLoggedIn}}
         <section class="box">
           <h2>Create new event</h2>
@@ -40,20 +36,9 @@
             <p class="error"></p>
           </form>
         </section>
+        {{> logout }}
       {{else}}
-        <section class="box">
-          <p>Login to edit your exiting events or create new ones. If you don't have an account, <a href="/register">Register</a> first.</p>
-          <form class="form" id="login" method="POST" action="/api/login">
-            <p><label>Username: <input required autocomplete="username" name="username"></label></p>
-            <p><label>Password: <input autocomplete="current-password" id="password" required name="password" type="password"></label>
-              <a href="javascript:void(0);" class="no-ajax icon icon--inline icon--show" title="Show password" id="togglePassword"></a>
-            </p>
-            <div class="submit">
-              <button>Login</button>
-            </div>
-            <p class="error"></p>
-          </form>
-        </section>
+        <p><a href="/login">Login</a> or <a href="/register">Register</a> to start setting up your own events.</p>
       {{/if}}
     </main>
 </div>

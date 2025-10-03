@@ -81,7 +81,7 @@ function hydrate(
         hydrateEvents(container);
     }
 
-    if (view === '/home' || view === '/register') {
+    if (view === '/login' || view === '/register') {
         enablePasswordToggle(container);
     }
 

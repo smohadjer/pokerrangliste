@@ -12,6 +12,10 @@
             "destination": "/"
         },
         {
+            "source": "/login",
+            "destination": "/"
+        },
+        {
             "source": "/home",
             "destination": "/"
         },
