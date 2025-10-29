@@ -79,6 +79,8 @@ export const getPlayers = (tournaments: Tournament[]) => {
         tournament.players.forEach((item) => {
             const clone = {...item};
             clone.points = getPoints(clone, tournament);
+            clone.wins = clone.ranking === 1 ? 1 : 0;
+            clone.runnerups = clone.ranking === 2 ? 1 : 0;
             clone.bounty = getBounty(clone, tournament);
             clone.prize = getPrize(clone, tournament);
             clone.games = 1;
@@ -88,6 +90,8 @@ export const getPlayers = (tournaments: Tournament[]) => {
 
             if (foundPlayer) {
                 foundPlayer.points += clone.points;
+                foundPlayer.wins += clone.wins;
+                foundPlayer.runnerups += clone.runnerups;
                 foundPlayer.bounty += clone.bounty;
                 foundPlayer.prize += clone.prize;
                 foundPlayer.rebuys += clone.rebuys;

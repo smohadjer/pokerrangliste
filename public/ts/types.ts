@@ -7,6 +7,8 @@ export type Player = {
   bounty: number;
   prize: number;
   games?: number;
+  wins: number;
+  runnerups: number;
 };
 
 export type PlayerDB = {
