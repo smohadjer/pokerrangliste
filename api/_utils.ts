@@ -201,6 +201,17 @@ export const duplicateTournament = async (
     return respnose;
 };
 
+export const deleteTournament = async (
+  collection: Collection, req) => {
+    const tournamentId = req.body.tournament_id;
+    const tournament = await collection.findOne(
+      {_id: new ObjectId(tournamentId)},
+      {projection: { _id: 0 }}
+    )
+    const respnose = await collection.deleteOne(tournament);
+    return respnose;
+};
+
 export const addNewPlayer = async (
   name: string,
   collection: Collection,

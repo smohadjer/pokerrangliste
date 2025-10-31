@@ -6,6 +6,7 @@ import dashboard from './dashboard';
 import addTournament from './addTournament';
 import editTournament from './editTournament';
 import duplicateTournament from './duplicateTournament';
+import deleteTournament from './deleteTournament';
 import addSeason from './addSeason';
 import addPlayer from './addPlayer';
 import editSeason from './editSeason';
@@ -27,6 +28,7 @@ export const controller: Controller = {
     '/admin/add-tournament': addTournament,
     '/admin/edit-tournament': editTournament,
     '/admin/duplicate-tournament': duplicateTournament,
+    '/admin/delete-tournament': deleteTournament,
     '/admin/add-season': addSeason,
     '/admin/add-player': addPlayer,
     '/admin/edit-season': editSeason,

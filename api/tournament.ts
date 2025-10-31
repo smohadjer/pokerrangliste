@@ -6,6 +6,7 @@ import {
   insertTournament,
   editTournament,
   duplicateTournament,
+  deleteTournament,
   userOwnsEvent
 } from './_utils.js';
 
@@ -49,13 +50,23 @@ export default async (req, res) => {
       };
 
       if (req.body.tournament_id) {
-        if (req.body.duplicate_tournament) {
+        if (req.body.form_action) {
           // duplicate tournament
-          const response = await duplicateTournament(tournamentsCol, req);
-          if (response && response.insertedId) {
-            await returnAllTournaments();
-          } else {
-            throw new Error('Failed to duplicate tournament');
+          if (req.body.form_action === 'duplicate') {
+            const response = await duplicateTournament(tournamentsCol, req);
+            if (response && response.insertedId) {
+              await returnAllTournaments();
+            } else {
+              throw new Error('Failed to duplicate tournament');
+            }
+          }
+          if (req.body.form_action === 'delete') {
+            const response = await deleteTournament(tournamentsCol, req);
+            if (response && response.deletedCount > 0) {
+              await returnAllTournaments();
+            } else {
+              throw new Error('Failed to delete tournament!');
+            }
           }
         } else {
           // edit tournament
