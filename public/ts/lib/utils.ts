@@ -158,10 +158,18 @@ export function populateSelect(select: HTMLSelectElement, data: SelectData[]) {
     select.innerHTML = options;
 }
 
-export function populateSelectTournaments(select: HTMLSelectElement, data: Tournament[]) {
+export function populateSelectTournaments(
+    select: HTMLSelectElement,
+    data: Tournament[],
+    tournament_id?: string
+) {
     let options = '<option selected disabled option="">Select</option>';
     data.forEach(item => {
-        options += `<option value="${item._id}">${item.date} - ${item.status}</option>`
+        const selected = (tournament_id && tournament_id === item._id)
+            ? 'selected'
+            : '';
+        options += `<option ${selected}
+            value="${item._id}">${item.date} - ${item.status}</option>`
     });
     select.innerHTML = options;
 }
