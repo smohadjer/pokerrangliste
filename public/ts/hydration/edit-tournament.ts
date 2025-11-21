@@ -20,7 +20,7 @@ export function initEditTournament(container: HTMLElement) {
         if (form) {
             const formData = new FormData(form);
             const status = formData.get('status') ?? '';
-            toggleAddRemovePlayerControls(container, status as string);
+            UpdateState(container, status as string);
         }
     };
 
@@ -50,25 +50,31 @@ export function initEditTournament(container: HTMLElement) {
     container.addEventListener('change', async (event) => {
         if (event.target instanceof HTMLInputElement &&
             event.target.getAttribute('name') === 'status') {
-            toggleAddRemovePlayerControls(container, event.target.value);
+            UpdateState(container, event.target.value);
         }
     });
 }
 
-function toggleAddRemovePlayerControls(container: HTMLElement, status: string) {
+function UpdateState(container: HTMLElement, status: string) {
     const AddPlayerSelect = container.querySelector('#player_dropdown');
     const deletePlayerButtons = container.querySelectorAll('.button-delete');
+    const playerRows = container.querySelectorAll('.row-player');
+    const submitButton = container.querySelector('.submit button')!;
 
     if (status === 'upcoming') {
         AddPlayerSelect?.removeAttribute('disabled');
         deletePlayerButtons.forEach(btn => {
             btn.removeAttribute('disabled');
-        })
+        });
+        playerRows.forEach(row => row.classList.add('disabled'));
+        submitButton.setAttribute('disabled', 'disabled');
     } else {
         AddPlayerSelect?.setAttribute('disabled', 'disabled');
         deletePlayerButtons.forEach(btn => {
             btn.setAttribute('disabled', 'disabled');
-        })
+        });
+        playerRows.forEach(row => row.classList.remove('disabled'));
+        submitButton.removeAttribute('disabled');
     }
 }
 
