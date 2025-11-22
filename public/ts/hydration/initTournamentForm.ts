@@ -3,19 +3,56 @@ import { State, Tournament } from '../types';
 import { populateSelect } from '../lib/utils';
 
 export async function initTournamentForm(
-    form: HTMLElement,
+    formWrapper: HTMLElement,
     state: State,
     data?: Tournament) {
     // populate season dropdown
-    const seasonDropdown: HTMLSelectElement = form.querySelector('#season_dropdown')!;
+    const seasonDropdown: HTMLSelectElement = formWrapper.querySelector('#season_dropdown')!;
     populateSelect(seasonDropdown, state.seasons);
     if (data && data.season_id) {
         seasonDropdown.value = data.season_id;
     }
 
     // populate player dropdown
-    const playerDropdown: HTMLSelectElement = form.querySelector('#player_dropdown')!;
+    const playerDropdown: HTMLSelectElement = formWrapper.querySelector('#player_dropdown')!;
     populateSelect(playerDropdown, state.players);
 
-    await generatePlayerFields(form, playerDropdown, data);
+    await generatePlayerFields(formWrapper, playerDropdown, data);
+
+    const form: HTMLFormElement | null = formWrapper.closest('form');
+    if (form) {
+        const formData = new FormData(form);
+        const status = formData.get('status') ?? '';
+        UpdateTournamentState(form, status as string);
+
+        // change handler for tournament status field
+        form.addEventListener('change', async (event) => {
+            const form = formWrapper.closest('form');
+            if (form && event.target instanceof HTMLInputElement &&
+                event.target.getAttribute('name') === 'status') {
+                UpdateTournamentState(form, event.target.value);
+            }
+        });
+    }
 }
+
+function UpdateTournamentState(form: HTMLFormElement, status: string) {
+    const AddPlayers = form.querySelector('.row--addPlayers');
+    const deletePlayerButtons = form.querySelectorAll('.button-delete');
+    const playerRows = form.querySelectorAll('.row-player');
+
+    if (status === 'upcoming') {
+        AddPlayers?.classList.remove('disabled');
+        deletePlayerButtons.forEach(btn => {
+            btn.removeAttribute('disabled');
+        });
+        playerRows.forEach(row => row.classList.add('disabled'));
+    } else {
+        AddPlayers?.classList.add('disabled');
+        deletePlayerButtons.forEach(btn => {
+            btn.setAttribute('disabled', 'disabled');
+        });
+        playerRows.forEach(row => row.classList.remove('disabled'));
+    }
+}
+

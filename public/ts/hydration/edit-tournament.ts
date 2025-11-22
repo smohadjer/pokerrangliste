@@ -16,12 +16,6 @@ export function initEditTournament(container: HTMLElement) {
         formWrapper.append(...htmlElement);
 
         await initTournamentForm(formWrapper, state, tournamentData);
-        const form: HTMLFormElement | null = container.querySelector('#post-tournament');
-        if (form) {
-            const formData = new FormData(form);
-            const status = formData.get('status') ?? '';
-            UpdateState(container, status as string);
-        }
     };
 
     // if url has tournament id render edit form
@@ -31,9 +25,8 @@ export function initEditTournament(container: HTMLElement) {
         renderForm(tournament_id);
     }
 
-    // populates tournament select with optional argument tournament_id
+    // populates tournaments selection dropdown with optional argument tournament_id and set change handler for it
     populateSelectTournaments(tournamentDropdown, state.tournaments, tournament_id);
-
     tournamentDropdown.addEventListener('change', async (event) => {
         if (event.target instanceof HTMLSelectElement) {
             const tournamentId = event.target.value;
@@ -46,37 +39,9 @@ export function initEditTournament(container: HTMLElement) {
             window.history.replaceState({}, '', url.toString());
         }
     });
-
-    container.addEventListener('change', async (event) => {
-        if (event.target instanceof HTMLInputElement &&
-            event.target.getAttribute('name') === 'status') {
-            UpdateState(container, event.target.value);
-        }
-    });
 }
 
-function UpdateState(container: HTMLElement, status: string) {
-    const AddPlayerSelect = container.querySelector('#player_dropdown');
-    const deletePlayerButtons = container.querySelectorAll('.button-delete');
-    const playerRows = container.querySelectorAll('.row-player');
-    const submitButton = container.querySelector('.submit button')!;
 
-    if (status === 'upcoming') {
-        AddPlayerSelect?.removeAttribute('disabled');
-        deletePlayerButtons.forEach(btn => {
-            btn.removeAttribute('disabled');
-        });
-        playerRows.forEach(row => row.classList.add('disabled'));
-        submitButton.setAttribute('disabled', 'disabled');
-    } else {
-        AddPlayerSelect?.setAttribute('disabled', 'disabled');
-        deletePlayerButtons.forEach(btn => {
-            btn.setAttribute('disabled', 'disabled');
-        });
-        playerRows.forEach(row => row.classList.remove('disabled'));
-        submitButton.removeAttribute('disabled');
-    }
-}
 
 
 

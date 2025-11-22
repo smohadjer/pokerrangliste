@@ -25,6 +25,13 @@ form {
     }
   }
 
+  /* when adding a new tournament status is always upcoming and can't be changed */
+  &.form--add-tournament {
+    .row--status {
+      display: none !important;
+    }
+  }
+
   div.row:not([hidden]) {
     margin: 0 0 0.75em;
     display: flex;
@@ -40,8 +47,12 @@ form {
     margin-bottom: 2em;
   }
 
-  div.row--mt2 {
+  div.row--addPlayers {
     margin-top: 2em;
+
+    &.disabled {
+      display: none;
+    }
   }
 
   .row-player {

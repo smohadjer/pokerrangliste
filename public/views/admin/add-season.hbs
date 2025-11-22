@@ -1,7 +1,7 @@
 {{> adminHeader event_name=event_name tenant_name=tenant_name}}
 <div class="wrapper">
     <main class="admin">
-        <p><a data-animation="slideInLTR" class="icon icon--inline icon--back" href="/admin/home?event_id={{event_id}}">Back</a></p>
+        <p class="back-link"><a data-animation="slideInLTR" class="icon icon--inline icon--back" href="/admin/home?event_id={{event_id}}">Back</a></p>
         <section>
             <h2>Add new season</h2>
             <form method="POST" action="/api/seasons">
