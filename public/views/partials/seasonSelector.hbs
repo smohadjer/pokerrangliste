@@ -1,12 +1,15 @@
 <span id="season-selector">
   <select id="select-season">
       {{#each seasons}}
-          <option
-            {{#ifEquals this._id ../season_id }}selected="selected"{{/ifEquals}}
-            {{#unless season_id}}
-              {{#ifEquals 0 @index}}selected="selected"{{/ifEquals}}
-            {{/unless}}
-            value="{{this._id}}">{{this.name}}</option>
+          {{#if ../season_id}}
+            <option {{this._id}}
+              {{#ifEquals this._id ../season_id }}selected="selected"{{/ifEquals}}
+              value="{{this._id}}">{{this.name}}</option>
+          {{else}}
+            <option {{this._id}}
+              {{#if @last}}selected="selected"{{/if}}
+              value="{{this._id}}">{{this.name}}</option>
+          {{/if}}
       {{/each}}
   </select>
 </span>

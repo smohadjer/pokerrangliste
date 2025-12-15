@@ -11,7 +11,8 @@ class Store {
         tenant: {
             name: undefined,
             id: undefined
-        }
+        },
+        season_id: ''
     };
 
     getState() {

@@ -4,11 +4,11 @@ import { store } from './store';
 import { getHandlebarsTemplate } from './handlebars';
 
 export const allTimeSeason = {
-    _id: 'all-time',
+    _id: '',
     name: 'All-Time'
 }
 
-export const getSeasonName = (season_id: string, seasons: Season[]) => {
+export const getSeasonName = (season_id: string | null, seasons: Season[]) => {
     return season_id
         ? seasons.find(item => item._id == season_id)?.name
         : allTimeSeason.name
@@ -109,9 +109,10 @@ export const getPlayers = (tournaments: Tournament[]) => {
     return players;
 };
 
-export const getTournaments = (tournaments: Tournament[], season_id: string | undefined) => {
+export const getTournaments = (tournaments: Tournament[], season_id: string | null) => {
     let clone: Tournament[] = deepClone(tournaments);
-    if (season_id !== 'all-time') {
+    // filter tournaments by season
+    if (season_id) {
         clone = clone.filter((tour) => {
             return tour.season_id === season_id;
         });
