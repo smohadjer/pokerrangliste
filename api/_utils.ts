@@ -25,7 +25,7 @@ export const userOwnsEvent = async (
   const tenant_id = await getIdFromToken(token);
   if (!tenant_id) return;
   const event = await collection.findOne({
-    _id: new ObjectId(event_id)
+    _id: ObjectId.createFromHexString(event_id)
   });
   return event.tenant_id === tenant_id ? true : false;
 };
@@ -65,7 +65,7 @@ export const fetchAllEvents = async (collection, tenant_id) => {
 
 export const fetchPlayerById = async (collection, playerId) => {
     return await collection.findOne({
-      _id: new ObjectId(playerId)
+      _id: ObjectId.createFromHexString(playerId)
     });
 };
 
@@ -83,7 +83,7 @@ export const getTournament = async (
   tournamentId: string) => {
   const tournament = await collection.findOne({
     event_id,
-    _id: new ObjectId(tournamentId)
+    _id: ObjectId.createFromHexString(tournamentId)
   });
   return [tournament];
 };
@@ -172,7 +172,7 @@ export const editTournament = async (
   const tournamentId = req.body.tournament_id;
   const tournamentDoc = createTournamentDocument(req);
   if (tournamentDoc) {
-    const query = { _id: new ObjectId(tournamentId) };
+    const query = { _id: ObjectId.createFromHexString(tournamentId) };
     const response = await tournamentsCol.replaceOne(query, tournamentDoc);
     return response;
   }
@@ -182,13 +182,13 @@ export const duplicateTournament = async (
   collection: Collection, req) => {
     const tournamentId = req.body.tournament_id;
     const tournament = await collection.findOne(
-      {_id: new ObjectId(tournamentId)},
+      {_id: ObjectId.createFromHexString(tournamentId)},
       {projection: { _id: 0 }}
     )
 
-    // reset status and players before inserting
+    // reset status, date, and players before inserting
     tournament.status = 'upcoming';
-    //tournament.date  = new Date().toISOString().split('T')[0];
+    tournament.date = new Date().toISOString().split('T')[0];
     if (tournament.players?.length > 0) {
       tournament.players.forEach((player) => {
         player.rebuys = 0;
@@ -205,7 +205,7 @@ export const deleteTournament = async (
   collection: Collection, req) => {
     const tournamentId = req.body.tournament_id;
     const tournament = await collection.findOne(
-      {_id: new ObjectId(tournamentId)},
+      {_id: ObjectId.createFromHexString(tournamentId)},
       {projection: { _id: 0 }}
     )
     const respnose = await collection.deleteOne(tournament);
@@ -241,7 +241,7 @@ export const editPlayerName = async (
   id: string,
   collection: Collection,
   event_id: string) => {
-  const query = {event_id, _id: new ObjectId(id)};
+  const query = {event_id, _id: ObjectId.createFromHexString(id)};
   const response = await collection.updateOne(query, {
     $set: {name: name}
   });
@@ -253,7 +253,7 @@ export const editSeasonName = async (
   id: string,
   collection: Collection,
   event_id: string) => {
-  const query = {event_id, _id: new ObjectId(id)};
+  const query = {event_id, _id: ObjectId.createFromHexString(id)};
   const response = await collection.updateOne(query, {
       $set: {name: name}
   });
@@ -265,7 +265,7 @@ export const editEventName = async (
   id: string,
   collection: Collection,
   tenant_id: string) => {
-  const query = {tenant_id, _id: new ObjectId(id)};
+  const query = {tenant_id, _id: ObjectId.createFromHexString(id)};
   const response = await collection.updateOne(query, {
       $set: {name: name}
   });
