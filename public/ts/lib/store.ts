@@ -12,10 +12,11 @@ class Store {
             name: undefined,
             id: undefined
         },
+        rankings: {},
         season_id: ''
     };
 
-    getState() {
+    getState(): State {
         return deepClone(this.#state);
     }
 
