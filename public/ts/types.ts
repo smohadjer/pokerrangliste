@@ -55,6 +55,11 @@ export type State = {
   players: PlayerDB[];
   tenant: Tenant;
   season_id: string;
+  rankings: Rankings;
+}
+
+export type Rankings = {
+    [key: string]: Player[]
 }
 
 export interface Json extends State {

@@ -32,7 +32,9 @@ import { render } from './lib/render.js';
         });
     }
 
-    router(window.location.pathname, window.location.search, { type: 'reload'});
+    await router(window.location.pathname, window.location.search, { type: 'reload'});
+
+    console.log('done');
 })();
 
 
@@ -154,10 +156,13 @@ export function submitHandler(e: SubmitEvent) {
                         tenant: res.data.tenant
                     });
                 } else {
-                    // Update the state with data returned from api
+                    // Update the state with data returned from api and reset rankings
+                    // so rankings are calculated and cached again
+                    console.log(res.data);
                     store.setState({
                         ...state,
-                        ...res.data
+                        ...res.data,
+                        rankings: {}
                     });
                 }
             }

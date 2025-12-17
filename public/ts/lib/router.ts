@@ -1,6 +1,7 @@
-import { State, Route, RenderPageOptions, Json } from '../types.js';
-import { store } from './store.js';
-import { render } from './render.js';
+import { State, Route, RenderPageOptions } from '../types';
+import { store } from './store';
+import { render } from './render';
+import { setRankings, fetchData } from './utils';
 
 export async function router(
     path: string,
@@ -24,26 +25,35 @@ export async function router(
     }
 
     if (state.dataIsStale) {
+        console.log('data is stale');
         const data: State | undefined = await fetchData(event_id);
         store.setState({
             ...state,
             ...data,
             dataIsStale: false
         });
+
+        // cache season rankings in state for better performance
+        const season_id = params.get('season_id');
+        if (season_id) {
+            setRankings(season_id);
+        } else {
+            setRankings(null);
+        }
     }
 
     // routing logic
     if (isLoggedIn) {
         if (path.includes('/register')) {
-            renderRoute('/home', `event_id=${event_id}`, options);
+            await renderRoute('/home', `event_id=${event_id}`, options);
         } else {
-            renderRoute(path, params.toString(), options);
+            await renderRoute(path, params.toString(), options);
         }
     } else {
         if (requiresAuth) {
-            renderRoute('/home', '', options);
+            await renderRoute('/home', '', options);
         } else {
-            renderRoute(path, params.toString(), options);
+            await renderRoute(path, params.toString(), options);
         }
     }
 }
@@ -75,27 +85,6 @@ async function renderRoute(
         window.history.pushState(route, '', url);
     } else {
         window.history.replaceState(route, '', url);
-    }
-}
-
-async function fetchData(event_id: string) {
-    try {
-        const response = await fetch(`/api/tournament?event_id=${event_id}`, {
-            method: 'GET',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            }
-        });
-        const json: Json = await response.json();
-        if (!json) throw ('Failed to fetch data from server!');
-        if (json.error) {
-            throw(json.message);
-        } else {
-            return json;
-        }
-    } catch (e) {
-        console.error(` Error: ${e}`);
     }
 }
 

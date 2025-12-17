@@ -11,6 +11,7 @@ export const hydrateEvents = async (container: HTMLElement) => {
     select.addEventListener('change', (event) => {
         store.setState({
             ...state,
+            rankings: {},
             dataIsStale: true
         });
         select.closest('form')?.classList.add('loading');

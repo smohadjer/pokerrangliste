@@ -1,5 +1,5 @@
 /*** Only pure functions in this file! ***/
-import { Tournament, Player, Season, PlayerDB } from '../types';
+import { Tournament, Player, Season, PlayerDB, Rankings, Json } from '../types';
 import { store } from './store';
 import { getHandlebarsTemplate } from './handlebars';
 
@@ -201,3 +201,50 @@ export const fetchEvents = async (tenant_id?: string) => {
         return [];
     }
 };
+
+export const setRankings = (season_id: string | null) => {
+    const state = store.getState();
+    const rankings: Rankings = {};
+    const getSeasonRanking = (season_id: string | null) => {
+        const tournaments = getTournaments(state.tournaments, season_id);
+        const tournamentsNormalized = tournaments.filter(
+            tournament => tournament.status === 'done'
+        );
+        const ranking = getPlayers(tournamentsNormalized);
+        return ranking;
+    };
+
+    if (season_id) {
+        rankings[season_id] = getSeasonRanking(season_id);
+    } else {
+        rankings.all_time = getSeasonRanking(null);
+    }
+
+    const newRankings = {...state.rankings, ...rankings};
+
+    store.setState({
+        ...state,
+        rankings: newRankings
+    });
+};
+
+export async function fetchData(event_id: string) {
+    try {
+        const response = await fetch(`/api/tournament?event_id=${event_id}`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+              'Content-Type': 'application/json'
+            }
+        });
+        const json: Json = await response.json();
+        if (!json) throw ('Failed to fetch data from server!');
+        if (json.error) {
+            throw(json.message);
+        } else {
+            return json;
+        }
+    } catch (e) {
+        console.error(` Error: ${e}`);
+    }
+}
