@@ -40,14 +40,6 @@ export default async (req, res) => {
       if (!await userOwnsEvent(event_id, req.cookies.jwt, events)) {
         throw new Error('Either event ID is not valid or Logged-in user is not owner of the event');
       }
-      const returnAllTournaments = async () => {
-        const tournamentsData = await getTournaments(tournamentsCol, event_id);
-        res.json({
-          data: {
-            tournaments: tournamentsData
-          }
-        });
-      };
 
       if (req.body.tournament_id) {
         if (req.body.form_action) {
@@ -55,15 +47,27 @@ export default async (req, res) => {
           if (req.body.form_action === 'duplicate') {
             const response = await duplicateTournament(tournamentsCol, req);
             if (response && response.insertedId) {
-              await returnAllTournaments();
+              const tournamentsData = await getTournaments(tournamentsCol, event_id);
+              res.json({
+                data: {
+                  tournaments: tournamentsData,
+                },
+                tournament_id: response.insertedId.toString()
+              });
             } else {
               throw new Error('Failed to duplicate tournament');
             }
           }
+
           if (req.body.form_action === 'delete') {
             const response = await deleteTournament(tournamentsCol, req);
             if (response && response.deletedCount > 0) {
-              await returnAllTournaments();
+              const tournamentsData = await getTournaments(tournamentsCol, event_id);
+              res.json({
+                data: {
+                  tournaments: tournamentsData
+                }
+              });
             } else {
               throw new Error('Failed to delete tournament!');
             }
@@ -72,7 +76,12 @@ export default async (req, res) => {
           // edit tournament
           const response = await editTournament(tournamentsCol, req);
           if (response && response.modifiedCount > 0) {
-            await returnAllTournaments();
+            const tournamentsData = await getTournaments(tournamentsCol, event_id);
+            res.json({
+              data: {
+                tournaments: tournamentsData
+              }
+            });
           } else {
             throw new Error('Failed to edit tournament');
           }
@@ -81,7 +90,12 @@ export default async (req, res) => {
         // add tournament
         const response = await insertTournament(tournamentsCol, req);
         if (response && response.insertedId) {
-          await returnAllTournaments();
+          const tournamentsData = await getTournaments(tournamentsCol, event_id);
+          res.json({
+            data: {
+              tournaments: tournamentsData
+            }
+          });
         } else {
           throw new Error('Failed to add tournament');
         }

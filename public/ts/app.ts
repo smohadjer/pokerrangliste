@@ -171,13 +171,19 @@ export function submitHandler(e: SubmitEvent) {
                 submitButton.classList.remove('loading');
             }
 
+            const urlParams = new URLSearchParams(window.location.search);
+
+            // when duplicating a tournament, api also returns the id of new tournament
+            // so when we redirect user to edit tournament page the new tournament
+            // can already be selected for editing
             if (redirect) {
-                router(redirect, window.location.search, {
-                    type: 'click'
-                });
+                if (res.tournament_id) {
+                    urlParams.set('tournament_id', res.tournament_id);
+                }
+                router(redirect, urlParams.toString(), {type: 'click'});
             } else {
                 // update current page
-                router(window.location.pathname, window.location.search, {
+                router(window.location.pathname, urlParams.toString(), {
                     type: 'reload'
                 });
             }

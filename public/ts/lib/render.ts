@@ -59,7 +59,7 @@ function hydrate(
     }
 
     if (view === '/admin/edit-tournament') {
-        initEditTournament(container);
+        initEditTournament(container, templateData.tournament_id);
     }
 
     if (view === '/admin/duplicate-tournament'

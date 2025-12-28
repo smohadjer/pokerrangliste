@@ -5,6 +5,7 @@ export default (params: URLSearchParams) => {
     return {
         tenant_name: state.tenant.name,
         event_id: params.get('event_id'),
+        tournament_id: params.get('tournament_id'),
         players: state.players,
         seasons: state.seasons,
     };
