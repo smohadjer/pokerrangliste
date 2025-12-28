@@ -3,7 +3,7 @@ import { store } from '../lib/store.js';
 import { populateSelectTournaments, generateHTML } from '../lib/utils.js';
 import { initTournamentForm } from './initTournamentForm.js';
 
-export function initEditTournament(container: HTMLElement) {
+export function initEditTournament(container: HTMLElement, tournament_id: string) {
     const tournamentDropdown: HTMLSelectElement = container.querySelector('#tournament_edit_dropdown')!;
     const formWrapper: HTMLElement = container.querySelector('#tournament-fieldset')!;
     const state: State = store.getState();
@@ -18,11 +18,11 @@ export function initEditTournament(container: HTMLElement) {
         await initTournamentForm(formWrapper, state, tournamentData);
     };
 
-    // if url has tournament id render edit form
+    // if tournament id is provided render edit form
     const url = new URL(window.location.href);
-    const tournament_id = url.searchParams.get('tournament_id') ?? undefined;
-    if (tournament_id) {
-        renderForm(tournament_id);
+    const tournamentId = tournament_id ?? url.searchParams.get('tournament_id');
+    if (tournamentId) {
+        renderForm(tournamentId);
     }
 
     // populates tournaments selection dropdown with optional argument tournament_id and set change handler for it
