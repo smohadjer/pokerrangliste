@@ -19,6 +19,7 @@ export type PlayerDB = {
 export type Season = {
   readonly _id: string;
   name: string;
+  default?: boolean;
 }
 
 export type bounty = {

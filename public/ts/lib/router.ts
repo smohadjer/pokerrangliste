@@ -33,8 +33,16 @@ export async function router(
             dataIsStale: false
         });
 
-        // cache season rankings in state for better performance
+        // if a season is not provided in URL check whether a season in db is set as default
+        if (!params.get('season_id')) {
+            const defaultSeaon = data?.seasons.find(item => item?.default === true);
+            if (defaultSeaon) {
+                params.set('season_id', defaultSeaon._id);
+            }
+        }
         const season_id = params.get('season_id');
+
+        // cache season rankings in state for better performance
         if (season_id) {
             setRankings(season_id);
         } else {
