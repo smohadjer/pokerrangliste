@@ -11,7 +11,7 @@ import { store } from '../lib/store';
 
 export default (params: URLSearchParams) => {
     const state = store.getState();
-    const season_id = params.get('season_id');
+    const season_id = params.get('season_id')!;
     const tournaments = getTournaments(state.tournaments, season_id);
     const tournamentsNormalized = tournaments.filter(
         tournament => tournament.status !== 'upcoming' && tournament.status !== 'pending')
@@ -55,7 +55,7 @@ export default (params: URLSearchParams) => {
         rebuys: player?.rebuys,
         ranking: ranking,
         results: results,
-        seasonName: getSeasonName(season_id!, state.seasons),
+        seasonName: getSeasonName(season_id, state.seasons),
         seasons: [...state.seasons, allTimeSeason],
         event_id: params.get('event_id')
     };

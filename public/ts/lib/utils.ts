@@ -4,7 +4,7 @@ import { store } from './store';
 import { getHandlebarsTemplate } from './handlebars';
 
 export const allTimeSeason = {
-    _id: '',
+    _id: 'all_time',
     name: 'All-Time'
 }
 
@@ -109,10 +109,10 @@ export const getPlayers = (tournaments: Tournament[]) => {
     return players;
 };
 
-export const getTournaments = (tournaments: Tournament[], season_id: string | null) => {
+export const getTournaments = (tournaments: Tournament[], season_id: string) => {
     let clone: Tournament[] = deepClone(tournaments);
     // filter tournaments by season
-    if (season_id) {
+    if (season_id !== 'all_time') {
         clone = clone.filter((tour) => {
             return tour.season_id === season_id;
         });
@@ -202,10 +202,10 @@ export const fetchEvents = async (tenant_id?: string) => {
     }
 };
 
-export const setRankings = (season_id: string | null) => {
+export const setRankings = (season_id: string) => {
     const state = store.getState();
     const rankings: Rankings = {};
-    const getSeasonRanking = (season_id: string | null) => {
+    const getSeasonRanking = (season_id: string) => {
         const tournaments = getTournaments(state.tournaments, season_id);
         const tournamentsNormalized = tournaments.filter(
             tournament => tournament.status === 'done'
@@ -214,11 +214,7 @@ export const setRankings = (season_id: string | null) => {
         return ranking;
     };
 
-    if (season_id) {
-        rankings[season_id] = getSeasonRanking(season_id);
-    } else {
-        rankings.all_time = getSeasonRanking(null);
-    }
+    rankings[season_id] = getSeasonRanking(season_id);
 
     const newRankings = {...state.rankings, ...rankings};
 

@@ -17,7 +17,7 @@ export const render = async (route: Route, options: RenderPageOptions) => {
     const templateData = (typeof dataProvider === 'function')
         ? dataProvider(urlParams) : {};
     const state: State = store.getState();
-    const season_id = urlParams.get('season_id') ?? state.season_id;
+    const season_id = urlParams.get('season_id');
     const isLoggedIn = state.tenant.id ? true : false;
     const event = state.events.find(item => item._id === templateData?.event_id);
     const templateFile = `/views${view}.hbs`;

@@ -3,24 +3,15 @@ import { store } from '../lib/store';
 
 export default (params: URLSearchParams) => {
     const state = store.getState();
-
-    const season_id = params.get('season_id');
+    const season_id = params.get('season_id')!;
 
     // if ranking for current season is not already calculated and saved in state
     // we do it so next time we visit ranking page calculations are not done again
-    if (season_id) {
-        if (!state.rankings[season_id]) {
-            setRankings(season_id);
-        }
-    } else {
-        if (!state.rankings.all_time) {
-            setRankings(null);
-        }
+    if (!state.rankings[season_id]) {
+        setRankings(season_id);
     }
 
-    const rankings = season_id
-        ? store.getState().rankings[season_id]
-        : store.getState().rankings.all_time;
+    const rankings = store.getState().rankings[season_id];
 
     return {
         players: rankings,

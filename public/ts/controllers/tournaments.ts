@@ -3,7 +3,7 @@ import { store } from '../lib/store';
 
 export default (params: URLSearchParams) => {
     const state = store.getState();
-    const season_id = params.get('season_id');
+    const season_id = params.get('season_id')!;
     const tournaments = getTournaments(state.tournaments, season_id);
     const optimizedData = tournaments.map((item) => {
         if (item.status === 'done') {

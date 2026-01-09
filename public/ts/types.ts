@@ -55,7 +55,6 @@ export type State = {
   seasons: Season[];
   players: PlayerDB[];
   tenant: Tenant;
-  season_id: string;
   rankings: Rankings;
 }
 

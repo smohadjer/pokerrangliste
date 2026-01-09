@@ -13,7 +13,6 @@ class Store {
             id: undefined
         },
         rankings: {},
-        season_id: ''
     };
 
     getState(): State {

@@ -38,16 +38,14 @@ export async function router(
             const defaultSeaon = data?.seasons.find(item => item?.default === true);
             if (defaultSeaon) {
                 params.set('season_id', defaultSeaon._id);
+            } else {
+                params.set('season_id', 'all_time');
             }
         }
-        const season_id = params.get('season_id');
 
         // cache season rankings in state for better performance
-        if (season_id) {
-            setRankings(season_id);
-        } else {
-            setRankings(null);
-        }
+        const season_id = params.get('season_id')!;
+        setRankings(season_id);
     }
 
     // routing logic
