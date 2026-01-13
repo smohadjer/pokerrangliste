@@ -75,6 +75,7 @@ export const setHandlebars = async () => {
     registerPartial('footer');
     registerPartial('adminNav');
     registerPartial('adminHeader');
+    registerPartial('backLink');
     registerPartial('tournamentForm');
     registerPartial('logout');
 };
