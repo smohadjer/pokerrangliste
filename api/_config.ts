@@ -15,7 +15,7 @@ if (environment === 'local') {
 
 if (environment === 'prod') {
     database_uri = process.env.db_uri_remote;
-    database_name = 'pokerrangliste';
+    database_name = 'turnies';
 }
 
 export { database_uri, database_name };

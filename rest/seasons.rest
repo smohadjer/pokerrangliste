@@ -1,3 +1,10 @@
 // return all seasons
 GET http://localhost:3000/api/seasons?event_id=677a4f585462214b2a1ac77e
 Content-Type: application/json
+
+###
+
+// return all seasons from prod
+GET http://localhost:3000/api/seasons?event_id=677cc26c5462214b2a1ac7a0
+Content-Type: application/json
+
