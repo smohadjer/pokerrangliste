@@ -1,24 +1,28 @@
 
 <header>
   <div class="flex">
-    {{!-- <h3>{{event_name}}</h3> --}}
+    {{#if event_name}}
+      <h3><span class="label">League</span>{{event_name}}</h3>
+    {{else}}
+      <h3>turnies.de</h3>
+    {{/if}}
     <h2>
       {{#ifCond status '==' 'pending'}}<span class="pending"></span>{{/ifCond}}
       Game</h2>
-    <div><span>Date: {{date}}</span></div>
+    <div></div>
   </div>
 </header>
 <div class="wrapper">
   <table class="details">
-    {{!-- <tr><td>Date:</td><td>{{date}}</td></tr> --}}
     <tr>
       <td>Status:</td>
       <td>
-        {{#ifCond status '==' 'pending'}}In progress{{/ifCond}}
+        {{#ifCond status '==' 'pending'}}Pending{{/ifCond}}
         {{#ifCond status '==' 'upcoming'}}Upcoming{{/ifCond}}
-        {{#ifCond status '==' 'done'}}Completed{{/ifCond}}
+        {{#ifCond status '==' 'done'}}Finished{{/ifCond}}
       </td>
     </tr>
+    <tr><td>Date:</td><td> {{date}}</td></tr>
     <tr><td>Players:</td><td>{{playersCount}}</td></tr>
     <tr><td>Rebuys:</td><td>{{rebuys}}</td></tr>
     <tr><td>Buyin:</td><td>{{buyin}}</td></tr>

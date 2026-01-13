@@ -11,7 +11,9 @@ export async function router(
     const params = new URLSearchParams(urlParams);
     const requiresAuth = path.includes('/admin');
     const isLoggedIn = state.tenant.id ? true : false;
-    const event_id = params.get('event_id');
+    const event_id = params.get('event_id') || window.localStorage.getItem('event_id');
+
+
 
     if (!event_id) {
         if (!isLoggedIn &&
@@ -22,6 +24,11 @@ export async function router(
         }
 
         return;
+    }
+
+    // add event_id to url if it's missing in url params
+    if (!params.get('event_id')) {
+        params.set('event_id', event_id);
     }
 
     if (state.dataIsStale) {

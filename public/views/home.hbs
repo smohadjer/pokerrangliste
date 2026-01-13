@@ -1,7 +1,7 @@
 <header>
     <div class="flex">
         {{#if event_name}}
-          <h3>{{event_name}}</h3>
+          <h3><span class="label">League</span>{{event_name}}</h3>
         {{else}}
           <h3>turnies.de</h3>
         {{/if}}
@@ -14,21 +14,20 @@
     </div>
 </header>
 <div class="wrapper">
-    <main>
-      <p>Turnies app allows you to create and manage poker tournaments and share results with others.</p>
-      <section class="box">
-        <p>Select event to see results:</p>
+    <main class="home">
+      <h1>The turnies app tracks poker tournament results so bragging rights are earned, not argued!</h1>
+      <section class="league-selector">
         <form class="mg-top loading">
           <select id="events_dropdown">
-            <option selected option="">Select Event</option>
+            <option selected option="">Select your league</option>
           </select>
         </form>
       </section>
       {{#if isLoggedIn}}
-        <section class="box">
-          <h2>Create new event</h2>
+        <section class="league-selector">
+          <h2>Create a new league</h2>
           <form method="POST" action="/api/events">
-            <label>Event name:</label>
+            <label>League name:</label>
             <input name="name">
             <div class="submit">
                 <button>Submit</button>
@@ -38,7 +37,8 @@
         </section>
         {{> logout }}
       {{else}}
-        <p><a href="/login">Login</a> or <a href="/register">Register</a> to start setting up your own events.</p>
+        <p>To update your league's results you need to <a href="/login">login</a> first.</p>
+        <p>If you wish to create a new league so that you can keep track of your poker tournaments you should <a href="/register">register</a> first.</p>
       {{/if}}
     </main>
 </div>

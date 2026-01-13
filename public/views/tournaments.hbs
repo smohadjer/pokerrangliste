@@ -1,10 +1,14 @@
 <header>
   <div class="flex">
-    {{!-- <h3>{{event_name}}</h3> --}}
+    {{#if event_name}}
+      <h3><span class="label">League</span>{{event_name}}</h3>
+    {{else}}
+      <h3>turnies.de</h3>
+    {{/if}}
     <h2>Games</h2>
     {{#if seasons}}
       <div>
-        <span>Season:</span>
+        {{!-- <span class="label">Season</span> --}}
         {{> seasonSelector seasons=seasons season_id=season_id }}
       </div>
     {{/if}}

@@ -9,12 +9,14 @@ export const hydrateEvents = async (container: HTMLElement) => {
     populateSelect(select, events);
     select.closest('form')?.classList.remove('loading');
     select.addEventListener('change', (event) => {
+        // reset state by setting dataIsState to true so data for new event is fetched
         store.setState({
             ...state,
             rankings: {},
             dataIsStale: true
         });
         select.closest('form')?.classList.add('loading');
+        window.localStorage.setItem('event_id', select.value);
         if (event.target instanceof HTMLSelectElement) {
             router('/tournaments', `?event_id=${select.value}`, {type: 'click'});
         }

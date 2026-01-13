@@ -4,6 +4,10 @@
         {
             "source": "/admin",
             "destination": "/admin/home"
+        },
+        {
+            "source": "/",
+            "destination": "/home"
         }
     ],
     "rewrites": [
