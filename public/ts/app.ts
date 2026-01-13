@@ -132,8 +132,10 @@ export function submitHandler(e: SubmitEvent) {
             form.classList.remove('error');
             const state = store.getState();
 
-            // on logout remove tenant data from state and update events
+            // on logout remove tenant data from state and event_id from
+            // localStorage and update events
             if (form.action.indexOf('logout') > -1) {
+                window.localStorage.removeItem('event_id');
                 const events = await fetchEvents();
                 store.setState({
                     ...state,
