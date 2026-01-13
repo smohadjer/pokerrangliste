@@ -11,10 +11,12 @@ export async function router(
     const params = new URLSearchParams(urlParams);
     const requiresAuth = path.includes('/admin');
     const isLoggedIn = state.tenant.id ? true : false;
-    const event_id = params.get('event_id') || window.localStorage.getItem('event_id');
+    const event_id = params.get('event_id')
+        || window.localStorage.getItem('event_id');
 
-
-
+    // if there is no event_id we should always redirect users to home so they
+    // can select an event (league) first unless user is a guest (not-logged)
+    // on register or login page which no redirect is needed
     if (!event_id) {
         if (!isLoggedIn &&
             (path.includes('/register') || path.includes('/login'))) {
@@ -40,7 +42,8 @@ export async function router(
             dataIsStale: false
         });
 
-        // if a season is not provided in URL check whether a season in db is set as default
+        // if a season is not provided in URL check whether a season in db
+        // is set as default
         if (!params.get('season_id')) {
             const defaultSeaon = data?.seasons.find(item => item?.default === true);
             if (defaultSeaon) {
@@ -57,7 +60,7 @@ export async function router(
 
     // routing logic
     if (isLoggedIn) {
-        if (path.includes('/register')) {
+        if (path.includes('/register') || path.includes('/login')) {
             await renderRoute('/home', `event_id=${event_id}`, options);
         } else {
             await renderRoute(path, params.toString(), options);
@@ -100,4 +103,3 @@ async function renderRoute(
         window.history.replaceState(route, '', url);
     }
 }
-
