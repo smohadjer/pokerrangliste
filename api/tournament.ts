@@ -1,13 +1,12 @@
-import { MongoClient } from 'mongodb';
+import { MongoClient, ObjectId } from 'mongodb';
 import { database_uri, database_name } from './_config.js';
 import {
   getTournament,
   getTournaments,
-  insertTournament,
-  editTournament,
   duplicateTournament,
   deleteTournament,
-  userOwnsEvent
+  userOwnsEvent,
+  createTournamentDocument
 } from './_utils.js';
 
 const client = new MongoClient(database_uri);
@@ -59,6 +58,7 @@ export default async (req, res) => {
             }
           }
 
+          // delete tournament
           if (req.body.form_action === 'delete') {
             const response = await deleteTournament(tournamentsCol, req);
             if (response && response.deletedCount > 0) {
@@ -74,8 +74,30 @@ export default async (req, res) => {
           }
         } else {
           // edit tournament
-          const response = await editTournament(tournamentsCol, req);
-          if (response && response.modifiedCount > 0) {
+          const responseObject = createTournamentDocument(req);
+          if (responseObject.document) {
+            const query = { _id: ObjectId.createFromHexString(req.body.tournament_id) };
+            const response = await tournamentsCol.replaceOne(query, responseObject.document);
+            if (response && response.modifiedCount > 0) {
+              const tournamentsData = await getTournaments(tournamentsCol, event_id);
+              res.json({
+                data: {
+                  tournaments: tournamentsData
+                }
+              });
+            } else {
+              throw new Error('Database error');
+            }
+          } else {
+            throw new Error(`Failed to save changes. ${responseObject.error}`);
+          }
+        }
+      } else {
+        // add tournament
+        const responseObject = createTournamentDocument(req);
+        if (responseObject.document) {
+          const response = await tournamentsCol.insertOne(responseObject.document);
+          if (response && response.insertedId) {
             const tournamentsData = await getTournaments(tournamentsCol, event_id);
             res.json({
               data: {
@@ -83,21 +105,10 @@ export default async (req, res) => {
               }
             });
           } else {
-            throw new Error('Failed to edit tournament');
+            throw new Error('Database error');
           }
-        }
-      } else {
-        // add tournament
-        const response = await insertTournament(tournamentsCol, req);
-        if (response && response.insertedId) {
-          const tournamentsData = await getTournaments(tournamentsCol, event_id);
-          res.json({
-            data: {
-              tournaments: tournamentsData
-            }
-          });
         } else {
-          throw new Error('Failed to add tournament');
+          throw new Error('Failed to save changes.');
         }
       }
     }

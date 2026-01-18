@@ -97,16 +97,37 @@ const getRebuys = (players) => {
 };
 
 const validateTournament = (count, buyin, players: Player[]) => {
+  const validation = {
+    isValid: true,
+    error: ''
+  };
+
+  // validate against ranking not set for a player
+  players.forEach(player => {
+    if (player.ranking === 0) {
+      validation.isValid = false;
+      validation.error = 'Ranking 0 is now allowed';
+    }
+  });
+  if (!validation.isValid) return validation;
+
+  // validate total prize
   const totalprize = players.reduce((accumulator, player) => {
     return accumulator + player.prize
   }, 0);
-
   const buyIns = count * buyin;
   const rebuysTotal = getRebuys(players) * buyin;
-  return totalprize === buyIns + rebuysTotal;
+  if (totalprize !== buyIns + rebuysTotal) {
+    validation.isValid = false;
+    validation.error = `Total prize (${totalprize}) doesn't match sum of all buyins (${buyIns}) and rebuys (${rebuysTotal})`;
+    return validation;
+  }
+
+  // tournament data is valid
+  return validation;
 };
 
-const createTournamentDocument = (req) => {
+export const createTournamentDocument = (req) => {
   const buyin = Number(req.body.buyin);
   const status = sanitize(req.body.status);
   const season_id = req.body.season_id;
@@ -135,46 +156,37 @@ const createTournamentDocument = (req) => {
     // sort players based on ranking for backward compatibility
     players.sort((player1, player2) => player1.ranking - player2.ranking)
 
-    // if tournament is done validate data
-    const isValid =  (status === 'done') ? validateTournament(count, buyin, players) : true;
+    // if tournament is done validate the data
+    const validation = (status === 'done')
+      ? validateTournament(count, buyin, players)
+      : { isValid: true, error: '' };
 
-    if (isValid) return {
-      season_id,
-      event_id,
-      date,
-      status,
-      buyin,
-      players
-    };
+    if (validation.isValid) {
+      return {
+        document: {
+          season_id,
+          event_id,
+          date,
+          status,
+          buyin,
+          players
+        }
+      }
+    } else {
+      return {
+        error: validation.error
+      }
+    }
   } else {
     return {
-      season_id,
-      event_id,
-      date,
-      status,
-      buyin,
-    };
-  }
-};
-
-export const insertTournament = async (collection: Collection, req) => {
-  const tournamentDoc = createTournamentDocument(req);
-  if (tournamentDoc) {
-    const respnose = await collection.insertOne(tournamentDoc);
-    return respnose;
-  } else {
-    return;
-  }
-};
-
-export const editTournament = async (
-  tournamentsCol: Collection, req) => {
-  const tournamentId = req.body.tournament_id;
-  const tournamentDoc = createTournamentDocument(req);
-  if (tournamentDoc) {
-    const query = { _id: ObjectId.createFromHexString(tournamentId) };
-    const response = await tournamentsCol.replaceOne(query, tournamentDoc);
-    return response;
+      document: {
+        season_id,
+        event_id,
+        date,
+        status,
+        buyin,
+      }
+    }
   }
 };
 
