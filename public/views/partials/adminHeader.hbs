@@ -1,6 +1,10 @@
 <header>
   <div class="flex">
-    <h3>{{event_name}}</h3>
+    {{#if event_name}}
+      <h3><span class="label">League</span>{{event_name}}</h3>
+    {{else}}
+      <h3>turnies.de</h3>
+    {{/if}}
     <h2>Admin</h2>
     <div class="align-right">
       <p class="icon icon--inline icon--account">{{tenant_name}}</p>

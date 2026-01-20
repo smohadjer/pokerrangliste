@@ -78,7 +78,7 @@ function hydrate(
     }
 
     if (view === '/home') {
-        hydrateEvents(container);
+        hydrateEvents(container, templateData?.event_id);
     }
 
     if (view === '/login' || view === '/register') {
