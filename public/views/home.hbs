@@ -1,7 +1,7 @@
 <header>
     <div class="flex">
-        {{#if event_name}}
-          <h3><span class="label">League</span>{{event_name}}</h3>
+        {{#if league_name}}
+          <h3><span class="label">League</span>{{league_name}}</h3>
         {{else}}
           <h3>turnies.de</h3>
         {{/if}}
@@ -19,7 +19,7 @@
       <section class="league-selector">
         <form class="mg-top loading">
           <label>Select your league</label>
-          <select id="events_dropdown">
+          <select id="leagues_dropdown">
             <option value="">Select</option>
           </select>
         </form>
@@ -27,7 +27,7 @@
       {{#if isLoggedIn}}
         <section class="league-selector">
           <h2>Create a new league</h2>
-          <form method="POST" action="/api/events">
+          <form method="POST" action="/api/leagues">
             <label>League name:</label>
             <input name="name">
             <div class="submit">
@@ -43,7 +43,7 @@
       {{/if}}
     </main>
 </div>
-{{#if event_id}}
-  {{> footer event_id=event_id season_id=season_id view="home"}}
+{{#if league_id}}
+  {{> footer league_id=league_id season_id=season_id view="home"}}
 {{/if}}
 

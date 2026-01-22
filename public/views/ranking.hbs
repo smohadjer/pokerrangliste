@@ -1,7 +1,7 @@
 <header>
   <div class="flex">
-    {{#if event_name}}
-      <h3><span class="label">League</span>{{event_name}}</h3>
+    {{#if league_name}}
+      <h3><span class="label">League</span>{{league_name}}</h3>
     {{else}}
       <h3>turnies.de</h3>
     {{/if}}
@@ -30,9 +30,9 @@
           <td>{{inc @index}}</td>
           <td class="name">
             {{#if ../season_id}}
-              <a data-animation="slideInRTL" href="/profile?event_id={{../event_id}}&season_id={{../season_id}}&player_id={{this.id}}">{{this.name}}</a>
+              <a data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.id}}">{{this.name}}</a>
             {{else}}
-              <a data-animation="slideInRTL" href="/profile?event_id={{../event_id}}&player_id={{this.id}}">{{this.name}}</a>
+              <a data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&player_id={{this.id}}">{{this.name}}</a>
             {{/if}}
           </td>
           <td>{{this.points}}</td>
@@ -48,4 +48,4 @@
     line-height: 1.3;">No tournament has been played in this season yet!</p>
   {{/ifCond}}
 </div>
-{{> footer event_id=event_id season_id=season_id view="ranking"}}
+{{> footer league_id=league_id season_id=season_id view="ranking"}}

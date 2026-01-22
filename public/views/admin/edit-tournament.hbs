@@ -1,11 +1,11 @@
-{{> adminHeader event_name=event_name tenant_name=tenant_name}}
+{{> adminHeader league_name=league_name tenant_name=tenant_name}}
 <div class="wrapper">
     <main class="admin">
         {{> backLink }}
         <section>
             <h2>Edit tournaments</h2>
             <form id="post-tournament" method="POST" action="/api/tournament">
-                <input type="hidden" name="event_id" value="{{event_id}}">
+                <input type="hidden" name="league_id" value="{{league_id}}">
                 <div class="row">
                     <label>Tournament:</label>
                     <select id="tournament_edit_dropdown" name="tournament_id">
@@ -16,4 +16,4 @@
         </section>
     </main>
 </div>
-{{> footer event_id=event_id season_id=season_id view="admin"}}
+{{> footer league_id=league_id season_id=season_id view="admin"}}

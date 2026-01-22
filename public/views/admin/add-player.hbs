@@ -1,11 +1,11 @@
-{{> adminHeader event_name=event_name tenant_name=tenant_name}}
+{{> adminHeader league_name=league_name tenant_name=tenant_name}}
 <div class="wrapper">
     <main class="admin">
         {{> backLink }}
         <section>
             <h2>Add new player</h2>
             <form method="POST" action="/api/players">
-                <input type="hidden" name="event_id" value="{{event_id}}">
+                <input type="hidden" name="league_id" value="{{league_id}}">
                 <div class="row">
                     <label>Player *</label>
                     <input required name="name">
@@ -18,4 +18,4 @@
         </section>
     </main>
 </div>
-{{> footer event_id=event_id season_id=season_id view="admin"}}
+{{> footer league_id=league_id season_id=season_id view="admin"}}

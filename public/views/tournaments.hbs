@@ -1,7 +1,7 @@
 <header>
   <div class="flex">
-    {{#if event_name}}
-      <h3><span class="label">League</span>{{event_name}}</h3>
+    {{#if league_name}}
+      <h3><span class="label">League</span>{{league_name}}</h3>
     {{else}}
       <h3>turnies.de</h3>
     {{/if}}
@@ -28,7 +28,7 @@
         <td>
            {{reverseIndex ../tournaments.length @index}}</td>
         </td>
-        <td class="name"><a data-animation="slideInRTL" href="/tournament?event_id={{event_id}}&season_id={{../season_id}}&tournament_id={{this._id}}">{{this.date}}</a>
+        <td class="name"><a data-animation="slideInRTL" href="/tournament?league_id={{league_id}}&season_id={{../season_id}}&tournament_id={{this._id}}">{{this.date}}</a>
         <span class="status {{#if this.status}}{{this.status}}{{/if}}"></span></td>
         <td>{{this.players.length}}</td>
         <td>
@@ -47,4 +47,4 @@
     line-height: 1.3;">No tournament has been played in this season yet!</p>
   {{/ifCond}}
 </div>
-{{> footer event_id=event_id season_id=season_id view="tournaments"}}
+{{> footer league_id=league_id season_id=season_id view="tournaments"}}

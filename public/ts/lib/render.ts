@@ -8,7 +8,7 @@ import { initDeleteAndDuplicateTournament } from '../hydration/delete-duplicate-
 import { initSeasonSelector } from '../hydration/seasonSelector.js';
 import { populateSelect, enablePasswordToggle } from './utils.js';
 import { getHandlebarsTemplate } from './handlebars';
-import { hydrateEvents } from '../hydration/events.js';
+import { hydrateLeagues } from '../hydration/leagues.js';
 
 export const render = async (route: Route, options: RenderPageOptions) => {
     const view = route.view;
@@ -19,7 +19,7 @@ export const render = async (route: Route, options: RenderPageOptions) => {
     const state: State = store.getState();
     const season_id = urlParams.get('season_id');
     const isLoggedIn = state.tenant.id ? true : false;
-    const event = state.events.find(item => item._id === templateData?.event_id);
+    const league = state.leagues.find(item => item._id === templateData?.league_id);
     const templateFile = `/views${view}.hbs`;
     const container = document.getElementById('results');
     const template = await getHandlebarsTemplate(templateFile);
@@ -28,7 +28,7 @@ export const render = async (route: Route, options: RenderPageOptions) => {
             ...templateData,
             season_id,
             isLoggedIn,
-            event_name: event?.name
+            league_name: league?.name
         });
 
         if (container) {
@@ -78,7 +78,7 @@ function hydrate(
     }
 
     if (view === '/home') {
-        hydrateEvents(container, templateData?.event_id);
+        hydrateLeagues(container, templateData?.league_id);
     }
 
     if (view === '/login' || view === '/register') {

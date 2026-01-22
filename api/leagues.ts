@@ -1,9 +1,9 @@
 import { MongoClient } from 'mongodb';
 import { database_uri, database_name } from './_config.js';
 import {
-  fetchAllEvents,
-  editEventName,
-  addNewEvent,
+  fetchAllLeagues,
+  editLeagueName,
+  addNewLeague,
   getIdFromToken
 } from './_utils.js';
 
@@ -13,12 +13,12 @@ export default async (req, res) => {
   try {
     await client.connect();
     const database = client.db(database_name);
-    const collection = database.collection('events');
+    const collection = database.collection('leagues');
 
     if (req.method === 'GET') {
       const tenant_id = req.query.tenant_id;
-      const events = await fetchAllEvents(collection, tenant_id);
-      res.json(events);
+      const leagues = await fetchAllLeagues(collection, tenant_id);
+      res.json(leagues);
     }
 
     if (req.method === 'POST') {
@@ -28,23 +28,23 @@ export default async (req, res) => {
       }
 
       const name = req.body.name;
-      const eventId = req.body.event_id;
+      const leagueId = req.body.league_id;
       const doc = await collection.findOne({tenant_id, name});
 
       if (doc) {
         throw new Error(`Name ${name} is already taken`);
       }
 
-      if (eventId) {
-        await editEventName(name, eventId, collection, tenant_id);
+      if (leagueId) {
+        await editLeagueName(name, leagueId, collection, tenant_id);
       } else {
-        await addNewEvent(name, collection, tenant_id);
+        await addNewLeague(name, collection, tenant_id);
       }
 
-      // return all events so state in app can be updated from response
-      const events = await fetchAllEvents(collection, tenant_id);
+      // return all leagues so state in app can be updated from response
+      const leagues = await fetchAllLeagues(collection, tenant_id);
       res.json({
-        data: { events }
+        data: { leagues }
       });
 
     }

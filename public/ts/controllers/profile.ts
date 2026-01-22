@@ -57,6 +57,6 @@ export default (params: URLSearchParams) => {
         results: results,
         seasonName: getSeasonName(season_id, state.seasons),
         seasons: [...state.seasons, allTimeSeason],
-        event_id: params.get('event_id')
+        league_id: params.get('league_id')
     };
 };

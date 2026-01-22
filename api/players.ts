@@ -4,7 +4,7 @@ import {
   fetchAllPlayers,
   editPlayerName,
   addNewPlayer,
-  userOwnsEvent } from './_utils.js';
+  userOwnsLeague } from './_utils.js';
 
 const client = new MongoClient(database_uri);
 
@@ -15,15 +15,15 @@ export default async (req, res) => {
     const collection = database.collection('players');
 
     if (req.method === 'GET') {
-      const event_id = req.query.event_id;
+      const league_id = req.query.league_id;
       const id = req.query?.id;
       const name = req.query?.name;
       if (id || name) {
         const query = id ? {
-          event_id,
+          league_id,
           _id: new ObjectId(id)
         } : {
-          event_id,
+          league_id,
           name: name
         };
         const doc = await collection.findOne(query);
@@ -33,34 +33,34 @@ export default async (req, res) => {
           res.status(404).end();
         }
       } else {
-        const docs = await fetchAllPlayers(collection, event_id);
+        const docs = await fetchAllPlayers(collection, league_id);
         res.json(docs);
       }
     }
 
     if (req.method === 'POST') {
-      const event_id = req.body.event_id;
-      const events = database.collection('events');
-      if (!await userOwnsEvent(event_id, req.cookies.jwt, events)) {
-        throw new Error('Either event ID is not valid or Logged-in user is not owner of the event');
+      const league_id = req.body.league_id;
+      const leagues = database.collection('leagues');
+      if (!await userOwnsLeague(league_id, req.cookies.jwt, leagues)) {
+        throw new Error('Either league id is not valid or Logged-in user is not owner of the league');
       }
 
       const name = req.body.name;
       const playerId = req.body.player_id;
-      const doc = await collection.findOne({ event_id, name });
+      const doc = await collection.findOne({ league_id, name });
 
       if (doc) {
         throw new Error(`Name ${name} is already taken`);
       }
 
       if (playerId) {
-        await editPlayerName(name, playerId, collection, event_id);
+        await editPlayerName(name, playerId, collection, league_id);
       } else {
-        await addNewPlayer(name, collection, event_id);
+        await addNewPlayer(name, collection, league_id);
       }
 
       // return all players so state in app can be updated from response
-      const players = await fetchAllPlayers(collection, event_id);
+      const players = await fetchAllPlayers(collection, league_id);
       res.json({
         data: { players }
       });

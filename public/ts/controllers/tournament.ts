@@ -47,6 +47,6 @@ export default (params: URLSearchParams) => {
         players: players,
         hasBounty: cloneTournament.bounties ? 'Yes' : 'No',
         status: cloneTournament.status,
-        event_id: params.get('event_id'),
+        league_id: params.get('league_id'),
     }
 };

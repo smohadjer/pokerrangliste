@@ -183,14 +183,14 @@ export async function generateHTML(templateFile: string, data: any) {
     return html;
 }
 
-export const fetchEvents = async (tenant_id?: string) => {
+export const fetchLeagues = async (tenant_id?: string) => {
     try {
         const url = tenant_id
-            ? `/api/events?tenant_id=${tenant_id}`
-            : '/api/events';
+            ? `/api/leagues?tenant_id=${tenant_id}`
+            : '/api/leagues';
         const response = await fetch(url);
         const json = await response.json();
-        if (!json) throw ('Failed to fetch events from server!');
+        if (!json) throw ('Failed to fetch leagues from server!');
         if (json.error) {
             throw(json.message);
         } else {
@@ -224,9 +224,9 @@ export const setRankings = (season_id: string) => {
     });
 };
 
-export async function fetchData(event_id: string) {
+export async function fetchData(league_id: string) {
     try {
-        const response = await fetch(`/api/tournament?event_id=${event_id}`, {
+        const response = await fetch(`/api/tournament?league_id=${league_id}`, {
             method: 'GET',
             headers: {
               'Accept': 'application/json',

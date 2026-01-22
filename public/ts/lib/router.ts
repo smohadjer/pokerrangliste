@@ -11,13 +11,13 @@ export async function router(
     const params = new URLSearchParams(urlParams);
     const requiresAuth = path.includes('/admin');
     const isLoggedIn = state.tenant.id ? true : false;
-    const event_id = params.get('event_id')
-        || window.localStorage.getItem('event_id');
+    const league_id = params.get('league_id')
+        || window.localStorage.getItem('league_id');
 
-    // if there is no event_id we should always redirect users to home so they
-    // can select an event (league) first unless user is a guest (not-logged)
+    // if there is no league_id we should always redirect users to home so they
+    // can select a league first unless user is a guest (not-logged)
     // on register or login page which no redirect is needed
-    if (!event_id) {
+    if (!league_id) {
         if (!isLoggedIn &&
             (path.includes('/register') || path.includes('/login'))) {
             renderRoute(path, '', options);
@@ -28,14 +28,14 @@ export async function router(
         return;
     }
 
-    // add event_id to url if it's missing in url params
-    if (!params.get('event_id')) {
-        params.set('event_id', event_id);
+    // add league_id to url if it's missing in url params
+    if (!params.get('league_id')) {
+        params.set('league_id', league_id);
     }
 
     if (state.dataIsStale) {
         console.log('data is stale');
-        const data: State | undefined = await fetchData(event_id);
+        const data: State | undefined = await fetchData(league_id);
         store.setState({
             ...state,
             ...data,
@@ -61,7 +61,7 @@ export async function router(
     // routing logic
     if (isLoggedIn) {
         if (path.includes('/register') || path.includes('/login')) {
-            await renderRoute('/home', `event_id=${event_id}`, options);
+            await renderRoute('/home', `league_id=${league_id}`, options);
         } else {
             await renderRoute(path, params.toString(), options);
         }

@@ -14,20 +14,20 @@ export const getIdFromToken = async (token) => {
   return response.payload.id as string;
 };
 
-export const userOwnsEvent = async (
-  event_id: string,
+export const userOwnsLeague = async (
+  league_id: string,
   token: string,
   collection: Collection) => {
-  if (!event_id || event_id.length === 0) {
+  if (!league_id || league_id.length === 0) {
     return;
   }
   if (!token) return;
   const tenant_id = await getIdFromToken(token);
   if (!tenant_id) return;
-  const event = await collection.findOne({
-    _id: ObjectId.createFromHexString(event_id)
+  const league = await collection.findOne({
+    _id: ObjectId.createFromHexString(league_id)
   });
-  return event.tenant_id === tenant_id ? true : false;
+  return league.tenant_id === tenant_id ? true : false;
 };
 
 export const sanitize = (item) => {
@@ -38,23 +38,23 @@ export const sanitize = (item) => {
   }
 };
 
-export const fetchAllPlayers = async (collection, event_id) => {
-    return await collection.find({event_id})
+export const fetchAllPlayers = async (collection, league_id) => {
+    return await collection.find({league_id})
       // using collation so sort is case insensitive
       .collation({ locale: 'en' })
       .sort({ name: 1 })
       .toArray();
 };
 
-export const fetchAllSeasons = async (collection, event_id) => {
-  return await collection.find({event_id})
+export const fetchAllSeasons = async (collection, league_id) => {
+  return await collection.find({league_id})
     // using collation so sort is case insensitive
     .collation({ locale: 'en' })
     .sort({ name: 1 })
     .toArray();
 };
 
-export const fetchAllEvents = async (collection, tenant_id) => {
+export const fetchAllLeagues = async (collection, tenant_id) => {
   const filter = tenant_id ? { tenant_id } : {};
   return await collection.find(filter)
     // using collation so sort is case insensitive
@@ -71,18 +71,18 @@ export const fetchPlayerById = async (collection, playerId) => {
 
 export const getTournaments = async (
   collection: Collection,
-  event_id: string,
+  league_id: string,
   seasonId?: string) => {
-  const query = seasonId ? { event_id, 'season_id': seasonId } : { event_id} ;
+  const query = seasonId ? { league_id, 'season_id': seasonId } : { league_id} ;
   return await collection.find(query).sort({date: -1}).toArray();
 };
 
 export const getTournament = async (
   collection: Collection,
-  event_id: string,
+  league_id: string,
   tournamentId: string) => {
   const tournament = await collection.findOne({
-    event_id,
+    league_id,
     _id: ObjectId.createFromHexString(tournamentId)
   });
   return [tournament];
@@ -131,7 +131,7 @@ export const createTournamentDocument = (req) => {
   const buyin = Number(req.body.buyin);
   const status = sanitize(req.body.status);
   const season_id = req.body.season_id;
-  const event_id = req.body.event_id;
+  const league_id = req.body.league_id;
   const date = sanitize(req.body.date);
 
   // req.body.players is either undefined (when no player has been added to a tournament yet) or a string equal to id of a single player or an array of ids of multiple players
@@ -165,7 +165,7 @@ export const createTournamentDocument = (req) => {
       return {
         document: {
           season_id,
-          event_id,
+          league_id,
           date,
           status,
           buyin,
@@ -181,7 +181,7 @@ export const createTournamentDocument = (req) => {
     return {
       document: {
         season_id,
-        event_id,
+        league_id,
         date,
         status,
         buyin,
@@ -227,20 +227,20 @@ export const deleteTournament = async (
 export const addNewPlayer = async (
   name: string,
   collection: Collection,
-  event_id: string) => {
-  const response = await collection.insertOne({name, event_id});
+  league_id: string) => {
+  const response = await collection.insertOne({name, league_id});
   console.log(response);
 };
 
 export const addNewSeason = async (
   name: string,
   collection: Collection,
-  event_id: string) => {
-  const response = await collection.insertOne({name, event_id});
+  league_id: string) => {
+  const response = await collection.insertOne({name, league_id});
   console.log(response);
 };
 
-export const addNewEvent = async (
+export const addNewLeague = async (
   name: string,
   collection: Collection,
   tenant_id: string) => {
@@ -252,8 +252,8 @@ export const editPlayerName = async (
   name: string,
   id: string,
   collection: Collection,
-  event_id: string) => {
-  const query = {event_id, _id: ObjectId.createFromHexString(id)};
+  league_id: string) => {
+  const query = {league_id, _id: ObjectId.createFromHexString(id)};
   const response = await collection.updateOne(query, {
     $set: {name: name}
   });
@@ -264,15 +264,15 @@ export const editSeasonName = async (
   name: string,
   id: string,
   collection: Collection,
-  event_id: string) => {
-  const query = {event_id, _id: ObjectId.createFromHexString(id)};
+  league_id: string) => {
+  const query = {league_id, _id: ObjectId.createFromHexString(id)};
   const response = await collection.updateOne(query, {
       $set: {name: name}
   });
   console.log(response);
 };
 
-export const editEventName = async (
+export const editLeagueName = async (
   name: string,
   id: string,
   collection: Collection,

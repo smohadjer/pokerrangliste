@@ -27,7 +27,7 @@ export type bounty = {
   readonly id: {}
 }
 
-export type Event = {
+export type League = {
   _id: string;
   name: string;
   tenant_id: string;
@@ -50,7 +50,7 @@ export interface Tournament {
 
 export type State = {
   dataIsStale: boolean;
-  events: Event[];
+  leagues: League[];
   tournaments: Tournament[];
   seasons: Season[];
   players: PlayerDB[];

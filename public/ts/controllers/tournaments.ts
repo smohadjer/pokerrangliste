@@ -16,6 +16,6 @@ export default (params: URLSearchParams) => {
     return {
         tournaments: optimizedData,
         seasons: [...state.seasons, allTimeSeason],
-        event_id: params.get('event_id'),
+        league_id: params.get('league_id'),
     };
 };

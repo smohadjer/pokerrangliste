@@ -10,7 +10,7 @@ export default (params: URLSearchParams) => {
         tenant_name: state.tenant.name,
         players: state.players,
         seasons: state.seasons,
-        event_id: params.get('event_id'),
+        league_id: params.get('league_id'),
         date: isoDate
     };
 };

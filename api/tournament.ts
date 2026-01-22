@@ -5,7 +5,7 @@ import {
   getTournaments,
   duplicateTournament,
   deleteTournament,
-  userOwnsEvent,
+  userOwnsLeague,
   createTournamentDocument
 } from './_utils.js';
 
@@ -21,23 +21,23 @@ export default async (req, res) => {
     const playersCol = database.collection('players');
 
     if (req.method === 'GET') {
-      const event_id = req.query.event_id;
+      const league_id = req.query.league_id;
       const tournaments = req.query.tournament_id
-        ? await getTournament(tournamentsCol, event_id, req.query.tournament_id)
-        : await getTournaments(tournamentsCol, event_id, req.body.season_id);
+        ? await getTournament(tournamentsCol, league_id, req.query.tournament_id)
+        : await getTournaments(tournamentsCol, league_id, req.body.season_id);
       const data = {
-        seasons: await seasonsCol.find({event_id}).sort({ name: -1 }).toArray(),
-        players: await playersCol.find({event_id}).sort({ name: 1 }).toArray(),
+        seasons: await seasonsCol.find({league_id}).sort({ name: -1 }).toArray(),
+        players: await playersCol.find({league_id}).sort({ name: 1 }).toArray(),
         tournaments: tournaments
       };
       res.json(data);
     }
 
     if (req.method === 'POST') {
-      const event_id = req.body.event_id;
-      const events = database.collection('events');
-      if (!await userOwnsEvent(event_id, req.cookies.jwt, events)) {
-        throw new Error('Either event ID is not valid or Logged-in user is not owner of the event');
+      const league_id = req.body.league_id;
+      const leagues = database.collection('leagues');
+      if (!await userOwnsLeague(league_id, req.cookies.jwt, leagues)) {
+        throw new Error('Either league id is not valid or Logged-in user is not owner of the league');
       }
 
       if (req.body.tournament_id) {
@@ -46,7 +46,7 @@ export default async (req, res) => {
           if (req.body.form_action === 'duplicate') {
             const response = await duplicateTournament(tournamentsCol, req);
             if (response && response.insertedId) {
-              const tournamentsData = await getTournaments(tournamentsCol, event_id);
+              const tournamentsData = await getTournaments(tournamentsCol, league_id);
               res.json({
                 data: {
                   tournaments: tournamentsData,
@@ -62,7 +62,7 @@ export default async (req, res) => {
           if (req.body.form_action === 'delete') {
             const response = await deleteTournament(tournamentsCol, req);
             if (response && response.deletedCount > 0) {
-              const tournamentsData = await getTournaments(tournamentsCol, event_id);
+              const tournamentsData = await getTournaments(tournamentsCol, league_id);
               res.json({
                 data: {
                   tournaments: tournamentsData
@@ -79,7 +79,7 @@ export default async (req, res) => {
             const query = { _id: ObjectId.createFromHexString(req.body.tournament_id) };
             const response = await tournamentsCol.replaceOne(query, responseObject.document);
             if (response && response.modifiedCount > 0) {
-              const tournamentsData = await getTournaments(tournamentsCol, event_id);
+              const tournamentsData = await getTournaments(tournamentsCol, league_id);
               res.json({
                 data: {
                   tournaments: tournamentsData
@@ -98,7 +98,7 @@ export default async (req, res) => {
         if (responseObject.document) {
           const response = await tournamentsCol.insertOne(responseObject.document);
           if (response && response.insertedId) {
-            const tournamentsData = await getTournaments(tournamentsCol, event_id);
+            const tournamentsData = await getTournaments(tournamentsCol, league_id);
             res.json({
               data: {
                 tournaments: tournamentsData

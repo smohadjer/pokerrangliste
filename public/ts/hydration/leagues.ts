@@ -2,15 +2,15 @@ import { router } from '../lib/router.js';
 import { store } from '../lib/store.js';
 import { populateSelect } from '../lib/utils.js';
 
-export const hydrateEvents = async (container: HTMLElement, event_id?: string) => {
-    const select: HTMLSelectElement = container.querySelector('#events_dropdown')!;
+export const hydrateLeagues = async (container: HTMLElement, league_id?: string) => {
+    const select: HTMLSelectElement = container.querySelector('#leagues_dropdown')!;
     const state = store.getState();
-    const events = state.events;
-    populateSelect(select, events);
+    const leagues = state.leagues;
+    populateSelect(select, leagues);
     select.closest('form')?.classList.remove('loading');
 
-    if (event_id) {
-        select.value = event_id;
+    if (league_id) {
+        select.value = league_id;
     }
 
     select.addEventListener('change', (event) => {
@@ -23,12 +23,12 @@ export const hydrateEvents = async (container: HTMLElement, event_id?: string) =
 
         if (select.value) {
             select.closest('form')?.classList.add('loading');
-            window.localStorage.setItem('event_id', select.value);
+            window.localStorage.setItem('league_id', select.value);
             if (event.target instanceof HTMLSelectElement) {
-                router('/tournaments', `?event_id=${select.value}`, {type: 'click'});
+                router('/tournaments', `?league_id=${select.value}`, {type: 'click'});
             }
         } else {
-            window.localStorage.removeItem('event_id');
+            window.localStorage.removeItem('league_id');
             router('/', '', {type: 'click'});
         }
     });

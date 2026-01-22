@@ -1,7 +1,7 @@
 import { router } from './lib/router.js';
-import { RenderPageOptions, Route, Event } from './types.js';
+import { RenderPageOptions, Route, League } from './types.js';
 import { store } from './lib/store.js';
-import { fetchEvents, isAuthenticated } from './lib/utils.js';
+import { fetchLeagues, isAuthenticated } from './lib/utils.js';
 import { setHandlebars } from './lib/handlebars.js';
 import { render } from './lib/render.js';
 
@@ -18,16 +18,16 @@ import { render } from './lib/render.js';
     const authenticated = await isAuthenticated();
 
     if (authenticated.error) {
-        // user is not logged-in, fetching all events
+        // user is not logged-in, fetching all leagues
         console.log('user is NOT logged-in');
-        const events: Event[] = await fetchEvents();
-        store.setState({...state, events});
+        const leagues: League[] = await fetchLeagues();
+        store.setState({...state, leagues});
     } else {
-        // user is logged-in, fetching only his events
-        const events: Event[] = await fetchEvents(authenticated.id);
+        // user is logged-in, fetching only his leagues
+        const leagues: League[] = await fetchLeagues(authenticated.id);
         store.setState({
             ...state,
-            events,
+            leagues,
             tenant: authenticated
         });
     }
@@ -132,14 +132,14 @@ export function submitHandler(e: SubmitEvent) {
             form.classList.remove('error');
             const state = store.getState();
 
-            // on logout remove tenant data from state and event_id from
-            // localStorage and update events
+            // on logout remove tenant data from state and league_id from
+            // localStorage and update leagues
             if (form.action.indexOf('logout') > -1) {
-                window.localStorage.removeItem('event_id');
-                const events = await fetchEvents();
+                window.localStorage.removeItem('league_id');
+                const leagues = await fetchLeagues();
                 store.setState({
                     ...state,
-                    events,
+                    leagues,
                     tenant: {
                         id: undefined,
                         name: undefined
@@ -150,11 +150,11 @@ export function submitHandler(e: SubmitEvent) {
             if (res.data) {
                 // after successful login tenant is returned
                 if (res.data.tenant) {
-                    // update events in state after login
-                    const events = await fetchEvents(res.data.tenant.id);
+                    // update leagues in state after login
+                    const leagues = await fetchLeagues(res.data.tenant.id);
                     store.setState({
                         ...state,
-                        events,
+                        leagues,
                         tenant: res.data.tenant
                     });
                 } else {
