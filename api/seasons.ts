@@ -18,23 +18,29 @@ export default async (req, res) => {
     if (req.method === 'GET') {
       const league_id = req.query.league_id;
       const docs = await collection.find({league_id}).sort({'name': -1}).toArray()
-      res.json(docs);
+      return res.json(docs);
     }
 
+    // edits an existing season or adds a new season
     if (req.method === 'POST') {
       const league_id = req.body.league_id;
       const leagues = database.collection('leagues');
-      if (!await userOwnsLeague(league_id, req.cookies.jwt, leagues)) {
+
+      if (!await userOwnsLeague(league_id, req, leagues)) {
         throw new Error('Either league id is not valid or Logged-in user is not owner of the league');
       }
-      const name = req.body.name;
-      const seasonId = req.body.season_id;
-      const doc = await collection.findOne({league_id, name});
 
+      // validate season name
+      const name = req.body.name;
+      if (!name) {
+        throw new Error(`a name for season is required`);
+      }
+      const doc = await collection.findOne({league_id, name});
       if (doc) {
         throw new Error(`Name ${name} is already taken`);
       }
 
+      const seasonId = req.body.season_id;
       if (seasonId) {
         await editSeasonName(name, seasonId, collection, league_id);
       } else {

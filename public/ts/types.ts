@@ -105,3 +105,8 @@ export type Route = {
   //params: RouteParams;
   params: string;
 }
+
+export type JwtPayload = {
+    name: string;
+    id: string;
+}

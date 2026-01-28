@@ -31,10 +31,11 @@ export default async (req, res) => {
         const secret = new TextEncoder().encode(jwtSecret);
         const alg = 'HS256';
         const userId = user._id.toString();
-        const token = await new SignJWT({
-            name: user.username,
-            id: userId
-          })
+        const payload = {
+          name: user.username,
+          id: userId
+        };
+        const token = await new SignJWT(payload)
           .setProtectedHeader({ alg })
           .setExpirationTime('10w')
           .sign(secret);

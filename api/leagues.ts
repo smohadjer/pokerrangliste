@@ -4,8 +4,9 @@ import {
   fetchAllLeagues,
   editLeagueName,
   addNewLeague,
-  getIdFromToken
 } from './_utils.js';
+import { JwtPayload } from '../public/ts/types'
+import { getJwtPayload } from './verifyAuth.js';
 
 const client = new MongoClient(database_uri);
 
@@ -22,7 +23,8 @@ export default async (req, res) => {
     }
 
     if (req.method === 'POST') {
-      const tenant_id = await getIdFromToken(req.cookies.jwt);
+      const payload: JwtPayload = await getJwtPayload(req);
+      const tenant_id = payload.id;
       if (!tenant_id) {
         throw new Error('No tenant ID provided');
       }

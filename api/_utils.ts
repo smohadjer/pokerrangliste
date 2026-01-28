@@ -1,5 +1,6 @@
 import { Collection, ObjectId } from 'mongodb';
-import {jwtVerify} from 'jose';
+import { JwtPayload } from '../public/ts/types'
+import { getJwtPayload } from './verifyAuth.js';
 
 type Player = {
   id: string;
@@ -8,21 +9,16 @@ type Player = {
   prize: number;
 }
 
-export const getIdFromToken = async (token) => {
-  const secret = new TextEncoder().encode(process.env.jwtSecret);
-  const response = await jwtVerify(token, secret);
-  return response.payload.id as string;
-};
-
 export const userOwnsLeague = async (
   league_id: string,
-  token: string,
+  req: any,
   collection: Collection) => {
   if (!league_id || league_id.length === 0) {
     return;
   }
-  if (!token) return;
-  const tenant_id = await getIdFromToken(token);
+
+  const payload: JwtPayload = await getJwtPayload(req);
+  const tenant_id = payload.id;
   if (!tenant_id) return;
   const league = await collection.findOne({
     _id: ObjectId.createFromHexString(league_id)
