@@ -76,7 +76,7 @@ export const deepClone = (item: {} | []) => {
 export const getPlayers = (tournaments: Tournament[]) => {
     const players: Player[] = [];
     tournaments.forEach((tournament) => {
-        tournament.players.forEach((item) => {
+        tournament?.players.forEach((item) => {
             const clone = {...item};
             clone.points = getPoints(clone, tournament);
             clone.wins = clone.ranking === 1 ? 1 : 0;
@@ -112,7 +112,7 @@ export const getPlayers = (tournaments: Tournament[]) => {
 export const getTournaments = (tournaments: Tournament[], season_id: string) => {
     let clone: Tournament[] = deepClone(tournaments);
     // filter tournaments by season
-    if (season_id !== 'all_time') {
+    if (season_id && season_id !== 'all_time') {
         clone = clone.filter((tour) => {
             return tour.season_id === season_id;
         });

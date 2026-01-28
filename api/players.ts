@@ -41,7 +41,7 @@ export default async (req, res) => {
     if (req.method === 'POST') {
       const league_id = req.body.league_id;
       const leagues = database.collection('leagues');
-      if (!await userOwnsLeague(league_id, req.cookies.jwt, leagues)) {
+      if (!await userOwnsLeague(league_id, req, leagues)) {
         throw new Error('Either league id is not valid or Logged-in user is not owner of the league');
       }
 

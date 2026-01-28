@@ -18,7 +18,7 @@ export default async (request, response) => {
 
 export const getJwtPayload = async (req) : Promise<JwtPayload> => {
     const jwt = req.cookies?.jwt;
-    const authHeader = req.headers.authorization;
+    const authHeader = req.headers?.authorization;
     const hasBearerAuthHeader = authHeader && authHeader.startsWith('Bearer ');
     const token = hasBearerAuthHeader ? authHeader.split(' ')[1] : jwt;
     console.log(token);
