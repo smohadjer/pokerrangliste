@@ -151,10 +151,13 @@ type SelectData = {
 }
 
 // used to populate players, seasons and tenant select elements
-export function populateSelect(select: HTMLSelectElement, data: SelectData[]) {
-    let options = select.innerHTML;
+export function populateSelect(select: HTMLSelectElement, data: SelectData[], default_value?: string) {
+    let options = '<option selected value="">Select</option>';
     data.forEach(item => {
-        options += `<option value="${item._id}">${item.name}</option>`
+        const selected = (default_value && default_value === item._id)
+            ? 'selected'
+            : '';
+        options += `<option ${selected} value="${item._id}">${item.name}</option>`
     });
     select.innerHTML = options;
 }
@@ -164,7 +167,7 @@ export function populateSelectTournaments(
     data: Tournament[],
     tournament_id?: string
 ) {
-    let options = '<option selected disabled option="">Select</option>';
+    let options = '<option selected disabled value="">Select</option>';
     data.forEach(item => {
         const selected = (tournament_id && tournament_id === item._id)
             ? 'selected'

@@ -3,12 +3,18 @@
     <main class="admin">
         {{> backLink }}
         <section>
-            <h2>Add new player</h2>
-            <form method="POST" action="/api/players">
+            <h2>Edit league</h2>
+            <form method="POST" action="/api/leagues">
                 <input type="hidden" name="league_id" value="{{league_id}}">
                 <div class="row">
-                    <label>Player *</label>
-                    <input required name="name">
+                    <label>Default season:</label>
+                    <select id="default_season_dropdown" name="default_season_id">
+                        <option selected disabled option="">Select</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label>League name:</label>
+                    <input required name="name" value="{{league_name}}">
                 </div>
                 <div class="submit">
                     <button>Submit</button>

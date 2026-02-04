@@ -67,14 +67,20 @@ function hydrate(
         initDeleteAndDuplicateTournament(container);
     }
 
-    if (view === '/admin/edit-player') {
+    if (view === '/admin/add-edit-player') {
         const select: HTMLSelectElement = container.querySelector('#player_edit_dropdown')!;
         populateSelect(select, state.players);
     }
 
-    if (view === '/admin/edit-season') {
+    if (view === '/admin/add-edit-season') {
         const select: HTMLSelectElement = container.querySelector('#season_edit_dropdown')!;
         populateSelect(select, state.seasons);
+    }
+
+    if (view === '/admin/edit-league') {
+        const select: HTMLSelectElement = container.querySelector('#default_season_dropdown')!;
+        const league = state.leagues.find(item => item._id === templateData.league_id);
+        populateSelect(select, state.seasons, league?.default_season_id);
     }
 
     if (view === '/home') {

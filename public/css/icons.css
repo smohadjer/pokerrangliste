@@ -103,3 +103,10 @@ button.icon {
     background-size: 32px;
     padding-left: 38px;
 }
+
+.icon--league_edit {
+    background-image: url(../images/settings.svg);
+    background-size: 32px;
+    padding-left: 38px;
+}
+
