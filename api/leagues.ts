@@ -31,15 +31,17 @@ export default async (req, res) => {
 
       const name = req.body.name;
       const leagueId = req.body.league_id;
-      const doc = await collection.findOne({tenant_id, name});
-
-      if (doc) {
-        throw new Error(`Name ${name} is already taken`);
-      }
+      const default_season_id = req.body.default_season_id;
 
       if (leagueId) {
-        await editLeagueName(name, leagueId, collection, tenant_id);
+        await editLeagueName(name, collection, leagueId, default_season_id);
       } else {
+        // creating a new league
+        // validate league name
+        const doc = await collection.findOne({tenant_id, name});
+        if (doc) {
+          throw new Error(`A league with name "${name}" already exists`);
+        }
         await addNewLeague(name, collection, tenant_id);
       }
 

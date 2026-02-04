@@ -270,12 +270,13 @@ export const editSeasonName = async (
 
 export const editLeagueName = async (
   name: string,
-  id: string,
   collection: Collection,
-  tenant_id: string) => {
-  const query = {tenant_id, _id: ObjectId.createFromHexString(id)};
+  league_id: string,
+  default_season_id?: string,
+) => {
+  const query = {_id: ObjectId.createFromHexString(league_id)};
   const response = await collection.updateOne(query, {
-      $set: {name: name}
+      $set: {name, default_season_id}
   });
   console.log(response);
 };

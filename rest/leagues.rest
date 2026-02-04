@@ -1,0 +1,16 @@
+// get all leagues
+GET http://localhost:3000/api/leagues
+
+###
+
+// edit a league
+POST http://localhost:3000/api/leagues
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJuYW1lIjoic21vaGFkamVyIiwiaWQiOiI2NzVkNWM1NWIxNWE4YjcxODkwYmIwNjEiLCJleHAiOjE3NzU2NDI4MzR9.NWJnKrfjAToDEkMlf5LAJo1wR18uThfyVeuoZI4g_5I
+
+{
+    "league_id": "677a4f585462214b2a1ac77e",
+    "name": "Rounders Test",
+    "default_season_id": "65acfc9104b8801d45dd7f03"
+}
+

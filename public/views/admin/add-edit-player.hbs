@@ -3,13 +3,13 @@
     <main class="admin">
         {{> backLink }}
         <section>
-            <h2>Edit seasons</h2>
-            <form method="POST" action="/api/seasons">
+            <h2>Add/Edit player</h2>
+            <form method="POST" action="/api/players">
                 <input type="hidden" name="league_id" value="{{league_id}}">
                 <div class="row">
-                    <label>Seasons</label>
-                    <select id="season_edit_dropdown" name="season_id">
-                        <option selected disabled option="">Select</option>
+                    <label>Players</label>
+                    <select id="player_edit_dropdown" name="player_id">
+                       <option selected disabled option="">Select</option>
                     </select>
                 </div>
                 <div class="row">

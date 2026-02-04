@@ -42,12 +42,13 @@ export async function router(
             dataIsStale: false
         });
 
-        // if a season is not provided in URL check whether a season in db
-        // is set as default
+        // if a season is not provided in URL check whether a season is set as
+        // default in database
         if (!params.get('season_id')) {
-            const defaultSeaon = data?.seasons.find(item => item?.default === true);
-            if (defaultSeaon) {
-                params.set('season_id', defaultSeaon._id);
+            const league = state.leagues.find(item => item?._id === league_id);
+            const defaultSeasonId = league?.default_season_id;
+            if (defaultSeasonId) {
+                params.set('season_id', defaultSeasonId);
             } else {
                 params.set('season_id', 'all_time');
             }
