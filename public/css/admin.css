@@ -39,7 +39,7 @@ form {
 
     > *:first-child {
       display: inline-block;
-      min-width: 130px;
+      min-width: 100px;
     }
   }
 
@@ -60,15 +60,32 @@ form {
     padding-top: 0.5em;
     border-top: dotted #333 1px;
 
-    &.disabled {
-      .row .col2 {
+    button[disabled] {
         display: none !important;
-      }
+    }
+  }
+
+  .table-players {
+    text-align: left;
+    background: #1D5410;
+    color: white;
+    border-collapse: collapse;
+
+    td, th {
+        padding: 10px;
     }
 
-    .row {
-      margin-top: 0;
-      margin-bottom: 0.25em;
+    tbody tr:nth-child(odd) td {
+      background: #36701e;
+    }
+
+    td input {
+      width: 100px;
+    }
+
+    button.icon--person_remove {
+      cursor: pointer;
+      filter: invert(16%) sepia(70%) saturate(100%) hue-rotate(6deg) brightness(150%) contrast(133%);
     }
   }
 
