@@ -72,7 +72,7 @@ form {
     border-collapse: collapse;
 
     td, th {
-        padding: 10px;
+        padding: 10px 5px;
     }
 
     tbody tr:nth-child(odd) td {
@@ -80,7 +80,7 @@ form {
     }
 
     td input {
-      width: 100px;
+      width: 50px;
     }
 
     button.icon--person_remove {
