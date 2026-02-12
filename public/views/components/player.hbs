@@ -1,23 +1,21 @@
-<div class="row-player disabled">
-    <div class="row">
-        <div class="col1">
-            <label>{{name}}</label>
-            <input hidden name="players" value="{{id}}">
-            <button class="icon icon--block icon--person_remove button-delete" type="button"></button>
-        </div>
-        <div class="col2">
-            <div>
-                <label class="label">Ranking:</label>
+<table>
+    <tbody>
+        <tr class="row-player disabled">
+            <td>
+                <label>{{name}}</label>
+                <input hidden name="players" value="{{id}}">
+                <button class="icon icon--block icon--person_remove button-delete" type="button"></button>
+            </td>
+            <td>
                 <input name="player_{{id}}_ranking" value="{{ranking}}" type="number" min="0">
-            </div>
-            <div>
-                <label class="label">Rebuys:</label>
+            </td>
+            <td>
                 <input name="player_{{id}}_rebuys" value="{{rebuys}}" type="number" min="0">
-            </div>
-            <div>
-                <label class="label">Prize:</label>
+            </td>
+            <td>
                 <input name="player_{{id}}_prize" value="{{prize}}" type="number" min="0">
-            </div>
-        </div>
-    </div>
-</div>
+            </td>
+        </tr>
+</tbody>
+</table>
+

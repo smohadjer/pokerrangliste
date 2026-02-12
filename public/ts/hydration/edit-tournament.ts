@@ -1,6 +1,11 @@
 import { State } from '../types';
 import { store } from '../lib/store.js';
-import { populateSelectTournaments, generateHTML } from '../lib/utils.js';
+import {
+    populateSelectTournaments,
+    generateHTML,
+    getRebuys,
+    getPrize
+} from '../lib/utils.js';
 import { initTournamentForm } from './initTournamentForm.js';
 
 export function initEditTournament(container: HTMLElement, tournament_id: string) {
@@ -10,8 +15,10 @@ export function initEditTournament(container: HTMLElement, tournament_id: string
     const renderForm = async (tournamentId: string) => {
         const tournaments = state.tournaments.filter(item => item._id === tournamentId);
         const tournamentData = tournaments[0];
-        const htmlElement = await generateHTML('/views/partials/tournamentForm.hbs', tournamentData);
-
+        const rebuys = getRebuys(tournamentData);
+        const totalPrize = tournamentData.buyin * tournamentData.players.length + rebuys *  tournamentData.buyin;
+        const data = {...tournamentData, rebuys, totalPrize};
+        const htmlElement = await generateHTML('/views/partials/tournamentForm.hbs', data);
         formWrapper.innerHTML = '';
         formWrapper.append(...htmlElement);
 

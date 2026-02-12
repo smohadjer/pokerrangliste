@@ -40,6 +40,17 @@ function UpdateTournamentState(form: HTMLFormElement, status: string) {
     const AddPlayers = form.querySelector('.row--addPlayers');
     const deletePlayerButtons = form.querySelectorAll('.button-delete');
     const playerRows = form.querySelectorAll('.row-player');
+    const resultsTable = form.querySelector('.table-players');
+
+    if (status === 'done') {
+        resultsTable?.querySelectorAll('input').forEach(inputField => {
+            inputField.setAttribute('disabled', 'disabled');
+        })
+    } else {
+        resultsTable?.querySelectorAll('input').forEach(inputField => {
+            inputField.removeAttribute('disabled');
+        })
+    }
 
     if (status === 'upcoming') {
         AddPlayers?.classList.remove('disabled');
