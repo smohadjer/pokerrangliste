@@ -26,7 +26,9 @@ export async function generatePlayerFields(
                 rebuys: 0,
                 prize: 0,
                 points: 0,
-                bounty: 0
+                bounty: 0,
+                wins: 0,
+                runnerups: 0,
             };
             addPlayer(playersElm, player).then(() => {
                 updatePlayersCount();

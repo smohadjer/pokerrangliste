@@ -98,6 +98,12 @@ const validateTournament = (count, buyin, players: Player[]) => {
     error: ''
   };
 
+  // validate against no players set
+  if (!players || players.length === 0) {
+      validation.isValid = false;
+      validation.error = 'No player is added';
+  }
+
   // validate against ranking not set for a player
   players.forEach(player => {
     if (player.ranking === 0) {
@@ -174,13 +180,19 @@ export const createTournamentDocument = (req) => {
       }
     }
   } else {
-    return {
-      document: {
-        season_id,
-        league_id,
-        date,
-        status,
-        buyin,
+    if (req.body.status === 'upcoming') {
+      return {
+        document: {
+          season_id,
+          league_id,
+          date,
+          status,
+          buyin,
+        }
+      }
+    } else {
+      return {
+        error: 'Tournements that are in progress or done must have players'
       }
     }
   }

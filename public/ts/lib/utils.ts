@@ -76,7 +76,7 @@ export const deepClone = (item: {} | []) => {
 export const getPlayers = (tournaments: Tournament[]) => {
     const players: Player[] = [];
     tournaments.forEach((tournament) => {
-        tournament?.players.forEach((item) => {
+        tournament?.players?.forEach((item) => {
             const clone = {...item};
             clone.points = getPoints(clone, tournament);
             clone.wins = clone.ranking === 1 ? 1 : 0;
