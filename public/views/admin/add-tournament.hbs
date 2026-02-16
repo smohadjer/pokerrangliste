@@ -7,7 +7,7 @@
             <form class="form--add-tournament" id="post-tournament" data-redirect="/admin/edit-tournament" method="POST" action="/api/tournament">
                 <input type="hidden" name="league_id" value="{{league_id}}">
                 <fieldset id="tournament-fieldset">
-                    {{> tournamentForm buyin="10" status="upcoming" seasons="seasons" players="players" league_id=league_id }}
+                    {{> tournamentForm buyin="10" status="upcoming" league_id=league_id }}
                 </fieldset>
             </form>
         </section>

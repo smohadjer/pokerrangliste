@@ -78,18 +78,16 @@
 </div>
 
 <!-- showing useful tournament data -->
-<div class="row">
-    <label>Players:</label>
-    <span>{{players.length}}</span>
-</div>
-<div class="row">
-    <label>Total rebuys:</label>
-    <span>{{rebuys}}</span>
-</div>
-<div class="row">
-    <label>Total prize:</label>
-    <span>{{totalPrize}}</span>
-</div>
+{{#ifCond status '!=' 'upcoming'}}
+    <div class="row">
+        <label>Total rebuys:</label>
+        <span>{{rebuys}}</span>
+    </div>
+    <div class="row">
+        <label>Total prize:</label>
+        <span>{{totalPrize}}</span>
+    </div>
+{{/ifCond}}
 
 <table class="table-players">
     <thead>

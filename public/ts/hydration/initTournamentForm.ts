@@ -42,13 +42,14 @@ function UpdateTournamentState(form: HTMLFormElement, status: string) {
     const playerRows = form.querySelectorAll('.row-player');
     const resultsTable = form.querySelector('.table-players');
 
+    // disable input fields if tournament is complete to avoid changing values by mistake
     if (status === 'done') {
         resultsTable?.querySelectorAll('input').forEach(inputField => {
-            inputField.setAttribute('disabled', 'disabled');
+            inputField.readOnly = true;
         })
     } else {
         resultsTable?.querySelectorAll('input').forEach(inputField => {
-            inputField.removeAttribute('disabled');
+            inputField.readOnly = false;
         })
     }
 

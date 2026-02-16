@@ -63,6 +63,11 @@ form {
     button[disabled] {
         display: none !important;
     }
+
+    input:read-only {
+      color: #999;
+      cursor: not-allowed;
+    }
   }
 
   .table-players {

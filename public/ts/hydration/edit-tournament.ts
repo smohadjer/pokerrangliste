@@ -16,7 +16,8 @@ export function initEditTournament(container: HTMLElement, tournament_id: string
         const tournaments = state.tournaments.filter(item => item._id === tournamentId);
         const tournamentData = tournaments[0];
         const rebuys = getRebuys(tournamentData);
-        const totalPrize = tournamentData.buyin * tournamentData.players.length + rebuys *  tournamentData.buyin;
+        const playersCount = tournamentData.players?.length ?? 0;
+        const totalPrize = tournamentData.buyin * playersCount + rebuys *  tournamentData.buyin;
         const data = {...tournamentData, rebuys, totalPrize};
         const htmlElement = await generateHTML('/views/partials/tournamentForm.hbs', data);
         formWrapper.innerHTML = '';
