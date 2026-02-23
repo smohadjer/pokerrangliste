@@ -39,7 +39,7 @@ form {
 
     > *:first-child {
       display: inline-block;
-      min-width: 100px;
+      min-width: 120px;
     }
   }
 
@@ -52,6 +52,25 @@ form {
 
     &.disabled {
       display: none;
+    }
+
+    #player_dropdown {
+        overflow-y: scroll;
+        height: 50vh;
+        min-width: 200px;
+        background: white;
+        border: solid 1px #666;
+        padding: 2px;
+        border-radius: 3px;
+
+      label {
+        display: block;
+        padding: 3px 1px;
+
+        input {
+          margin-right: 5px;
+        }
+      }
     }
   }
 
@@ -87,11 +106,6 @@ form {
     td input {
       width: 50px;
     }
-
-    button.icon--person_remove {
-      cursor: pointer;
-      filter: invert(16%) sepia(70%) saturate(100%) hue-rotate(6deg) brightness(150%) contrast(133%);
-    }
   }
 
   #players div.row {
@@ -103,14 +117,6 @@ form {
       display: flex;
       align-items: center;
       gap: 0.5em;
-
-      button {
-        order: 1;
-
-        &[disabled] {
-          display: none;
-        }
-      }
 
       label {
         order: 2;

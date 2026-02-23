@@ -150,9 +150,9 @@ type SelectData = {
     name: string;
 }
 
-// used to populate players, seasons and tenant select elements
+// used to populate seasons and tenant select elements
 export function populateSelect(select: HTMLSelectElement, data: SelectData[], default_value?: string) {
-    let options = '<option selected value="">Select</option>';
+    let options = '';
     data.forEach(item => {
         const selected = (default_value && default_value === item._id)
             ? 'selected'

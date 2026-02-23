@@ -68,13 +68,11 @@
     </div>
 </fieldset> --}}
 
-<div class="row row--addPlayers row--mt2">
+<!-- since on pending and completed we don't show addPlayers box we set
+disabled class as default on it so on every save it doesn't show  -->
+<div class="row row--addPlayers row--mt2 disabled">
     <label>Add players <span id="players-count"></span></label>
-    <div>
-        <select id="player_dropdown">
-            <option selected disabled option="">Select</option>
-        </select>
-    </div>
+    <div id="player_dropdown"></div>
 </div>
 
 <!-- showing useful tournament data -->

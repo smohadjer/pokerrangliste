@@ -1,5 +1,5 @@
 import { generatePlayerFields } from './generatePlayerFields';
-import { State, Tournament } from '../types';
+import { State, Tournament, PlayerDB, Player } from '../types';
 import { populateSelect } from '../lib/utils';
 
 export async function initTournamentForm(
@@ -13,9 +13,9 @@ export async function initTournamentForm(
         seasonDropdown.value = data.season_id;
     }
 
-    // populate player dropdown
-    const playerDropdown: HTMLSelectElement = formWrapper.querySelector('#player_dropdown')!;
-    populateSelect(playerDropdown, state.players);
+    // populate player selection box
+    const playerDropdown: HTMLElement = formWrapper.querySelector('#player_dropdown')!;
+    populatePlayers(playerDropdown, state.players, data?.players);
 
     await generatePlayerFields(formWrapper, playerDropdown, data);
 
@@ -38,8 +38,6 @@ export async function initTournamentForm(
 
 function UpdateTournamentState(form: HTMLFormElement, status: string) {
     const AddPlayers = form.querySelector('.row--addPlayers');
-    const deletePlayerButtons = form.querySelectorAll('.button-delete');
-    const playerRows = form.querySelectorAll('.row-player');
     const resultsTable = form.querySelector('.table-players');
 
     // disable input fields if tournament is complete to avoid changing values by mistake
@@ -55,16 +53,19 @@ function UpdateTournamentState(form: HTMLFormElement, status: string) {
 
     if (status === 'upcoming') {
         AddPlayers?.classList.remove('disabled');
-        deletePlayerButtons.forEach(btn => {
-            btn.removeAttribute('disabled');
-        });
-        playerRows.forEach(row => row.classList.add('disabled'));
     } else {
         AddPlayers?.classList.add('disabled');
-        deletePlayerButtons.forEach(btn => {
-            btn.setAttribute('disabled', 'disabled');
-        });
-        playerRows.forEach(row => row.classList.remove('disabled'));
     }
+}
+
+function populatePlayers(container: HTMLElement, allPlayers: PlayerDB[], tournamentPlayers: Player[] | undefined) {
+    let markup = '';
+    allPlayers.forEach(item => {
+        // the input fields are only for frontend and shouldn't be submitted so we don't
+        // set a name attribute on them
+        const playerFound = tournamentPlayers?.find(player => player.id === item._id);
+        markup += `<label><input type="checkbox" ${playerFound ? 'checked' : ''} value="${item._id}">${item.name}</label>`
+    });
+    container.innerHTML = markup;
 }
 
