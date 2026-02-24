@@ -55,7 +55,8 @@ function hydrate(
     }
 
     if (view === '/admin/add-tournament') {
-        initAddTournament(container);
+        const league = state.leagues.find(item => item._id === templateData.league_id);
+        initAddTournament(container, league?.default_season_id);
     }
 
     if (view === '/admin/edit-tournament') {

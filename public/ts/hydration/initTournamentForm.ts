@@ -5,12 +5,14 @@ import { populateSelect } from '../lib/utils';
 export async function initTournamentForm(
     formWrapper: HTMLElement,
     state: State,
-    data?: Tournament) {
+    data: Tournament | null,
+    default_season_id?: string) {
     // populate season dropdown
     const seasonDropdown: HTMLSelectElement = formWrapper.querySelector('#season_dropdown')!;
     populateSelect(seasonDropdown, state.seasons);
-    if (data && data.season_id) {
-        seasonDropdown.value = data.season_id;
+    const seasonId = data ? data.season_id : default_season_id;
+    if (seasonId) {
+        seasonDropdown.value = seasonId
     }
 
     // populate player selection box

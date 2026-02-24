@@ -39,7 +39,7 @@ form {
 
     > *:first-child {
       display: inline-block;
-      min-width: 120px;
+      min-width: 100px;
     }
   }
 

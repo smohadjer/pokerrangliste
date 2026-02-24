@@ -17,7 +17,7 @@ const removePlayer = (container: Element, playerId: string) => {
 export async function generatePlayerFields(
     container: HTMLElement,
     playerDropdown: HTMLElement,
-    tournamentData?: Tournament) {
+    tournamentData: Tournament | null) {
     const playersElm = container.querySelector('#players')!;
     const countElm = container.querySelector('#players-count')!;
 
