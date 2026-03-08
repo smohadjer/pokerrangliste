@@ -1,0 +1,27 @@
+{{> adminHeader league_name=league_name tenant_name=tenant_name}}
+<div class="wrapper">
+    <main class="admin">
+        {{> backLink }}
+        <section>
+            <h2>Edit season</h2>
+            <form method="POST" action="/api/seasons">
+                <input type="hidden" name="league_id" value="{{league_id}}">
+                <div class="row">
+                    <label>Seasons</label>
+                    <select id="season_edit_dropdown" name="season_id">
+                        <option selected disabled option="">Select</option>
+                    </select>
+                </div>
+                <div class="row">
+                    <label>New name *</label>
+                    <input required name="name">
+                </div>
+                <div class="submit">
+                    <button>Submit</button>
+                </div>
+                <p class="error"></p>
+            </form>
+        </section>
+    </main>
+</div>
+{{> footer league_id=league_id season_id=season_id view="admin"}}

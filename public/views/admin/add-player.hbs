@@ -1,0 +1,21 @@
+{{> adminHeader league_name=league_name tenant_name=tenant_name}}
+<div class="wrapper">
+    <main class="admin">
+        {{> backLink }}
+        <section>
+            <h2>Add player</h2>
+            <form method="POST" action="/api/players">
+                <input type="hidden" name="league_id" value="{{league_id}}">
+                <div class="row">
+                    <label>Name *</label>
+                    <input required name="name">
+                </div>
+                <div class="submit">
+                    <button>Submit</button>
+                </div>
+                <p class="error"></p>
+            </form>
+        </section>
+    </main>
+</div>
+{{> footer league_id=league_id season_id=season_id view="admin"}}

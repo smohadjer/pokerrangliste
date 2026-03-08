@@ -7,8 +7,10 @@ import addTournament from './addTournament';
 import editTournament from './editTournament';
 import duplicateTournament from './duplicateTournament';
 import deleteTournament from './deleteTournament';
-import addEditSeason from './addEditSeason';
-import addEditPlayer from './addEditPlayer';
+import addSeason from './addSeason';
+import editSeason from './editSeason';
+import addPlayer from './addPlayer';
+import editPlayer from './editPlayer';
 import editLeague from './editLeague';
 import home from './home';
 
@@ -28,7 +30,9 @@ export const controller: Controller = {
     '/admin/edit-tournament': editTournament,
     '/admin/duplicate-tournament': duplicateTournament,
     '/admin/delete-tournament': deleteTournament,
-    '/admin/add-edit-season': addEditSeason,
-    '/admin/add-edit-player': addEditPlayer,
+    '/admin/add-season': addSeason,
+    '/admin/edit-season': editSeason,
+    '/admin/edit-player': editPlayer,
+    '/admin/add-player': addPlayer,
     '/admin/edit-league': editLeague,
 };

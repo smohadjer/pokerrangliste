@@ -3,17 +3,11 @@
     <main class="admin">
         {{> backLink }}
         <section>
-            <h2>Add/Edit season</h2>
+            <h2>Add season</h2>
             <form method="POST" action="/api/seasons">
                 <input type="hidden" name="league_id" value="{{league_id}}">
                 <div class="row">
-                    <label>Seasons</label>
-                    <select id="season_edit_dropdown" name="season_id">
-                        <option selected disabled option="">Select</option>
-                    </select>
-                </div>
-                <div class="row">
-                    <label>New name *</label>
+                    <label>New season *</label>
                     <input required name="name">
                 </div>
                 <div class="submit">

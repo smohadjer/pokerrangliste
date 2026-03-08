@@ -68,12 +68,12 @@ function hydrate(
         initDeleteAndDuplicateTournament(container);
     }
 
-    if (view === '/admin/add-edit-player') {
+    if (view === '/admin/edit-player') {
         const select: HTMLSelectElement = container.querySelector('#player_edit_dropdown')!;
         populateSelect(select, state.players);
     }
 
-    if (view === '/admin/add-edit-season') {
+    if (view === '/admin/edit-season') {
         const select: HTMLSelectElement = container.querySelector('#season_edit_dropdown')!;
         populateSelect(select, state.seasons);
     }
