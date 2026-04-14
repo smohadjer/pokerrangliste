@@ -27,9 +27,9 @@ export default (params: URLSearchParams) => {
         player => player.id === playerId
     ) + 1 : undefined;
     const playerTournaments = playerFound ? tournamentsNormalized.filter(
-        tournament => tournament.players.find(
-            player => player.id === playerId
-        )
+        (tournament) => {
+            return tournament.players && tournament.players.find(player => player.id === playerId);
+        }
     ) : [];
     const results: Profile[] = [];
 
