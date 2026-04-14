@@ -15,7 +15,7 @@ export default async (req, res) => {
     const collection = database.collection('tenants');
 
     if (req.method === 'POST') {
-      const user = await collection.findOne({ username: username });
+      const user = await collection.findOne({ username: username.toLowerCase() });
       if (!user) {
         throw new Error('login failed');
       } else {
@@ -56,11 +56,11 @@ export default async (req, res) => {
         // res.status(302).end();
       }
     }
-  } catch (e) {
-    console.error('wrong credentials!');
+  } catch (error) {
+    console.error(error.message);
 
     // login form is submitted via ajax, redirect happens on client
-    res.status(401).json({ error: 'wrong credentials' });
+    res.status(401).json({ error: error.message });
 
     // login form is submitted without ajax, redirect happens on server
     // res.setHeader('Location', '/login');

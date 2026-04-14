@@ -8,7 +8,7 @@ import { initDeleteAndDuplicateTournament } from '../hydration/delete-duplicate-
 import { initSeasonSelector } from '../hydration/seasonSelector.js';
 import { populateSelect, enablePasswordToggle } from './utils.js';
 import { getHandlebarsTemplate } from './handlebars';
-import { hydrateLeagues } from '../hydration/leagues.js';
+import { hydrateLeaguesDropdown } from '../hydration/leagues.js';
 
 export const render = async (route: Route, options: RenderPageOptions) => {
     const view = route.view;
@@ -84,8 +84,8 @@ function hydrate(
         populateSelect(select, state.seasons, league?.default_season_id);
     }
 
-    if (view === '/home') {
-        hydrateLeagues(container, templateData?.league_id);
+    if (view === '/home' && templateData.hasLeagues) {
+        hydrateLeaguesDropdown(container, templateData?.league_id);
     }
 
     if (view === '/login' || view === '/register') {

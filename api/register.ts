@@ -18,14 +18,14 @@ export default async (req, res) => {
         throw new Error('password is too short');
       }
 
-      const doc = await collection.findOne({ username: username });
+      const doc = await collection.findOne({ username: username.toLowerCase() });
       if (doc) {
         throw new Error(`Username ${username} is already taken`);
       }
 
       const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
       const user = {
-        username: username,
+        username: username.toLowerCase(),
         password: hashedPassword
       }
       const insertResponse = await collection.insertOne(user);

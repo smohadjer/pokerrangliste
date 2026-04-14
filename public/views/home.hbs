@@ -16,14 +16,15 @@
 <div class="wrapper">
     <main class="home">
       <h1>The turnies app tracks poker tournament results so bragging rights are earned, not argued!</h1>
+      {{#if hasLeagues}}
       <section class="league-selector">
         <form class="mg-top loading">
           <label>Select your league</label>
           <select id="leagues_dropdown">
-            <option value="">Select</option>
           </select>
         </form>
       </section>
+      {{/if}}
       {{#if isLoggedIn}}
         <section class="league-selector">
           <h2>Create a new league</h2>

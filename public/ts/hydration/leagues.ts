@@ -2,7 +2,7 @@ import { router } from '../lib/router.js';
 import { store } from '../lib/store.js';
 import { populateSelect } from '../lib/utils.js';
 
-export const hydrateLeagues = async (container: HTMLElement, league_id?: string) => {
+export const hydrateLeaguesDropdown = async (container: HTMLElement, league_id?: string) => {
     const select: HTMLSelectElement = container.querySelector('#leagues_dropdown')!;
     const state = store.getState();
     const leagues = state.leagues;

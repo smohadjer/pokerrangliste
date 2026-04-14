@@ -47,7 +47,11 @@ export default async (req, res) => {
 
       const name = req.body.name;
       const playerId = req.body.player_id;
-      const doc = await collection.findOne({ league_id, name });
+      // Using a case-insensitive collation to detect a name with different case
+      const doc = await collection.findOne(
+        { league_id, name },
+        { collation: { locale: "en", strength: 2 } }
+      );
 
       if (doc) {
         throw new Error(`Name ${name} is already taken`);
