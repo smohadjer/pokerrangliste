@@ -145,6 +145,10 @@ h3 {
     td.name {
         text-transform: capitalize;
     }
+
+    td.name .game-status {
+        white-space: nowrap;
+    }
 }
 
 ul {
@@ -272,5 +276,4 @@ ul {
     height: 0.75rem;
     opacity: 1;
 }
-
 

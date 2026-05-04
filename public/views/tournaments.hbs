@@ -18,26 +18,47 @@
 <div class="wrapper">
   <table class="table-results">
     <tr>
-      <th>#</th>
-      <th class="date">Date</th>
+      <th class="date">Games ({{tournaments.length}})</th>
       <th>Players</th>
-      <th>Winner</th>
+      <th>1st Pl.</th>
+      <th>2nd Pl.</th>
     </tr>
     {{#each tournaments}}
       <tr>
-        <td>
-           {{reverseIndex ../tournaments.length @index}}</td>
+        <td class="name">
+          <span class="game-status">
+            <a data-animation="slideInRTL" href="/tournament?league_id={{league_id}}&season_id={{../season_id}}&tournament_id={{this._id}}">{{this.date}}</a>
+            <span class="status {{#if this.status}}{{this.status}}{{/if}}"></span>
+          </span>
         </td>
-        <td class="name"><a data-animation="slideInRTL" href="/tournament?league_id={{league_id}}&season_id={{../season_id}}&tournament_id={{this._id}}">{{this.date}}</a>
-        <span class="status {{#if this.status}}{{this.status}}{{/if}}"></span></td>
         <td>{{this.players.length}}</td>
         <td>
           {{#ifCond this.status '==' 'pending'}} ? {{/ifCond}}
           {{#ifCond this.status '==' 'upcoming'}} ? {{/ifCond}}
-          {{#ifCond this.status '==' 'done'}}  {{this.firstPlace}} {{/ifCond}}
+          {{#ifCond this.status '==' 'done'}}
+            <a data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.firstPlaceId}}">{{this.firstPlace}}</a>
+          {{/ifCond}}
 
           {{!-- for backward compatibility --}}
-          {{#unless this.status }}  {{this.firstPlace}} {{/unless}}
+          {{#unless this.status }}
+            <a data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.firstPlaceId}}">{{this.firstPlace}}</a>
+          {{/unless}}
+         </td>
+        <td>
+          {{#ifCond this.status '==' 'pending'}} ? {{/ifCond}}
+          {{#ifCond this.status '==' 'upcoming'}} ? {{/ifCond}}
+          {{#ifCond this.status '==' 'done'}}
+            {{#if this.secondPlaceId}}
+              <a data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.secondPlaceId}}">{{this.secondPlace}}</a>
+            {{/if}}
+          {{/ifCond}}
+
+          {{!-- for backward compatibility --}}
+          {{#unless this.status }}
+            {{#if this.secondPlaceId}}
+              <a data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.secondPlaceId}}">{{this.secondPlace}}</a>
+            {{/if}}
+          {{/unless}}
          </td>
       </tr>
     {{/each}}
