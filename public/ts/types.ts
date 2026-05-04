@@ -44,7 +44,9 @@ export interface Tournament {
   bounties?: bounty[];
   hasBounty?: string;
   firstPlace?: string;
+  firstPlaceId?: string;
   secondPlace?: string;
+  secondPlaceId?: string;
   status?: 'upcoming' | 'pending' | 'done';
 }
 
