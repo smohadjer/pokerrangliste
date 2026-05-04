@@ -59,6 +59,14 @@ h3 {
     }
 }
 
+.profile-name {
+    margin: 1em 1em 0.25em;
+}
+
+.profile-name + .details {
+    margin-top: 0.25em;
+}
+
 .first-place:after,
 .first-place.before:before {
     content: '🥇';

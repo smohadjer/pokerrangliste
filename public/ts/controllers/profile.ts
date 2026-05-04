@@ -32,6 +32,10 @@ export default (params: URLSearchParams) => {
         }
     ) : [];
     const results: Profile[] = [];
+    const seasonName = getSeasonName(season_id, state.seasons);
+    const rankingLabel = !season_id || season_id === allTimeSeason._id
+        ? 'All-time ranking'
+        : `${seasonName} ranking`;
 
     playerTournaments.forEach((item: Tournament) => {
         const index = item.players.findIndex(
@@ -54,8 +58,9 @@ export default (params: URLSearchParams) => {
         gamesCount: playerTournaments.length,
         rebuys: player?.rebuys,
         ranking: ranking,
+        rankingLabel: rankingLabel,
         results: results,
-        seasonName: getSeasonName(season_id, state.seasons),
+        seasonName: seasonName,
         seasons: [...state.seasons, allTimeSeason],
         league_id: params.get('league_id')
     };

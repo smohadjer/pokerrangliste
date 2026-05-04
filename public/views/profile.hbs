@@ -2,15 +2,11 @@
 <header>
   <div class="flex">
     {{#if league_name}}
-      <h3><span class="label">League</span>{{league_name}}</h3>
+      <h3>{{league_name}}</h3>
     {{else}}
       <h3>turnies.de</h3>
     {{/if}}
-    <h2
-      {{#ifEquals ranking 1}}class="first-place"{{/ifEquals}}
-      {{#ifEquals ranking 2}}class="second-place"{{/ifEquals}}
-      {{#ifEquals ranking 3}}class="third-place"{{/ifEquals}}>{{player_name}}
-    </h2>
+    <h2>Profile</h2>
     {{#if seasons}}
       <div>
         {{!-- <span class="label">Season</span> --}}
@@ -20,9 +16,14 @@
   </div>
 </header>
 <div class="wrapper">
+  <h2 class="profile-name
+    {{#ifEquals ranking 1}}first-place{{/ifEquals}}
+    {{#ifEquals ranking 2}}second-place{{/ifEquals}}
+    {{#ifEquals ranking 3}}third-place{{/ifEquals}}">{{player_name}}
+  </h2>
   {{#if results}}
     <table class="details">
-      <tr><td>{{seasonName}} ranking:</td><td>{{ranking}} </td></tr>
+      <tr><td>{{rankingLabel}}:</td><td>{{ranking}} </td></tr>
       <tr><td>Total points:</td><td>{{points}}</td></tr>
       <tr><td>Total rebuys:</td><td>{{rebuys}}</td></tr>
       <tr><td>Total games:</td><td>{{gamesCount}}</td></tr>
@@ -53,4 +54,3 @@
   {{/if}}
 </div>
 {{> footer league_id=league_id season_id=season_id view="profile"}}
-
