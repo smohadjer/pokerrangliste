@@ -147,6 +147,7 @@ h3 {
     }
 
     td.name .game-status {
+        padding: 0;
         white-space: nowrap;
     }
 }
@@ -276,4 +277,3 @@ ul {
     height: 0.75rem;
     opacity: 1;
 }
-
