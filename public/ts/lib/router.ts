@@ -1,13 +1,13 @@
 import { State, Route, RenderPageOptions } from '../types';
 import { store } from './store';
 import { render } from './render';
-import { setRankings, fetchData } from './utils';
+import { setRankings, fetchData, allTimeSeason } from './utils';
 
 export async function router(
     path: string,
     urlParams: string,
     options: RenderPageOptions) {
-    const state: State = store.getState();
+    let state: State = store.getState();
     const params = new URLSearchParams(urlParams);
     const requiresAuth = path.includes('/admin');
     const isLoggedIn = state.tenant.id ? true : false;
@@ -41,21 +41,24 @@ export async function router(
             ...data,
             dataIsStale: false
         });
+        state = store.getState();
+    }
 
-        // if a season is not provided in URL check whether a season is set as
-        // default in database
-        if (!params.get('season_id')) {
-            const league = state.leagues.find(item => item?._id === league_id);
-            const defaultSeasonId = league?.default_season_id;
-            if (defaultSeasonId) {
-                params.set('season_id', defaultSeasonId);
-            } else {
-                params.set('season_id', 'all_time');
-            }
+    // If a season is not provided in URL check whether a season is set as
+    // default in database.
+    if (!params.get('season_id')) {
+        const league = state.leagues.find(item => item?._id === league_id);
+        const defaultSeasonId = league?.default_season_id;
+        if (defaultSeasonId) {
+            params.set('season_id', defaultSeasonId);
+        } else {
+            params.set('season_id', allTimeSeason._id);
         }
+    }
 
-        // cache season rankings in state for better performance
-        const season_id = params.get('season_id')!;
+    // Cache season rankings in state for better performance.
+    const season_id = params.get('season_id')!;
+    if (!state.rankings[season_id]) {
         setRankings(season_id);
     }
 
