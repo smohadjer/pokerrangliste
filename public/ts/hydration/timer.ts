@@ -1,0 +1,513 @@
+import { router } from '../lib/router';
+
+const fallbackDefaultDuration = 15 * 60;
+const fallbackBlinds = [5, 10, 20, 40, 80, 150, 300];
+const storageKeyPrefix = 'timerState';
+const roundChangedEventName = 'timer:round-change';
+
+let defaultDuration = fallbackDefaultDuration;
+let blinds = fallbackBlinds;
+let duration = defaultDuration;
+let remaining = defaultDuration;
+let level = 1;
+let endTime = 0;
+let timerId: number | undefined;
+let roundDisplay: HTMLElement | null = null;
+let blindsDisplay: HTMLElement | null = null;
+let prevBlindsDisplay: HTMLElement | null = null;
+let nextBlindsDisplay: HTMLElement | null = null;
+let display: HTMLElement | null = null;
+let startButton: HTMLButtonElement | null = null;
+let startIcon: HTMLImageElement | null = null;
+let prevLevelButton: HTMLButtonElement | null = null;
+let nextLevelButton: HTMLButtonElement | null = null;
+let timerPageElement: HTMLElement | null = null;
+let timerSelector: HTMLSelectElement | null = null;
+let lastSavedRunningState = '';
+let storageKey = storageKeyPrefix;
+let warningSpeechLevel = 0;
+let preferredWarningVoice: SpeechSynthesisVoice | null = null;
+
+export function initTimer(container: HTMLElement) {
+    setDefaults(container);
+    restoreState();
+    loadPreferredWarningVoice();
+
+    roundDisplay = container.querySelector<HTMLElement>('[data-timer-round]');
+    blindsDisplay = container.querySelector<HTMLElement>('[data-timer-blinds]');
+    prevBlindsDisplay = container.querySelector<HTMLElement>('[data-timer-prev-blinds]');
+    nextBlindsDisplay = container.querySelector<HTMLElement>('[data-timer-next-blinds]');
+    display = container.querySelector<HTMLElement>('[data-timer-display]');
+    startButton = container.querySelector<HTMLButtonElement>('[data-timer-start]');
+    startIcon = container.querySelector<HTMLImageElement>('[data-timer-start-icon]');
+    prevLevelButton = container.querySelector<HTMLButtonElement>('[data-timer-prev-level]');
+    nextLevelButton = container.querySelector<HTMLButtonElement>('[data-timer-next-level]');
+    timerSelector = container.querySelector<HTMLSelectElement>('#select-timer');
+    const resetRoundButton = container.querySelector<HTMLButtonElement>('[data-timer-reset-round]');
+    const resetAllButton = container.querySelector<HTMLButtonElement>('[data-timer-reset-all]');
+
+    if (!roundDisplay || !blindsDisplay || !prevBlindsDisplay || !nextBlindsDisplay || !display || !startButton || !startIcon || !prevLevelButton || !nextLevelButton || !resetRoundButton || !resetAllButton) {
+        return;
+    }
+
+    startButton.addEventListener('click', () => {
+        if (timerId) {
+            stop();
+            return;
+        }
+
+        primeSpeech();
+
+        if (remaining === 0) {
+            remaining = duration;
+        }
+
+        endTime = Date.now() + (remaining * 1000);
+        setRunningState();
+        timerId = window.setInterval(tick, 250);
+        tick();
+    });
+
+    prevLevelButton.addEventListener('click', prevLevel);
+    nextLevelButton.addEventListener('click', () => nextLevel());
+    resetRoundButton.addEventListener('click', resetRound);
+    resetAllButton.addEventListener('click', resetAll);
+    timerSelector?.addEventListener('change', changeTimer);
+    timerPageElement?.addEventListener(roundChangedEventName, () => {
+        speakMessage('Blinds change', { interrupt: false });
+    });
+
+    updateDisplay();
+    if (timerId) {
+        setRunningState();
+    }
+}
+
+function changeTimer() {
+    if (!timerSelector || !timerPageElement?.dataset.timerLeagueId) {
+        return;
+    }
+
+    resetAll();
+    window.localStorage.removeItem(getStorageKey(timerPageElement.dataset.timerLeagueId));
+
+    const urlParams = new URLSearchParams(window.location.search);
+    urlParams.set('league_id', timerPageElement.dataset.timerLeagueId);
+    urlParams.set('timer_id', timerSelector.value);
+    router(window.location.pathname, urlParams.toString(), { type: 'reload' });
+}
+
+function updateDisplay() {
+    if (timerId) {
+        remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+    }
+
+    if (display) {
+        display.textContent = formatTime(remaining);
+        display.classList.toggle('timer-display--warning', remaining <= 60);
+        display.classList.toggle('timer-display--paused', !timerId);
+    }
+
+    if (roundDisplay) {
+        roundDisplay.textContent = `Round ${level}`;
+    }
+
+    if (blindsDisplay) {
+        blindsDisplay.textContent = getBlindValuesLabel();
+    }
+
+    if (prevBlindsDisplay) {
+        prevBlindsDisplay.textContent = level > 1 ? getBlindValuesLabel(level - 1) : '';
+    }
+
+    if (nextBlindsDisplay) {
+        nextBlindsDisplay.textContent = hasNextLevel() ? getBlindValuesLabel(level + 1) : '';
+    }
+
+    if (prevLevelButton) {
+        prevLevelButton.disabled = level === 1;
+    }
+
+    if (nextLevelButton) {
+        nextLevelButton.disabled = !hasNextLevel();
+    }
+}
+
+function stop() {
+    if (timerId) {
+        window.clearInterval(timerId);
+        timerId = undefined;
+    }
+
+    setPausedState();
+    updateDisplay();
+    saveState();
+}
+
+function tick() {
+    const previousRemaining = remaining;
+    remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+    speakWarningIfNeeded(previousRemaining);
+
+    if (remaining === 0) {
+        nextLevel({ resetTimer: true });
+        return;
+    }
+
+    updateDisplay();
+    saveRunningState();
+}
+
+function nextLevel(options: { resetTimer?: boolean } = {}) {
+    const wasRunning = Boolean(timerId);
+
+    if (!hasNextLevel()) {
+        if (options.resetTimer) {
+            remaining = duration;
+            warningSpeechLevel = 0;
+
+            if (wasRunning) {
+                endTime = Date.now() + (duration * 1000);
+                setRunningState();
+            }
+        }
+
+        updateDisplay();
+        saveState();
+        return;
+    }
+
+    const previousLevel = level;
+    level++;
+
+    if (options.resetTimer) {
+        remaining = duration;
+        warningSpeechLevel = 0;
+    }
+
+    if (wasRunning && options.resetTimer) {
+        endTime = Date.now() + (duration * 1000);
+        setRunningState();
+    }
+
+    updateDisplay();
+    dispatchRoundChanged(previousLevel);
+    saveState();
+}
+
+function prevLevel() {
+    if (level === 1) {
+        return;
+    }
+
+    const wasRunning = Boolean(timerId);
+    const previousLevel = level;
+    level--;
+    warningSpeechLevel = 0;
+
+    if (wasRunning) {
+        setRunningState();
+    }
+
+    updateDisplay();
+    dispatchRoundChanged(previousLevel);
+    saveState();
+}
+
+function resetRound() {
+    stop();
+    remaining = duration;
+    warningSpeechLevel = 0;
+    updateDisplay();
+    saveState();
+}
+
+function resetAll() {
+    stop();
+    duration = defaultDuration;
+    remaining = duration;
+    level = 1;
+    warningSpeechLevel = 0;
+    updateDisplay();
+    saveState();
+}
+
+function setRunningState() {
+    if (startIcon) {
+        startIcon.src = '/images/pause.svg';
+    }
+
+    if (startButton) {
+        startButton.setAttribute('aria-label', 'Pause timer');
+    }
+}
+
+function setPausedState() {
+    if (startIcon) {
+        startIcon.src = '/images/play.svg';
+    }
+
+    if (startButton) {
+        startButton.setAttribute('aria-label', 'Start timer');
+    }
+}
+
+function formatTime(totalSeconds: number) {
+    const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+    const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+    return `${minutes}:${seconds}`;
+}
+
+function getBlindValuesLabel(round = level) {
+    const smallBlind = getSmallBlind(round);
+    const bigBlind = smallBlind * 2;
+    return `${smallBlind} / ${bigBlind}`;
+}
+
+function getSmallBlind(round = level) {
+    return blinds[round - 1] ?? blinds[blinds.length - 1] ?? fallbackBlinds[0];
+}
+
+function speakWarningIfNeeded(previousRemaining: number) {
+    if (
+        remaining !== 60
+        || previousRemaining < 60
+        || warningSpeechLevel === level
+    ) {
+        return;
+    }
+
+    warningSpeechLevel = level;
+    speakMessage('One minute remaining', { interrupt: true });
+    saveState();
+}
+
+function speakMessage(message: string, options: { interrupt?: boolean } = {}) {
+    if (!window.speechSynthesis) {
+        return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(message);
+    const voice = preferredWarningVoice ?? getPreferredWarningVoice();
+
+    if (voice) {
+        utterance.voice = voice;
+        utterance.lang = voice.lang;
+    }
+
+    if (options.interrupt && (window.speechSynthesis.speaking || window.speechSynthesis.pending)) {
+        window.speechSynthesis.cancel();
+        window.setTimeout(() => window.speechSynthesis.speak(utterance), 0);
+        return;
+    }
+
+    window.speechSynthesis.speak(utterance);
+}
+
+function primeSpeech() {
+    if (!window.speechSynthesis) {
+        return;
+    }
+
+    const utterance = new SpeechSynthesisUtterance(' ');
+    const voice = preferredWarningVoice ?? getPreferredWarningVoice();
+
+    utterance.volume = 0;
+
+    if (voice) {
+        utterance.voice = voice;
+        utterance.lang = voice.lang;
+    }
+
+    window.speechSynthesis.speak(utterance);
+}
+
+function loadPreferredWarningVoice() {
+    if (!window.speechSynthesis) {
+        return;
+    }
+
+    preferredWarningVoice = getPreferredWarningVoice();
+    window.speechSynthesis.onvoiceschanged = () => {
+        preferredWarningVoice = getPreferredWarningVoice();
+    };
+}
+
+function getPreferredWarningVoice() {
+    const voices = window.speechSynthesis.getVoices();
+    const femaleVoiceNames = [
+        'samantha',
+        'victoria',
+        'karen',
+        'moira',
+        'tessa',
+        'fiona',
+        'zira',
+        'susan',
+        'google uk english female',
+        'microsoft aria',
+        'microsoft jenny'
+    ];
+
+    return voices.find(voice => (
+        femaleVoiceNames.some(name => voice.name.toLowerCase().includes(name))
+    )) ?? voices.find(voice => (
+        voice.lang.toLowerCase().startsWith('en')
+        && voice.name.toLowerCase().includes('female')
+    )) ?? null;
+}
+
+function hasNextLevel() {
+    return level < getMaxLevel();
+}
+
+function getMaxLevel() {
+    return Math.max(1, blinds.length);
+}
+
+function dispatchRoundChanged(previousLevel: number) {
+    if (previousLevel === level) {
+        return;
+    }
+
+    timerPageElement?.dispatchEvent(new CustomEvent(roundChangedEventName, {
+        detail: {
+            previousRound: previousLevel,
+            round: level
+        }
+    }));
+}
+
+function saveState() {
+    lastSavedRunningState = getRunningStateKey();
+
+    const state = {
+        duration,
+        remaining,
+        level,
+        endTime,
+        isRunning: Boolean(timerId),
+        warningSpeechLevel,
+        configKey: getConfigKey()
+    };
+
+    window.localStorage.setItem(storageKey, JSON.stringify(state));
+}
+
+function saveRunningState() {
+    const runningState = getRunningStateKey();
+    if (runningState === lastSavedRunningState) {
+        return;
+    }
+
+    saveState();
+}
+
+function getRunningStateKey() {
+    return `${level}:${remaining}:${endTime}:${Boolean(timerId)}`;
+}
+
+function restoreState() {
+    const rawState = window.localStorage.getItem(storageKey);
+    if (!rawState) {
+        return;
+    }
+
+    try {
+        const state = JSON.parse(rawState);
+        if (state.configKey !== getConfigKey()) {
+            window.localStorage.removeItem(storageKey);
+            duration = defaultDuration;
+            remaining = defaultDuration;
+            level = 1;
+            endTime = 0;
+            return;
+        }
+
+        duration = sanitizeNumber(state.duration, defaultDuration);
+        level = sanitizeLevel(state.level);
+        warningSpeechLevel = sanitizeNumber(state.warningSpeechLevel, 0);
+
+        if (state.isRunning && typeof state.endTime === 'number') {
+            endTime = state.endTime;
+            remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+
+            if (remaining === 0) {
+                catchUpRunningTimer();
+            }
+
+            if (!timerId) {
+                timerId = window.setInterval(tick, 250);
+            }
+
+            return;
+        }
+
+        remaining = sanitizeNumber(state.remaining, duration);
+    } catch {
+        duration = defaultDuration;
+        remaining = defaultDuration;
+        level = 1;
+        endTime = 0;
+        window.localStorage.removeItem(storageKey);
+    }
+}
+
+function sanitizeNumber(value: unknown, fallback: number) {
+    return typeof value === 'number' && Number.isFinite(value) ? value : fallback;
+}
+
+function sanitizeLevel(value: unknown) {
+    return Math.min(getMaxLevel(), Math.max(1, sanitizeNumber(value, 1)));
+}
+
+function catchUpRunningTimer() {
+    const durationMs = duration * 1000;
+    const elapsedSinceRoundEnd = Date.now() - endTime;
+    const completedRounds = Math.floor(elapsedSinceRoundEnd / durationMs) + 1;
+    const elapsedInCurrentRound = elapsedSinceRoundEnd % durationMs;
+
+    level = Math.min(getMaxLevel(), level + completedRounds);
+    remaining = Math.ceil((durationMs - elapsedInCurrentRound) / 1000);
+    endTime = Date.now() + (remaining * 1000);
+}
+
+function setDefaults(container: HTMLElement) {
+    timerPageElement = container.querySelector<HTMLElement>('[data-timer-page]');
+    storageKey = getStorageKey(timerPageElement?.dataset.timerLeagueId);
+    defaultDuration = getPositiveNumber(
+        timerPageElement?.dataset.timerDefaultDuration,
+        fallbackDefaultDuration);
+    blinds = getBlinds(timerPageElement?.dataset.timerSmallBlinds);
+    if (!window.localStorage.getItem(storageKey)) {
+        duration = defaultDuration;
+        remaining = defaultDuration;
+        level = 1;
+    }
+}
+
+function getStorageKey(leagueId?: string) {
+    return leagueId
+        ? `${storageKeyPrefix}:${leagueId}`
+        : storageKeyPrefix;
+}
+
+function getPositiveNumber(value: string | undefined, fallback: number) {
+    const parsedValue = Number(value);
+    return Number.isFinite(parsedValue) && parsedValue > 0
+        ? parsedValue
+        : fallback;
+}
+
+function getConfigKey() {
+    return `${defaultDuration}:${blinds.join(',')}`;
+}
+
+function getBlinds(value: string | undefined) {
+    const parsedBlinds = String(value || '')
+        .split(',')
+        .map(item => Number(item.trim()))
+        .filter(item => Number.isFinite(item) && item > 0);
+
+    return parsedBlinds.length > 0 ? parsedBlinds : fallbackBlinds;
+}

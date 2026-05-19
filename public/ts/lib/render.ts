@@ -6,9 +6,11 @@ import { initAddTournament } from '../hydration/add-tournament.js';
 import { initEditTournament } from '../hydration/edit-tournament.js';
 import { initDeleteAndDuplicateTournament } from '../hydration/delete-duplicate-tournament.js';
 import { initSeasonSelector } from '../hydration/seasonSelector.js';
+import { initEditTimer } from '../hydration/editTimer.js';
 import { populateSelect, enablePasswordToggle } from './utils.js';
 import { getHandlebarsTemplate } from './handlebars';
 import { hydrateLeaguesDropdown } from '../hydration/leagues.js';
+import { initTimer } from '../hydration/timer.js';
 
 export const render = async (route: Route, options: RenderPageOptions) => {
     const view = route.view;
@@ -63,6 +65,10 @@ function hydrate(
         initEditTournament(container, templateData.tournament_id);
     }
 
+    if (view === '/admin/edit-timer') {
+        initEditTimer(container);
+    }
+
     if (view === '/admin/duplicate-tournament'
         || view === '/admin/delete-tournament') {
         initDeleteAndDuplicateTournament(container);
@@ -79,9 +85,16 @@ function hydrate(
     }
 
     if (view === '/admin/edit-league') {
-        const select: HTMLSelectElement = container.querySelector('#default_season_dropdown')!;
+        const seasonSelect: HTMLSelectElement = container.querySelector('#default_season_dropdown')!;
+        const timerSelect: HTMLSelectElement = container.querySelector('#default_timer_dropdown')!;
         const league = state.leagues.find(item => item._id === templateData.league_id);
-        populateSelect(select, state.seasons, league?.default_season_id);
+        populateSelect(seasonSelect, state.seasons, league?.default_season_id);
+        populateSelect(timerSelect, state.timers
+            .map(timer => ({
+                _id: getObjectId(timer._id),
+                name: timer.name ?? 'Timer'
+            }))
+            .filter(timer => timer._id), league?.default_timer_id);
     }
 
     if (view === '/home' && templateData.hasLeagues) {
@@ -92,9 +105,24 @@ function hydrate(
         enablePasswordToggle(container);
     }
 
+    if (view === '/timer') {
+        initTimer(container);
+    }
+
     const seasonSelector: HTMLSelectElement | null =  document.querySelector('header #season-selector');
     if (seasonSelector) {
         initSeasonSelector(seasonSelector);
     }
 }
 
+function getObjectId(id: unknown) {
+    if (!id) {
+        return '';
+    }
+
+    if (typeof id === 'object' && '$oid' in id) {
+        return String(id.$oid);
+    }
+
+    return String(id);
+}

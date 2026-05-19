@@ -8,6 +8,7 @@ class Store {
         tournaments: [],
         players: [],
         seasons: [],
+        timers: [],
         tenant: {
             name: undefined,
             id: undefined

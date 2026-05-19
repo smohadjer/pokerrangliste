@@ -5,6 +5,7 @@
         <li><a class="icon icon--block icon--home {{#ifEquals view 'home'}}active{{/ifEquals}}" href="/home?league_id={{league_id}}&season_id={{season_id}}">Home</a></li>
         <li><a class="icon icon--block icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?league_id={{league_id}}&season_id={{season_id}}">Games</a></li>
         <li><a class="icon icon--block icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?league_id={{league_id}}&season_id={{season_id}}">Ranking</a></li>
+        <li><a class="icon icon--block icon--timer {{#ifEquals view 'timer'}}active{{/ifEquals}}" href="/timer?league_id={{league_id}}&season_id={{season_id}}">Timer</a></li>
         {{#if isLoggedIn}}
           <li><a class="icon icon--block icon--admin {{#ifEquals view 'admin'}}active{{/ifEquals}}" href="/admin/home?league_id={{league_id}}&season_id={{season_id}}">Admin</a></li>
         {{/if}}
@@ -12,6 +13,7 @@
         <li><a class="icon icon--block icon--home {{#ifEquals view 'home'}}active{{/ifEquals}}" href="/home?league_id={{league_id}}">Home</a></li>
         <li><a class="icon icon--block icon--games {{#ifEquals view 'tournaments'}}active{{/ifEquals}}" href="/tournaments?league_id={{league_id}}">Games</a></li>
         <li><a class="icon icon--block icon--ranking {{#ifEquals view 'ranking'}}active{{/ifEquals}}" href="/ranking?league_id={{league_id}}">Ranking</a></li>
+        <li><a class="icon icon--block icon--timer {{#ifEquals view 'timer'}}active{{/ifEquals}}" href="/timer?league_id={{league_id}}">Timer</a></li>
         {{#if isLoggedIn}}
           <li><a class="icon icon--block icon--admin {{#ifEquals view 'admin'}}active{{/ifEquals}}" href="/admin/home?league_id={{league_id}}">Admin</a></li>
         {{/if}}
@@ -19,5 +21,4 @@
     </ul>
   </nav>
 </footer>
-
 

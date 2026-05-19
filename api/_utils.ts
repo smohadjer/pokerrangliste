@@ -254,6 +254,7 @@ export const addNewLeague = async (
   tenant_id: string) => {
   const response = await collection.insertOne({name, tenant_id});
   console.log(response);
+  return response;
 };
 
 export const editPlayerName = async (
@@ -285,11 +286,19 @@ export const editLeagueName = async (
   collection: Collection,
   league_id: string,
   default_season_id?: string,
+  default_timer_id?: string,
 ) => {
   const query = {_id: ObjectId.createFromHexString(league_id)};
+  const update = default_timer_id
+    ? {
+        $set: {name, default_season_id, default_timer_id}
+      }
+    : {
+        $set: {name, default_season_id},
+        $unset: {default_timer_id: ''}
+      };
   const response = await collection.updateOne(query, {
-      $set: {name, default_season_id}
-  });
+      ...update
+    });
   console.log(response);
 };
-

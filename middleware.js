@@ -8,7 +8,8 @@ export const config = {
   matcher: [
     '/api/tournament',
     '/api/seasons',
-    '/api/players'
+    '/api/players',
+    '/api/timers'
   ]
 };
 

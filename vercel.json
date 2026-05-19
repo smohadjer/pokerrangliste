@@ -32,6 +32,10 @@
             "destination": "/"
         },
         {
+            "source": "/timer",
+            "destination": "/"
+        },
+        {
             "source": "/tournaments",
             "destination": "/"
         },

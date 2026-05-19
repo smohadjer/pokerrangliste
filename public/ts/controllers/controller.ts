@@ -12,7 +12,9 @@ import editSeason from './editSeason';
 import addPlayer from './addPlayer';
 import editPlayer from './editPlayer';
 import editLeague from './editLeague';
+import editTimer from './editTimer';
 import home from './home';
+import timer from './timer';
 
 type Controller = {
     [key:string]: Function;
@@ -25,6 +27,7 @@ export const controller: Controller = {
     '/tournament': tournament,
     '/tournaments': tournaments,
     '/ranking': ranking,
+    '/timer': timer,
     '/admin/home': dashboard,
     '/admin/add-tournament': addTournament,
     '/admin/edit-tournament': editTournament,
@@ -35,4 +38,5 @@ export const controller: Controller = {
     '/admin/edit-player': editPlayer,
     '/admin/add-player': addPlayer,
     '/admin/edit-league': editLeague,
+    '/admin/edit-timer': editTimer,
 };

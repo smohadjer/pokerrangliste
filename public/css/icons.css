@@ -31,6 +31,10 @@ a.icon:hover {
     background-image: url(../images/ranking.svg);
 }
 
+.icon--timer {
+    background-image: url(../images/timer.svg);
+}
+
 .icon--home {
     background-image: url(../images/home.svg);
 }
@@ -109,4 +113,3 @@ button.icon {
     background-size: 32px;
     padding-left: 38px;
 }
-

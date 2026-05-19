@@ -1,0 +1,19 @@
+<div class="row">
+    <label>Timer name:</label>
+    <input required name="name" value="{{name}}">
+</div>
+<div class="row row--timer-duration">
+    <label>Round duration:</label>
+    <input required min="0" type="number" name="duration_minutes" value="{{durationMinutes}}" data-timer-duration-minutes>
+    <span>min</span>
+    <input required min="0" max="59" type="number" name="duration_seconds_remainder" value="{{durationSecondsRemainder}}" data-timer-duration-seconds-remainder>
+    <span>sec</span>
+    <input type="hidden" name="duration" value="{{duration}}" data-timer-duration-seconds>
+</div>
+<div class="row">
+    <label>Small blinds:</label>
+    <input required name="small_blinds" value="{{small_blinds}}">
+</div>
+<div class="submit">
+    <button>Submit</button>
+</div>

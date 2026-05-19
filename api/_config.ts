@@ -2,20 +2,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-let database_name = '';
-let database_uri = '';
-
+export const database_name = 'turnies';
+export const database_uri = process.env.db_uri;
 export const jwtSecret = process.env.jwtSecret;
 export const environment = process.env.environment;
 
-if (environment === 'local') {
-    database_uri = process.env.db_uri_local;
-    database_name = 'pokerrangliste';
-}
-
-if (environment === 'prod') {
-    database_uri = process.env.db_uri_remote;
-    database_name = 'turnies';
-}
-
-export { database_uri, database_name };

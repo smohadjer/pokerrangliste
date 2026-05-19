@@ -31,6 +31,15 @@ export type League = {
   name: string;
   tenant_id: string;
   default_season_id?: string;
+  default_timer_id?: string;
+}
+
+export type TimerSettings = {
+  readonly _id?: string;
+  tenant_id?: string;
+  name?: string;
+  duration: number;
+  small_blinds: number[];
 }
 
 export interface Tournament {
@@ -56,6 +65,7 @@ export type State = {
   tournaments: Tournament[];
   seasons: Season[];
   players: PlayerDB[];
+  timers: TimerSettings[];
   tenant: Tenant;
   rankings: Rankings;
 }

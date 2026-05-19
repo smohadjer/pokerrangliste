@@ -1,0 +1,61 @@
+<header>
+  <div class="flex">
+    {{#if league_name}}
+      <h3>{{league_name}}</h3>
+    {{else}}
+      <h3>turnies.de</h3>
+    {{/if}}
+    <h2>Timer</h2>
+    {{#if timers}}
+      <span id="timer-selector">
+        <select id="select-timer">
+          {{#each timers}}
+            <option
+              {{#if this.selected}}selected="selected"{{/if}}
+              value="{{this.id}}">{{this.name}}
+            </option>
+          {{/each}}
+        </select>
+      </span>
+    {{else}}
+      <h3></h3>
+    {{/if}}
+  </div>
+</header>
+
+<div class="wrapper">
+  <main
+    class="timer-page"
+    data-timer-page
+    data-timer-league-id="{{league_id}}"
+    data-timer-default-duration="{{timer.duration}}"
+    data-timer-small-blinds="{{timer.smallBlinds}}">
+    <section class="timer-panel">
+      <div class="timer-level">
+        <div class="timer-round" data-timer-round>Round {{timer.initialRound}}</div>
+        <div class="timer-blinds" data-timer-blinds>{{timer.initialBlinds}}</div>
+      </div>
+      <div class="timer-display" data-timer-display>{{timer.initialTime}}</div>
+    </section>
+
+    <section class="timer-controls">
+      <div class="timer-actions">
+        <div class="timer-round-control">
+          <div class="timer-round-control__blinds" data-timer-prev-blinds></div>
+          <button type="button" data-timer-prev-level disabled>Prev Round</button>
+        </div>
+        <button class="timer-icon-button timer-icon-button--primary" type="button" aria-label="Start timer" data-timer-start>
+          <img src="/images/play.svg" alt="" data-timer-start-icon>
+        </button>
+        <div class="timer-round-control">
+          <div class="timer-round-control__blinds" data-timer-next-blinds></div>
+          <button type="button" data-timer-next-level>Next Round</button>
+        </div>
+      </div>
+      <button type="button" data-timer-reset-round>Reset Round</button>
+      <button type="button" data-timer-reset-all>Reset All</button>
+    </section>
+  </main>
+</div>
+
+{{> footer league_id=league_id season_id=season_id view="timer"}}

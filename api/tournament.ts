@@ -19,15 +19,22 @@ export default async (req, res) => {
     const tournamentsCol = database.collection('tournaments');
     const seasonsCol = database.collection('seasons');
     const playersCol = database.collection('players');
+    const timersCol = database.collection('timers');
+    const leaguesCol = database.collection('leagues');
 
     if (req.method === 'GET') {
       const league_id = req.query.league_id;
+      const league = league_id
+        ? await leaguesCol.findOne({ _id: ObjectId.createFromHexString(league_id) })
+        : undefined;
       const tournaments = req.query.tournament_id
         ? await getTournament(tournamentsCol, league_id, req.query.tournament_id)
         : await getTournaments(tournamentsCol, league_id, req.body.season_id);
+      const timers = await timersCol.find(getTimersQuery(league)).toArray();
       const data = {
         seasons: await seasonsCol.find({league_id}).sort({ name: -1 }).toArray(),
         players: await playersCol.find({league_id}).sort({ name: 1 }).toArray(),
+        timers,
         tournaments: tournaments
       };
       res.json(data);
@@ -120,4 +127,10 @@ export default async (req, res) => {
   } finally {
     await client.close();
   }
+}
+
+function getTimersQuery(league) {
+  return league?.tenant_id
+    ? { tenant_id: league.tenant_id }
+    : { _id: undefined };
 }

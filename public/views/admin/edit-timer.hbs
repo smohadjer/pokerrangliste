@@ -1,0 +1,19 @@
+{{> adminHeader league_name=league_name tenant_name=tenant_name}}
+<div class="wrapper">
+    <main class="admin">
+        {{> backLink }}
+        <section>
+            <h2>Edit timer</h2>
+            <form method="POST" action="/api/timers">
+                <input type="hidden" name="league_id" value="{{league_id}}">
+                <div class="row">
+                    <label>Timer:</label>
+                    <select id="timer_edit_dropdown" name="timer_id"></select>
+                </div>
+                <fieldset id="timer-fieldset"></fieldset>
+                <p class="error"></p>
+            </form>
+        </section>
+    </main>
+</div>
+{{> footer league_id=league_id season_id=season_id view="admin"}}

@@ -32,9 +32,16 @@ export default async (req, res) => {
       const name = req.body.name;
       const leagueId = req.body.league_id;
       const default_season_id = req.body.default_season_id;
+      const default_timer_id = req.body.default_timer_id;
 
       if (leagueId) {
-        await editLeagueName(name, collection, leagueId, default_season_id);
+        await editLeagueName(
+          name,
+          collection,
+          leagueId,
+          default_season_id,
+          default_timer_id
+        );
       } else {
         // creating a new league
         // validate league name

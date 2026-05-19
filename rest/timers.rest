@@ -1,0 +1,13 @@
+// return timer settings for a league
+GET http://localhost:3000/api/timers?league_id=677a4f585462214b2a1ac77e
+
+###
+
+// create or update timer settings for a league
+POST http://localhost:3000/api/timers
+Content-Type: application/x-www-form-urlencoded
+
+league_id=677a4f585462214b2a1ac77e
+&name=Shahaneh
+&duration=900
+&small_blinds=5,10,20,40,80,150,300
