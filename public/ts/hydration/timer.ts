@@ -19,7 +19,6 @@ let endTime = 0;
 let timerId: number | undefined;
 let roundDisplay: HTMLElement | null = null;
 let blindsDisplay: HTMLElement | null = null;
-let prevBlindsDisplay: HTMLElement | null = null;
 let nextBlindsDisplay: HTMLElement | null = null;
 let display: HTMLElement | null = null;
 let wakeLockMessage: HTMLElement | null = null;
@@ -54,7 +53,6 @@ export function initTimer(container: HTMLElement) {
 
     roundDisplay = container.querySelector<HTMLElement>('[data-timer-round]');
     blindsDisplay = container.querySelector<HTMLElement>('[data-timer-blinds]');
-    prevBlindsDisplay = container.querySelector<HTMLElement>('[data-timer-prev-blinds]');
     nextBlindsDisplay = container.querySelector<HTMLElement>('[data-timer-next-blinds]');
     display = container.querySelector<HTMLElement>('[data-timer-display]');
     wakeLockMessage = container.querySelector<HTMLElement>('[data-timer-wake-lock-message]');
@@ -73,7 +71,7 @@ export function initTimer(container: HTMLElement) {
     const openBlindsStructureButton = container.querySelector<HTMLButtonElement>('[data-timer-blinds-structure-open]');
     const closeBlindsStructureButton = container.querySelector<HTMLButtonElement>('[data-timer-blinds-structure-close]');
 
-    if (!roundDisplay || !blindsDisplay || !prevBlindsDisplay || !nextBlindsDisplay || !display || !startButton || !startIcon || !prevLevelButton || !nextLevelButton || !resetRoundButton || !resetAllButton) {
+    if (!roundDisplay || !blindsDisplay || !nextBlindsDisplay || !display || !startButton || !startIcon || !prevLevelButton || !nextLevelButton || !resetRoundButton || !resetAllButton) {
         return;
     }
 
@@ -84,6 +82,7 @@ export function initTimer(container: HTMLElement) {
         }
 
         unlockSpeech();
+        const shouldAnnounceTournamentStart = isTournamentStart();
 
         if (remaining === 0) {
             remaining = duration;
@@ -93,6 +92,9 @@ export function initTimer(container: HTMLElement) {
         setRunningState();
         timerId = window.setInterval(tick, 250);
         syncRunningSideEffects();
+        if (shouldAnnounceTournamentStart) {
+            speakMessage(`Tournament Starting, Level ${level}`, { interrupt: false });
+        }
         tick();
     });
 
@@ -150,12 +152,8 @@ function updateDisplay() {
         blindsDisplay.textContent = getBlindValuesLabel();
     }
 
-    if (prevBlindsDisplay) {
-        prevBlindsDisplay.textContent = level > 1 ? getBlindValuesLabel(level - 1) : '';
-    }
-
     if (nextBlindsDisplay) {
-        nextBlindsDisplay.textContent = hasNextLevel() ? getBlindValuesLabel(level + 1) : '';
+        nextBlindsDisplay.textContent = hasNextLevel() ? `Next blinds: ${getBlindValuesLabel(level + 1)}` : '';
     }
 
     if (prevLevelButton) {
@@ -167,6 +165,10 @@ function updateDisplay() {
     }
 
     updateWakeLockSupportMessage();
+}
+
+function isTournamentStart() {
+    return level === 1 && remaining === duration;
 }
 
 function renderBlindsStructure() {

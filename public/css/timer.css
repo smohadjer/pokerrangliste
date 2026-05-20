@@ -36,6 +36,13 @@
     font-size: 4rem;
 }
 
+.timer-next-blinds {
+    min-height: 2.4rem;
+    color: black;
+    font-size: 1.5rem;
+    font-weight: normal;
+}
+
 .timer-display {
     font-family: Arial, sans-serif;
     font-variant-numeric: tabular-nums;
@@ -47,7 +54,7 @@
     border-radius: 15px;
     padding: 20px 0;
     background: white;
-    box-shadow: 5px 0 5px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
 }
 
 .timer-display--warning {
@@ -144,15 +151,6 @@
 
 .timer-round-control {
     display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-}
-
-.timer-round-control__blinds {
-    min-height: 1.1rem;
-    color: black;
-    font-size: 1.8rem;
-    font-weight: 600;
 }
 
 .timer-page button {

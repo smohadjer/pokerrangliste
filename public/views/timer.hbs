@@ -36,19 +36,18 @@
         <div class="timer-blinds" data-timer-blinds>{{timer.initialBlinds}}</div>
       </div>
       <div class="timer-display" data-timer-display>{{timer.initialTime}}</div>
+      <div class="timer-next-blinds" data-timer-next-blinds></div>
     </section>
 
     <section class="timer-controls">
       <div class="timer-actions">
         <div class="timer-round-control">
-          <div class="timer-round-control__blinds" data-timer-prev-blinds></div>
           <button type="button" data-timer-prev-level disabled>Prev Level</button>
         </div>
         <button class="timer-icon-button timer-icon-button--primary" type="button" aria-label="Start timer" data-timer-start>
           <img src="/images/play.svg" alt="" data-timer-start-icon>
         </button>
         <div class="timer-round-control">
-          <div class="timer-round-control__blinds" data-timer-next-blinds></div>
           <button type="button" data-timer-next-level>Next Level</button>
         </div>
       </div>
