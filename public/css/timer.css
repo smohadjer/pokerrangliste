@@ -14,8 +14,12 @@
     margin: auto 0;
 }
 
-.timer-controls {
-    text-align: center;
+.timer-secondary-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: nowrap;
 }
 
 .timer-level {
@@ -91,6 +95,46 @@
     gap: 0.5rem;
 }
 
+.timer-blinds-structure {
+    width: min(100%, 360px);
+    max-height: min(80vh, 560px);
+    overflow: auto;
+}
+
+.timer-blinds-structure h2 {
+    margin: 0 0 1rem;
+    color: black;
+    font-size: 1.5rem;
+}
+
+.timer-blinds-structure__list {
+    margin-bottom: 1rem;
+}
+
+.timer-blinds-structure__table {
+    width: 100%;
+    border-collapse: collapse;
+    color: black;
+}
+
+.timer-blinds-structure__table th,
+.timer-blinds-structure__table td {
+    padding: 0.35rem 0.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    font-weight: 600;
+    text-align: right;
+    font-size: 1.2rem;
+}
+
+.timer-blinds-structure__table th {
+    color: #1d5410;
+}
+
+.timer-blinds-structure__table th:first-child,
+.timer-blinds-structure__table td:first-child {
+    text-align: left;
+}
+
 .timer-actions {
     display: flex;
     align-items: center;
@@ -107,7 +151,7 @@
 .timer-round-control__blinds {
     min-height: 1.1rem;
     color: black;
-    font-size: 0.9rem;
+    font-size: 1.8rem;
     font-weight: 600;
 }
 
@@ -124,7 +168,7 @@
     opacity: 0.45;
 }
 
-.timer-controls > button {
+.timer-secondary-actions button {
     min-width: 0;
     background: transparent;
     color: #1d5410;

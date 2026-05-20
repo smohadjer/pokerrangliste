@@ -32,7 +32,7 @@
     data-timer-small-blinds="{{timer.smallBlinds}}">
     <section class="timer-panel">
       <div class="timer-level">
-        <div class="timer-round" data-timer-round>Round {{timer.initialRound}}</div>
+        <div class="timer-round" data-timer-round>Level {{timer.initialRound}}</div>
         <div class="timer-blinds" data-timer-blinds>{{timer.initialBlinds}}</div>
       </div>
       <div class="timer-display" data-timer-display>{{timer.initialTime}}</div>
@@ -42,18 +42,21 @@
       <div class="timer-actions">
         <div class="timer-round-control">
           <div class="timer-round-control__blinds" data-timer-prev-blinds></div>
-          <button type="button" data-timer-prev-level disabled>Prev Round</button>
+          <button type="button" data-timer-prev-level disabled>Prev Level</button>
         </div>
         <button class="timer-icon-button timer-icon-button--primary" type="button" aria-label="Start timer" data-timer-start>
           <img src="/images/play.svg" alt="" data-timer-start-icon>
         </button>
         <div class="timer-round-control">
           <div class="timer-round-control__blinds" data-timer-next-blinds></div>
-          <button type="button" data-timer-next-level>Next Round</button>
+          <button type="button" data-timer-next-level>Next Level</button>
         </div>
       </div>
-      <button type="button" data-timer-reset-round>Reset Time</button>
-      <button type="button" data-timer-reset-all>Restart</button>
+      <div class="timer-secondary-actions">
+        <button type="button" data-timer-reset-round>Reset Time</button>
+        <button type="button" data-timer-reset-all>Restart</button>
+        <button type="button" data-timer-blinds-structure-open>Blinds Structure</button>
+      </div>
     </section>
 
     <div class="timer-wake-lock-popup" data-timer-wake-lock-message hidden>
@@ -63,6 +66,14 @@
           <button type="button" data-timer-wake-lock-enable>Enable timer</button>
           <button type="button" data-timer-wake-lock-close>Close</button>
         </div>
+      </div>
+    </div>
+
+    <div class="timer-wake-lock-popup" data-timer-blinds-structure-modal hidden>
+      <div class="timer-wake-lock-popup__dialog timer-blinds-structure">
+        <h2>Blinds Structure</h2>
+        <div class="timer-blinds-structure__list" data-timer-blinds-structure-list></div>
+        <button type="button" data-timer-blinds-structure-close>Close</button>
       </div>
     </div>
   </main>

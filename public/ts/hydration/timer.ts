@@ -26,6 +26,8 @@ let wakeLockMessage: HTMLElement | null = null;
 let wakeLockMessageText: HTMLElement | null = null;
 let wakeLockCloseButton: HTMLButtonElement | null = null;
 let wakeLockEnableButton: HTMLButtonElement | null = null;
+let blindsStructureModal: HTMLElement | null = null;
+let blindsStructureList: HTMLElement | null = null;
 let startButton: HTMLButtonElement | null = null;
 let startIcon: HTMLImageElement | null = null;
 let prevLevelButton: HTMLButtonElement | null = null;
@@ -59,6 +61,8 @@ export function initTimer(container: HTMLElement) {
     wakeLockMessageText = container.querySelector<HTMLElement>('[data-timer-wake-lock-text]');
     wakeLockCloseButton = container.querySelector<HTMLButtonElement>('[data-timer-wake-lock-close]');
     wakeLockEnableButton = container.querySelector<HTMLButtonElement>('[data-timer-wake-lock-enable]');
+    blindsStructureModal = container.querySelector<HTMLElement>('[data-timer-blinds-structure-modal]');
+    blindsStructureList = container.querySelector<HTMLElement>('[data-timer-blinds-structure-list]');
     startButton = container.querySelector<HTMLButtonElement>('[data-timer-start]');
     startIcon = container.querySelector<HTMLImageElement>('[data-timer-start-icon]');
     prevLevelButton = container.querySelector<HTMLButtonElement>('[data-timer-prev-level]');
@@ -66,6 +70,8 @@ export function initTimer(container: HTMLElement) {
     timerSelector = container.querySelector<HTMLSelectElement>('#select-timer');
     const resetRoundButton = container.querySelector<HTMLButtonElement>('[data-timer-reset-round]');
     const resetAllButton = container.querySelector<HTMLButtonElement>('[data-timer-reset-all]');
+    const openBlindsStructureButton = container.querySelector<HTMLButtonElement>('[data-timer-blinds-structure-open]');
+    const closeBlindsStructureButton = container.querySelector<HTMLButtonElement>('[data-timer-blinds-structure-close]');
 
     if (!roundDisplay || !blindsDisplay || !prevBlindsDisplay || !nextBlindsDisplay || !display || !startButton || !startIcon || !prevLevelButton || !nextLevelButton || !resetRoundButton || !resetAllButton) {
         return;
@@ -94,15 +100,18 @@ export function initTimer(container: HTMLElement) {
     nextLevelButton.addEventListener('click', () => nextLevel());
     resetRoundButton.addEventListener('click', resetRound);
     resetAllButton.addEventListener('click', resetAll);
+    openBlindsStructureButton?.addEventListener('click', openBlindsStructure);
+    closeBlindsStructureButton?.addEventListener('click', closeBlindsStructure);
     wakeLockEnableButton?.addEventListener('click', enableTimerFromPopup);
     wakeLockCloseButton?.addEventListener('click', closeWakeLockMessage);
     timerSelector?.addEventListener('change', changeTimer);
     timerPageElement?.addEventListener(roundChangedEventName, event => {
         const round = (event as CustomEvent<{ round: number }>).detail.round;
-        speakMessage(`Round ${round}, Blinds changed!`, { interrupt: false });
+        speakMessage(`Level ${round}, Blinds changed!`, { interrupt: false });
     });
 
     restoreState();
+    renderBlindsStructure();
     updateDisplay();
     syncRunningSideEffects();
     updateWakeLockSupportMessage();
@@ -134,7 +143,7 @@ function updateDisplay() {
     }
 
     if (roundDisplay) {
-        roundDisplay.textContent = `Round ${level}`;
+        roundDisplay.textContent = `Level ${level}`;
     }
 
     if (blindsDisplay) {
@@ -158,6 +167,60 @@ function updateDisplay() {
     }
 
     updateWakeLockSupportMessage();
+}
+
+function renderBlindsStructure() {
+    if (!blindsStructureList) {
+        return;
+    }
+
+    blindsStructureList.replaceChildren();
+    const table = document.createElement('table');
+    table.className = 'timer-blinds-structure__table';
+
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    ['Level', 'SB', 'BB'].forEach(label => {
+        const header = document.createElement('th');
+        header.textContent = label;
+        headerRow.append(header);
+    });
+    thead.append(headerRow);
+
+    const tbody = document.createElement('tbody');
+    blinds.forEach((smallBlind, index) => {
+        const row = document.createElement('tr');
+        row.className = 'timer-blinds-structure__row';
+
+        const round = document.createElement('td');
+        round.textContent = String(index + 1);
+
+        const smallBlindValue = document.createElement('td');
+        smallBlindValue.textContent = String(smallBlind);
+
+        const bigBlindValue = document.createElement('td');
+        bigBlindValue.textContent = String(smallBlind * 2);
+
+        row.append(round, smallBlindValue, bigBlindValue);
+        tbody.append(row);
+    });
+
+    table.append(thead, tbody);
+    blindsStructureList.append(table);
+}
+
+function openBlindsStructure() {
+    renderBlindsStructure();
+
+    if (blindsStructureModal) {
+        blindsStructureModal.hidden = false;
+    }
+}
+
+function closeBlindsStructure() {
+    if (blindsStructureModal) {
+        blindsStructureModal.hidden = true;
+    }
 }
 
 function stop() {
