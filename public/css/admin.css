@@ -188,6 +188,11 @@ form + p {
   }
 }
 
+.admin__logout {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .wrapper-status {
   label {
     line-height: 1.5;

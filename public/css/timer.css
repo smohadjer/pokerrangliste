@@ -33,7 +33,9 @@
 }
 
 .timer-blinds {
-    font-size: 4rem;
+    font-size: var(--timer-blinds-font-size, 4rem);
+    line-height: 1;
+    white-space: nowrap;
 }
 
 .timer-next-blinds {

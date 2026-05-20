@@ -1,6 +1,9 @@
 {{> adminHeader league_name=league_name tenant_name=tenant_name}}
 <div class="wrapper">
     <main class="admin">
+      <div class="admin__logout">
+        {{> logout }}
+      </div>
       {{> adminNav league_id=league_id season_id=season_id}}
     </main>
 </div>

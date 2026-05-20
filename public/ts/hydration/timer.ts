@@ -93,27 +93,31 @@ export function initTimer(container: HTMLElement) {
         timerId = window.setInterval(tick, 250);
         syncRunningSideEffects();
         if (shouldAnnounceTournamentStart) {
-            speakMessage(`Tournament Starting, Level ${level}`, { interrupt: false });
+            speakMessage(getTournamentStartSpeech(), { interrupt: false });
         }
         tick();
     });
 
     prevLevelButton.addEventListener('click', prevLevel);
-    nextLevelButton.addEventListener('click', () => nextLevel());
+    nextLevelButton.addEventListener('click', () => nextLevel({ interruptSpeech: true }));
     resetRoundButton.addEventListener('click', resetRound);
     resetAllButton.addEventListener('click', resetAll);
     openBlindsStructureButton?.addEventListener('click', openBlindsStructure);
     closeBlindsStructureButton?.addEventListener('click', closeBlindsStructure);
+    blindsStructureModal?.addEventListener('click', closeBlindsStructureOnBackdrop);
     wakeLockEnableButton?.addEventListener('click', enableTimerFromPopup);
     wakeLockCloseButton?.addEventListener('click', closeWakeLockMessage);
     timerSelector?.addEventListener('change', changeTimer);
     timerPageElement?.addEventListener(roundChangedEventName, event => {
-        const round = (event as CustomEvent<{ round: number }>).detail.round;
-        speakMessage(`Level ${round}, Blinds changed!`, { interrupt: false });
+        const detail = (event as CustomEvent<{ round: number; interruptSpeech?: boolean }>).detail;
+        speakMessage(getLevelChangedSpeech(detail.round), { interrupt: Boolean(detail.interruptSpeech) });
     });
 
     restoreState();
     renderBlindsStructure();
+    updateLevelDisplay();
+    updateBlindsDisplay();
+    updateNextBlindsDisplay();
     updateDisplay();
     syncRunningSideEffects();
     updateWakeLockSupportMessage();
@@ -144,18 +148,6 @@ function updateDisplay() {
         display.classList.toggle('timer-display--paused', !timerId);
     }
 
-    if (roundDisplay) {
-        roundDisplay.textContent = `Level ${level}`;
-    }
-
-    if (blindsDisplay) {
-        blindsDisplay.textContent = getBlindValuesLabel();
-    }
-
-    if (nextBlindsDisplay) {
-        nextBlindsDisplay.textContent = hasNextLevel() ? `Next blinds: ${getBlindValuesLabel(level + 1)}` : '';
-    }
-
     if (prevLevelButton) {
         prevLevelButton.disabled = level === 1;
     }
@@ -165,6 +157,28 @@ function updateDisplay() {
     }
 
     updateWakeLockSupportMessage();
+}
+
+function updateLevelDisplay() {
+    if (roundDisplay) {
+        roundDisplay.textContent = `Level ${level}`;
+    }
+}
+
+function updateBlindsDisplay() {
+    if (!blindsDisplay) {
+        return;
+    }
+
+    const blindValuesLabel = getBlindValuesLabel();
+    blindsDisplay.textContent = blindValuesLabel;
+    blindsDisplay.style.setProperty('--timer-blinds-font-size', getBlindsFontSize(blindValuesLabel));
+}
+
+function updateNextBlindsDisplay() {
+    if (nextBlindsDisplay) {
+        nextBlindsDisplay.textContent = hasNextLevel() ? `Next blinds: ${getBlindValuesLabel(level + 1)}` : '';
+    }
 }
 
 function isTournamentStart() {
@@ -225,6 +239,12 @@ function closeBlindsStructure() {
     }
 }
 
+function closeBlindsStructureOnBackdrop(event: MouseEvent) {
+    if (event.target === blindsStructureModal) {
+        closeBlindsStructure();
+    }
+}
+
 function stop() {
     if (timerId) {
         window.clearInterval(timerId);
@@ -267,7 +287,7 @@ function tick() {
     saveRunningState();
 }
 
-function nextLevel(options: { resetTimer?: boolean } = {}) {
+function nextLevel(options: { resetTimer?: boolean; interruptSpeech?: boolean } = {}) {
     const wasRunning = Boolean(timerId);
 
     if (!hasNextLevel()) {
@@ -299,8 +319,11 @@ function nextLevel(options: { resetTimer?: boolean } = {}) {
         setRunningState();
     }
 
+    updateLevelDisplay();
+    updateBlindsDisplay();
+    updateNextBlindsDisplay();
     updateDisplay();
-    dispatchRoundChanged(previousLevel);
+    dispatchRoundChanged(previousLevel, { interruptSpeech: options.interruptSpeech });
     saveState();
 }
 
@@ -318,8 +341,11 @@ function prevLevel() {
         setRunningState();
     }
 
+    updateLevelDisplay();
+    updateBlindsDisplay();
+    updateNextBlindsDisplay();
     updateDisplay();
-    dispatchRoundChanged(previousLevel);
+    dispatchRoundChanged(previousLevel, { interruptSpeech: true });
     saveState();
 }
 
@@ -337,6 +363,9 @@ function resetAll() {
     remaining = duration;
     level = 1;
     warningSpeechLevel = 0;
+    updateLevelDisplay();
+    updateBlindsDisplay();
+    updateNextBlindsDisplay();
     updateDisplay();
     saveState();
 }
@@ -529,6 +558,34 @@ function getBlindValuesLabel(round = level) {
     return `${smallBlind} / ${bigBlind}`;
 }
 
+function getBlindsFontSize(label: string) {
+    const length = label.replace(/\s/g, '').length;
+
+    if (length >= 11) {
+        return '2.4rem';
+    }
+
+    if (length >= 9) {
+        return '2.8rem';
+    }
+
+    if (length >= 7) {
+        return '3.3rem';
+    }
+
+    return '4rem';
+}
+
+function getLevelChangedSpeech(round: number) {
+    const smallBlind = getSmallBlind(round);
+    const bigBlind = smallBlind * 2;
+    return `Level ${round}, blinds ${smallBlind} and ${bigBlind}`;
+}
+
+function getTournamentStartSpeech() {
+    return `Tournament Starting, ${getLevelChangedSpeech(level)}`;
+}
+
 function getSmallBlind(round = level) {
     return blinds[round - 1] ?? blinds[blinds.length - 1] ?? fallbackBlinds[0];
 }
@@ -652,7 +709,7 @@ function getMaxLevel() {
     return Math.max(1, blinds.length);
 }
 
-function dispatchRoundChanged(previousLevel: number) {
+function dispatchRoundChanged(previousLevel: number, options: { interruptSpeech?: boolean } = {}) {
     if (previousLevel === level) {
         return;
     }
@@ -660,7 +717,8 @@ function dispatchRoundChanged(previousLevel: number) {
     timerPageElement?.dispatchEvent(new CustomEvent(roundChangedEventName, {
         detail: {
             previousRound: previousLevel,
-            round: level
+            round: level,
+            interruptSpeech: options.interruptSpeech
         }
     }));
 }
