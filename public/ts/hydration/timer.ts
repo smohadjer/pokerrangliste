@@ -40,7 +40,6 @@ let wakeLockMessageDismissed = false;
 
 export function initTimer(container: HTMLElement) {
     setDefaults(container);
-    restoreState();
     loadPreferredWarningVoice();
     initWakeLockListener();
 
@@ -78,7 +77,7 @@ export function initTimer(container: HTMLElement) {
         endTime = Date.now() + (remaining * 1000);
         setRunningState();
         timerId = window.setInterval(tick, 250);
-        requestWakeLock();
+        syncRunningSideEffects();
         tick();
     });
 
@@ -88,16 +87,14 @@ export function initTimer(container: HTMLElement) {
     resetAllButton.addEventListener('click', resetAll);
     wakeLockCloseButton?.addEventListener('click', closeWakeLockMessage);
     timerSelector?.addEventListener('change', changeTimer);
-    timerPageElement?.addEventListener(roundChangedEventName, () => {
-        speakMessage('Blinds change', { interrupt: false });
+    timerPageElement?.addEventListener(roundChangedEventName, event => {
+        const round = (event as CustomEvent<{ round: number }>).detail.round;
+        speakMessage(`Round ${round}, Blinds changed!`, { interrupt: false });
     });
 
+    restoreState();
     updateDisplay();
-    updateWakeLockSupportMessage();
-    if (timerId) {
-        setRunningState();
-        requestWakeLock();
-    }
+    syncRunningSideEffects();
 }
 
 function changeTimer() {
@@ -148,6 +145,8 @@ function updateDisplay() {
     if (nextLevelButton) {
         nextLevelButton.disabled = !hasNextLevel();
     }
+
+    updateWakeLockSupportMessage();
 }
 
 function stop() {
@@ -160,6 +159,17 @@ function stop() {
     releaseWakeLock();
     updateDisplay();
     saveState();
+}
+
+function syncRunningSideEffects() {
+    updateWakeLockSupportMessage();
+
+    if (!timerId) {
+        return;
+    }
+
+    setRunningState();
+    requestWakeLock();
 }
 
 function tick() {
