@@ -54,6 +54,36 @@
     background: #999;
 }
 
+.timer-wake-lock-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.25);
+    padding: 1rem;
+}
+
+.timer-wake-lock-popup[hidden] {
+    display: none;
+}
+
+.timer-wake-lock-popup__dialog {
+    max-width: 320px;
+    border-radius: 8px;
+    background: white;
+    padding: 1rem;
+    text-align: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.timer-wake-lock-popup__dialog p {
+    margin: 0 0 1rem;
+    color: black;
+    line-height: 1.35;
+}
+
 .timer-actions {
     display: flex;
     align-items: center;

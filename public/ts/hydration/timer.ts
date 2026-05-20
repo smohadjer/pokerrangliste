@@ -5,6 +5,11 @@ const fallbackBlinds = [5, 10, 20, 40, 80, 150, 300];
 const storageKeyPrefix = 'timerState';
 const roundChangedEventName = 'timer:round-change';
 
+type WakeLockSentinel = {
+    release: () => Promise<void>;
+    addEventListener: (type: 'release', listener: () => void) => void;
+};
+
 let defaultDuration = fallbackDefaultDuration;
 let blinds = fallbackBlinds;
 let duration = defaultDuration;
@@ -17,6 +22,8 @@ let blindsDisplay: HTMLElement | null = null;
 let prevBlindsDisplay: HTMLElement | null = null;
 let nextBlindsDisplay: HTMLElement | null = null;
 let display: HTMLElement | null = null;
+let wakeLockMessage: HTMLElement | null = null;
+let wakeLockCloseButton: HTMLButtonElement | null = null;
 let startButton: HTMLButtonElement | null = null;
 let startIcon: HTMLImageElement | null = null;
 let prevLevelButton: HTMLButtonElement | null = null;
@@ -27,17 +34,23 @@ let lastSavedRunningState = '';
 let storageKey = storageKeyPrefix;
 let warningSpeechLevel = 0;
 let preferredWarningVoice: SpeechSynthesisVoice | null = null;
+let wakeLock: WakeLockSentinel | null = null;
+let wakeLockListenerInitialized = false;
+let wakeLockMessageDismissed = false;
 
 export function initTimer(container: HTMLElement) {
     setDefaults(container);
     restoreState();
     loadPreferredWarningVoice();
+    initWakeLockListener();
 
     roundDisplay = container.querySelector<HTMLElement>('[data-timer-round]');
     blindsDisplay = container.querySelector<HTMLElement>('[data-timer-blinds]');
     prevBlindsDisplay = container.querySelector<HTMLElement>('[data-timer-prev-blinds]');
     nextBlindsDisplay = container.querySelector<HTMLElement>('[data-timer-next-blinds]');
     display = container.querySelector<HTMLElement>('[data-timer-display]');
+    wakeLockMessage = container.querySelector<HTMLElement>('[data-timer-wake-lock-message]');
+    wakeLockCloseButton = container.querySelector<HTMLButtonElement>('[data-timer-wake-lock-close]');
     startButton = container.querySelector<HTMLButtonElement>('[data-timer-start]');
     startIcon = container.querySelector<HTMLImageElement>('[data-timer-start-icon]');
     prevLevelButton = container.querySelector<HTMLButtonElement>('[data-timer-prev-level]');
@@ -65,6 +78,7 @@ export function initTimer(container: HTMLElement) {
         endTime = Date.now() + (remaining * 1000);
         setRunningState();
         timerId = window.setInterval(tick, 250);
+        requestWakeLock();
         tick();
     });
 
@@ -72,14 +86,17 @@ export function initTimer(container: HTMLElement) {
     nextLevelButton.addEventListener('click', () => nextLevel());
     resetRoundButton.addEventListener('click', resetRound);
     resetAllButton.addEventListener('click', resetAll);
+    wakeLockCloseButton?.addEventListener('click', closeWakeLockMessage);
     timerSelector?.addEventListener('change', changeTimer);
     timerPageElement?.addEventListener(roundChangedEventName, () => {
         speakMessage('Blinds change', { interrupt: false });
     });
 
     updateDisplay();
+    updateWakeLockSupportMessage();
     if (timerId) {
         setRunningState();
+        requestWakeLock();
     }
 }
 
@@ -140,6 +157,7 @@ function stop() {
     }
 
     setPausedState();
+    releaseWakeLock();
     updateDisplay();
     saveState();
 }
@@ -249,6 +267,79 @@ function setPausedState() {
 
     if (startButton) {
         startButton.setAttribute('aria-label', 'Start timer');
+    }
+}
+
+function initWakeLockListener() {
+    if (wakeLockListenerInitialized) {
+        return;
+    }
+
+    wakeLockListenerInitialized = true;
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && timerId) {
+            requestWakeLock();
+        }
+    });
+}
+
+function updateWakeLockSupportMessage() {
+    if (!wakeLockMessage) {
+        return;
+    }
+
+    wakeLockMessage.hidden = hasWakeLockSupport() || wakeLockMessageDismissed;
+}
+
+function closeWakeLockMessage() {
+    wakeLockMessageDismissed = true;
+    if (wakeLockMessage) {
+        wakeLockMessage.hidden = true;
+    }
+}
+
+async function requestWakeLock() {
+    if (wakeLock) {
+        return;
+    }
+
+    if (!hasWakeLockSupport()) {
+        updateWakeLockSupportMessage();
+        return;
+    }
+
+    const wakeLockNavigator = navigator as Navigator & {
+        wakeLock?: {
+            request: (type: 'screen') => Promise<WakeLockSentinel>;
+        };
+    };
+
+    try {
+        wakeLock = await wakeLockNavigator.wakeLock!.request('screen');
+        wakeLock.addEventListener('release', () => {
+            wakeLock = null;
+        });
+    } catch {
+        wakeLock = null;
+    }
+}
+
+function hasWakeLockSupport() {
+    return 'wakeLock' in navigator;
+}
+
+async function releaseWakeLock() {
+    if (!wakeLock) {
+        return;
+    }
+
+    const currentWakeLock = wakeLock;
+    wakeLock = null;
+
+    try {
+        await currentWakeLock.release();
+    } catch {
+        // Ignore wake lock release failures; the browser may have already released it.
     }
 }
 
