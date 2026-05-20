@@ -40,6 +40,10 @@ let wakeLock: WakeLockSentinel | null = null;
 let wakeLockListenerInitialized = false;
 let wakeLockMessageDismissed = false;
 let wakeLockRequestFailed = false;
+let speechUnlocked = false;
+let restoredRunningTimer = false;
+let needsRunningConfirmation = false;
+const pendingSpeechMessages: Array<{ message: string; options: { interrupt?: boolean } }> = [];
 
 export function initTimer(container: HTMLElement) {
     setDefaults(container);
@@ -73,7 +77,7 @@ export function initTimer(container: HTMLElement) {
             return;
         }
 
-        primeSpeech();
+        unlockSpeech();
 
         if (remaining === 0) {
             remaining = duration;
@@ -90,7 +94,7 @@ export function initTimer(container: HTMLElement) {
     nextLevelButton.addEventListener('click', () => nextLevel());
     resetRoundButton.addEventListener('click', resetRound);
     resetAllButton.addEventListener('click', resetAll);
-    wakeLockEnableButton?.addEventListener('click', enableWakeLockFromPopup);
+    wakeLockEnableButton?.addEventListener('click', enableTimerFromPopup);
     wakeLockCloseButton?.addEventListener('click', closeWakeLockMessage);
     timerSelector?.addEventListener('change', changeTimer);
     timerPageElement?.addEventListener(roundChangedEventName, event => {
@@ -101,6 +105,7 @@ export function initTimer(container: HTMLElement) {
     restoreState();
     updateDisplay();
     syncRunningSideEffects();
+    updateWakeLockSupportMessage();
 }
 
 function changeTimer() {
@@ -163,6 +168,10 @@ function stop() {
 
     setPausedState();
     releaseWakeLock();
+    restoredRunningTimer = false;
+    needsRunningConfirmation = false;
+    pendingSpeechMessages.splice(0);
+    updateWakeLockSupportMessage();
     updateDisplay();
     saveState();
 }
@@ -176,6 +185,7 @@ function syncRunningSideEffects() {
 
     setRunningState();
     void requestWakeLock();
+    updateWakeLockSupportMessage();
 }
 
 function tick() {
@@ -305,38 +315,79 @@ function updateWakeLockSupportMessage() {
     }
 
     const supportsWakeLock = hasWakeLockSupport();
+    const needsAudioGesture = Boolean(timerId && !speechUnlocked && (restoredRunningTimer || pendingSpeechMessages.length > 0));
     const needsWakeLockGesture = Boolean(timerId && supportsWakeLock && !wakeLock && wakeLockRequestFailed);
-    const shouldShow = !wakeLockMessageDismissed && (!supportsWakeLock || needsWakeLockGesture);
+    const shouldShow = !wakeLockMessageDismissed && (needsRunningConfirmation || !supportsWakeLock || needsWakeLockGesture || needsAudioGesture);
 
     wakeLockMessage.hidden = !shouldShow;
 
     if (wakeLockMessageText) {
-        wakeLockMessageText.textContent = supportsWakeLock
-            ? 'Tap Keep screen awake so this timer can keep your screen on while it is running.'
-            : 'Your browser cannot keep this screen awake. Disable auto-lock or screen timeout in your device settings while using the timer.';
+        wakeLockMessageText.textContent = getTimerPermissionMessage(supportsWakeLock, needsAudioGesture, needsWakeLockGesture);
     }
 
     if (wakeLockEnableButton) {
-        wakeLockEnableButton.hidden = !supportsWakeLock;
+        const hasAction = needsRunningConfirmation || needsAudioGesture || (supportsWakeLock && Boolean(timerId && !wakeLock));
+        wakeLockEnableButton.hidden = !hasAction;
+        wakeLockEnableButton.textContent = getTimerPermissionButtonLabel(supportsWakeLock, needsAudioGesture, needsWakeLockGesture);
+    }
+
+    if (wakeLockCloseButton) {
+        wakeLockCloseButton.textContent = needsRunningConfirmation ? 'Stop timer' : 'Close';
     }
 }
 
+function getTimerPermissionMessage(supportsWakeLock: boolean, needsAudioGesture: boolean, needsWakeLockGesture: boolean) {
+    if (needsRunningConfirmation) {
+        return 'The timer is still running. Do you want to keep it running?';
+    }
+
+    if (needsAudioGesture && supportsWakeLock) {
+        return 'Tap Enable timer so announcements can play and this screen can stay awake while the timer is running.';
+    }
+
+    if (needsAudioGesture) {
+        return 'Tap Enable sound so timer announcements can play. Your browser cannot keep this screen awake, so disable auto-lock or screen timeout in your device settings while using the timer.';
+    }
+
+    if (needsWakeLockGesture) {
+        return 'Tap Keep screen awake so this timer can keep your screen on while it is running.';
+    }
+
+    return 'Your browser cannot keep this screen awake. Disable auto-lock or screen timeout in your device settings while using the timer.';
+}
+
+function getTimerPermissionButtonLabel(supportsWakeLock: boolean, needsAudioGesture: boolean, needsWakeLockGesture: boolean) {
+    if (needsRunningConfirmation) {
+        return 'Keep running';
+    }
+
+    if (needsAudioGesture && supportsWakeLock) {
+        return 'Enable timer';
+    }
+
+    return needsAudioGesture ? 'Enable sound' : 'Keep screen awake';
+}
+
 function closeWakeLockMessage() {
+    if (needsRunningConfirmation) {
+        needsRunningConfirmation = false;
+        stop();
+        return;
+    }
+
     wakeLockMessageDismissed = true;
     if (wakeLockMessage) {
         wakeLockMessage.hidden = true;
     }
 }
 
-async function enableWakeLockFromPopup() {
+async function enableTimerFromPopup() {
     wakeLockMessageDismissed = false;
-    await requestWakeLock();
+    needsRunningConfirmation = false;
+    unlockSpeech();
 
-    if (wakeLock) {
-        if (wakeLockMessage) {
-            wakeLockMessage.hidden = true;
-        }
-        return;
+    if (timerId && hasWakeLockSupport()) {
+        await requestWakeLock();
     }
 
     updateWakeLockSupportMessage();
@@ -436,6 +487,12 @@ function speakMessage(message: string, options: { interrupt?: boolean } = {}) {
         return;
     }
 
+    if (!speechUnlocked) {
+        pendingSpeechMessages.push({ message, options });
+        updateWakeLockSupportMessage();
+        return;
+    }
+
     const utterance = new SpeechSynthesisUtterance(message);
     const voice = preferredWarningVoice ?? getPreferredWarningVoice();
 
@@ -451,6 +508,17 @@ function speakMessage(message: string, options: { interrupt?: boolean } = {}) {
     }
 
     window.speechSynthesis.speak(utterance);
+}
+
+function unlockSpeech() {
+    if (speechUnlocked) {
+        return;
+    }
+
+    speechUnlocked = true;
+    primeSpeech();
+    updateWakeLockSupportMessage();
+    flushPendingSpeechMessages();
 }
 
 function primeSpeech() {
@@ -469,6 +537,11 @@ function primeSpeech() {
     }
 
     window.speechSynthesis.speak(utterance);
+}
+
+function flushPendingSpeechMessages() {
+    const messages = pendingSpeechMessages.splice(0);
+    messages.forEach(item => speakMessage(item.message, item.options));
 }
 
 function loadPreferredWarningVoice() {
@@ -580,6 +653,8 @@ function restoreState() {
         if (state.isRunning && typeof state.endTime === 'number') {
             endTime = state.endTime;
             remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+            restoredRunningTimer = true;
+            needsRunningConfirmation = true;
 
             if (remaining === 0) {
                 catchUpRunningTimer();
