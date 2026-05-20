@@ -58,8 +58,11 @@
 
     <div class="timer-wake-lock-popup" data-timer-wake-lock-message hidden>
       <div class="timer-wake-lock-popup__dialog">
-        <p>Your browser cannot keep this screen awake. Disable auto-lock or screen timeout in your device settings while using the timer.</p>
-        <button type="button" data-timer-wake-lock-close>Close</button>
+        <p data-timer-wake-lock-text>Your browser cannot keep this screen awake. Disable auto-lock or screen timeout in your device settings while using the timer.</p>
+        <div class="timer-wake-lock-popup__actions">
+          <button type="button" data-timer-wake-lock-enable>Keep screen awake</button>
+          <button type="button" data-timer-wake-lock-close>Close</button>
+        </div>
       </div>
     </div>
   </main>
