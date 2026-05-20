@@ -51,7 +51,7 @@
 }
 
 .timer-display--paused {
-    background: #999;
+    background: #ccc;
 }
 
 .timer-wake-lock-popup {
