@@ -3,6 +3,7 @@ import { router } from '../lib/router';
 const fallbackDefaultDuration = 15 * 60;
 const fallbackBlinds = [5, 10, 20, 40, 80, 150, 300];
 const storageKeyPrefix = 'timerState';
+const selectedTimerKeyPrefix = 'selectedTimer';
 const roundChangedEventName = 'timer:round-change';
 
 type WakeLockSentinel = {
@@ -129,7 +130,11 @@ function changeTimer() {
     }
 
     resetAll();
-    window.localStorage.removeItem(getStorageKey(timerPageElement.dataset.timerLeagueId));
+    window.localStorage.removeItem(storageKey);
+    resetRuntimeState();
+    window.localStorage.setItem(
+        getSelectedTimerKey(timerPageElement.dataset.timerLeagueId),
+        timerSelector.value);
 
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('league_id', timerPageElement.dataset.timerLeagueId);
@@ -247,8 +252,7 @@ function closeBlindsStructureOnBackdrop(event: MouseEvent) {
 
 function stop() {
     if (timerId) {
-        window.clearInterval(timerId);
-        timerId = undefined;
+        clearTimerInterval();
     }
 
     setPausedState();
@@ -259,6 +263,15 @@ function stop() {
     updateWakeLockSupportMessage();
     updateDisplay();
     saveState();
+}
+
+function clearTimerInterval() {
+    if (!timerId) {
+        return;
+    }
+
+    window.clearInterval(timerId);
+    timerId = undefined;
 }
 
 function syncRunningSideEffects() {
@@ -727,13 +740,11 @@ function saveState() {
     lastSavedRunningState = getRunningStateKey();
 
     const state = {
-        duration,
         remaining,
         level,
         endTime,
         isRunning: Boolean(timerId),
-        warningSpeechLevel,
-        configKey: getConfigKey()
+        warningSpeechLevel
     };
 
     window.localStorage.setItem(storageKey, JSON.stringify(state));
@@ -760,16 +771,7 @@ function restoreState() {
 
     try {
         const state = JSON.parse(rawState);
-        if (state.configKey !== getConfigKey()) {
-            window.localStorage.removeItem(storageKey);
-            duration = defaultDuration;
-            remaining = defaultDuration;
-            level = 1;
-            endTime = 0;
-            return;
-        }
 
-        duration = sanitizeNumber(state.duration, defaultDuration);
         level = sanitizeLevel(state.level);
         warningSpeechLevel = sanitizeNumber(state.warningSpeechLevel, 0);
 
@@ -792,6 +794,7 @@ function restoreState() {
 
         remaining = sanitizeNumber(state.remaining, duration);
     } catch {
+        resetRuntimeState();
         duration = defaultDuration;
         remaining = defaultDuration;
         level = 1;
@@ -819,6 +822,17 @@ function catchUpRunningTimer() {
     endTime = Date.now() + (remaining * 1000);
 }
 
+function resetRuntimeState() {
+    clearTimerInterval();
+    endTime = 0;
+    warningSpeechLevel = 0;
+    restoredRunningTimer = false;
+    needsRunningConfirmation = false;
+    pendingSpeechMessages.splice(0);
+    lastSavedRunningState = '';
+    void releaseWakeLock();
+}
+
 function setDefaults(container: HTMLElement) {
     timerPageElement = container.querySelector<HTMLElement>('[data-timer-page]');
     storageKey = getStorageKey(timerPageElement?.dataset.timerLeagueId);
@@ -826,10 +840,13 @@ function setDefaults(container: HTMLElement) {
         timerPageElement?.dataset.timerDefaultDuration,
         fallbackDefaultDuration);
     blinds = getBlinds(timerPageElement?.dataset.timerSmallBlinds);
+
     if (!window.localStorage.getItem(storageKey)) {
         duration = defaultDuration;
         remaining = defaultDuration;
         level = 1;
+        endTime = 0;
+        warningSpeechLevel = 0;
     }
 }
 
@@ -839,15 +856,17 @@ function getStorageKey(leagueId?: string) {
         : storageKeyPrefix;
 }
 
+function getSelectedTimerKey(leagueId?: string) {
+    return leagueId
+        ? `${selectedTimerKeyPrefix}:${leagueId}`
+        : selectedTimerKeyPrefix;
+}
+
 function getPositiveNumber(value: string | undefined, fallback: number) {
     const parsedValue = Number(value);
     return Number.isFinite(parsedValue) && parsedValue > 0
         ? parsedValue
         : fallback;
-}
-
-function getConfigKey() {
-    return `${defaultDuration}:${blinds.join(',')}`;
 }
 
 function getBlinds(value: string | undefined) {

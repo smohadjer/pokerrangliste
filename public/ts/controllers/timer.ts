@@ -4,13 +4,15 @@ import { store } from '../lib/store';
 const defaultDuration = 15 * 60;
 const defaultBlinds = [5, 10, 20, 40, 80, 150, 300];
 const initialRound = 1;
+const selectedTimerKeyPrefix = 'selectedTimer';
 
 export default (params: URLSearchParams) => {
     const state = store.getState();
     const league_id = params.get('league_id');
     const timer_id = params.get('timer_id');
     const league = state.leagues.find(item => item._id === league_id);
-    const selectedTimerId = timer_id || league?.default_timer_id;
+    const rememberedTimerId = getRememberedTimerId(league_id);
+    const selectedTimerId = timer_id || rememberedTimerId || league?.default_timer_id;
     const timerSettings = state.timers.find(timer => getObjectId(timer._id) === selectedTimerId)
         || state.timers.find(timer => (
             timer.tenant_id === league?.tenant_id && timer.name === league?.name
@@ -73,4 +75,12 @@ function getObjectId(id: unknown) {
     }
 
     return String(id);
+}
+
+function getRememberedTimerId(leagueId: string | null) {
+    if (!leagueId) {
+        return '';
+    }
+
+    return window.localStorage.getItem(`${selectedTimerKeyPrefix}:${leagueId}`) || '';
 }
