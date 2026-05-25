@@ -22,6 +22,15 @@
     flex-wrap: nowrap;
 }
 
+body.fullscreen .timer-controls {
+    display: none;
+}
+
+body.fullscreen header,
+body.fullscreen footer {
+    display: none;
+}
+
 .timer-level {
     color: black;
     font-weight: 600;
@@ -57,10 +66,17 @@
     padding: 20px 0;
     background: white;
     box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    user-select: none;
 }
 
 .timer-display--warning {
     color: #b00020;
+}
+
+.timer-display:focus-visible {
+    outline: 3px solid #1d5410;
+    outline-offset: 4px;
 }
 
 .timer-display--paused {

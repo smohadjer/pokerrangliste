@@ -76,27 +76,15 @@ export function initTimer(container: HTMLElement) {
         return;
     }
 
-    startButton.addEventListener('click', () => {
-        if (timerId) {
-            stop();
+    startButton.addEventListener('click', toggleTimer);
+    display.addEventListener('click', toggleTimer);
+    display.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') {
             return;
         }
 
-        unlockSpeech();
-        const shouldAnnounceTournamentStart = isTournamentStart();
-
-        if (remaining === 0) {
-            remaining = duration;
-        }
-
-        endTime = Date.now() + (remaining * 1000);
-        setRunningState();
-        timerId = window.setInterval(tick, 250);
-        syncRunningSideEffects();
-        if (shouldAnnounceTournamentStart) {
-            speakMessage(getTournamentStartSpeech(), { interrupt: false });
-        }
-        tick();
+        event.preventDefault();
+        toggleTimer();
     });
 
     prevLevelButton.addEventListener('click', prevLevel);
@@ -151,6 +139,7 @@ function updateDisplay() {
         display.textContent = formatTime(remaining);
         display.classList.toggle('timer-display--warning', remaining <= 60);
         display.classList.toggle('timer-display--paused', !timerId);
+        display.setAttribute('aria-label', timerId ? 'Pause timer' : 'Start timer');
     }
 
     if (prevLevelButton) {
@@ -188,6 +177,29 @@ function updateNextBlindsDisplay() {
 
 function isTournamentStart() {
     return level === 1 && remaining === duration;
+}
+
+function toggleTimer() {
+    if (timerId) {
+        stop();
+        return;
+    }
+
+    unlockSpeech();
+    const shouldAnnounceTournamentStart = isTournamentStart();
+
+    if (remaining === 0) {
+        remaining = duration;
+    }
+
+    endTime = Date.now() + (remaining * 1000);
+    setRunningState();
+    timerId = window.setInterval(tick, 250);
+    syncRunningSideEffects();
+    if (shouldAnnounceTournamentStart) {
+        speakMessage(getTournamentStartSpeech(), { interrupt: false });
+    }
+    tick();
 }
 
 function renderBlindsStructure() {
@@ -391,6 +403,8 @@ function setRunningState() {
     if (startButton) {
         startButton.setAttribute('aria-label', 'Pause timer');
     }
+
+    document.body.classList.add('fullscreen');
 }
 
 function setPausedState() {
@@ -401,6 +415,8 @@ function setPausedState() {
     if (startButton) {
         startButton.setAttribute('aria-label', 'Start timer');
     }
+
+    document.body.classList.remove('fullscreen');
 }
 
 function initWakeLockListener() {
