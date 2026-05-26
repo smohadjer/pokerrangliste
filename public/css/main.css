@@ -11,6 +11,12 @@ body {
     line-height: 1.3;
 }
 
+a,
+button,
+[role="button"] {
+    touch-action: manipulation;
+}
+
 h2 {
     margin: 0;
     font-weight: 500;
