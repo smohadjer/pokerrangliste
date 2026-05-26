@@ -6,7 +6,7 @@ import { initAddTournament } from '../hydration/add-tournament.js';
 import { initEditTournament } from '../hydration/edit-tournament.js';
 import { initDeleteAndDuplicateTournament } from '../hydration/delete-duplicate-tournament.js';
 import { initSeasonSelector } from '../hydration/seasonSelector.js';
-import { initEditTimer } from '../hydration/editTimer.js';
+import { initAddTimer, initDeleteTimer, initEditTimer } from '../hydration/editTimer.js';
 import { populateSelect, enablePasswordToggle } from './utils.js';
 import { getHandlebarsTemplate } from './handlebars';
 import { hydrateLeaguesDropdown } from '../hydration/leagues.js';
@@ -67,6 +67,14 @@ function hydrate(
 
     if (view === '/admin/edit-timer') {
         initEditTimer(container);
+    }
+
+    if (view === '/admin/add-timer') {
+        initAddTimer(container);
+    }
+
+    if (view === '/admin/delete-timer') {
+        initDeleteTimer(container);
     }
 
     if (view === '/admin/duplicate-tournament'

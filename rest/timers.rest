@@ -3,11 +3,39 @@ GET http://localhost:3000/api/timers?league_id=677a4f585462214b2a1ac77e
 
 ###
 
-// create or update timer settings for a league
+// create timer settings for the authenticated tenant
 POST http://localhost:3000/api/timers
-Content-Type: application/x-www-form-urlencoded
+Content-Type: application/json
+Authorization: Bearer <jwt>
 
-league_id=677a4f585462214b2a1ac77e
-&name=Shahaneh
-&duration=900
-&small_blinds=5,10,20,40,80,150,300
+{
+  "name": "My Timer",
+  "duration": 900,
+  "small_blinds": [5, 10, 20, 40, 80, 150, 400]
+}
+
+###
+
+// update timer settings for the authenticated tenant
+POST http://localhost:3000/api/timers
+Content-Type: application/json
+Authorization: Bearer <jwt>
+
+{
+  "timer_id": "6a0c4713d888578dd977c138",
+  "name": "Shahaneh",
+  "duration": 900,
+  "small_blinds": [5, 10, 20, 40, 80, 150, 300]
+}
+
+###
+
+// delete timer settings for the authenticated tenant
+POST http://localhost:3000/api/timers
+Content-Type: application/json
+Authorization: Bearer <jwt>
+
+{
+  "form_action": "delete",
+  "timer_id": "6a0c4713d888578dd977c138"
+}

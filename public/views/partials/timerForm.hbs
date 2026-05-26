@@ -4,10 +4,8 @@
 </div>
 <div class="row row--timer-duration">
     <label>Level duration:</label>
-    <input required min="0" type="number" name="duration_minutes" value="{{durationMinutes}}" data-timer-duration-minutes>
+    <input required min="1" type="number" name="duration_minutes" value="{{durationMinutes}}" data-timer-duration-minutes>
     <span>min</span>
-    <input required min="0" max="59" type="number" name="duration_seconds_remainder" value="{{durationSecondsRemainder}}" data-timer-duration-seconds-remainder>
-    <span>sec</span>
     <input type="hidden" name="duration" value="{{duration}}" data-timer-duration-seconds>
 </div>
 <div class="row">

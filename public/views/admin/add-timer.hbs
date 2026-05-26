@@ -3,13 +3,9 @@
     <main class="admin">
         {{> backLink }}
         <section>
-            <h2>Edit timer</h2>
+            <h2>Add timer</h2>
             <form method="POST" action="/api/timers">
-                <div class="row">
-                    <label>Timer:</label>
-                    <select id="timer_edit_dropdown" name="timer_id"></select>
-                </div>
-                <fieldset id="timer-fieldset"></fieldset>
+                {{> timerForm}}
                 <p class="error"></p>
             </form>
         </section>

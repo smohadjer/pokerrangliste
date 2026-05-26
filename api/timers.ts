@@ -1,6 +1,6 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { database_uri, database_name } from './_config.js';
-import { userOwnsLeague } from './_utils.js';
+import { getJwtPayload } from './verifyAuth.js';
 
 const client = new MongoClient(database_uri);
 
@@ -15,15 +15,13 @@ export default async (req, res) => {
     const database = client.db(database_name);
     const collection = database.collection('timers');
     const leagues = database.collection('leagues');
-    const league_id = req.method === 'GET'
-      ? req.query.league_id
-      : req.body.league_id;
-
-    if (!league_id) {
-      throw new Error('No league ID provided');
-    }
 
     if (req.method === 'GET') {
+      const league_id = req.query.league_id;
+      if (!league_id) {
+        throw new Error('No league ID provided');
+      }
+
       const league = await leagues.findOne({
         _id: ObjectId.createFromHexString(league_id)
       });
@@ -32,45 +30,66 @@ export default async (req, res) => {
     }
 
     if (req.method === 'POST') {
-      if (!await userOwnsLeague(league_id, req, leagues)) {
-        throw new Error('Either league id is not valid or Logged-in user is not owner of the league');
+      const payload = await getJwtPayload(req);
+      const tenant_id = payload?.id;
+      if (!tenant_id) {
+        throw new Error('No tenant found');
       }
 
-      const league = await leagues.findOne({
-        _id: ObjectId.createFromHexString(league_id)
-      });
-      if (!league?.tenant_id) {
-        throw new Error('League not found');
-      }
-
-      const timerSettings = createTimerSettingsDocument(req.body);
       const timerId = req.body.timer_id;
 
-      if (timerId) {
+      if (req.body.form_action === 'delete') {
+        if (!timerId) {
+          throw new Error('No timer ID provided');
+        }
+
+        const result = await collection.deleteOne({
+          _id: ObjectId.createFromHexString(timerId),
+          tenant_id
+        });
+
+        if (result.deletedCount === 0) {
+          throw new Error('Failed to delete timer');
+        }
+
+        await leagues.updateMany(
+          {
+            tenant_id,
+            default_timer_id: timerId
+          },
+          {
+            $unset: {
+              default_timer_id: ''
+            }
+          }
+        );
+      } else if (timerId) {
+        const timerSettings = createTimerSettingsDocument(req.body);
         await collection.updateOne(
           {
             _id: ObjectId.createFromHexString(timerId),
-            tenant_id: league.tenant_id
+            tenant_id
           },
           {
             $set: {
               ...timerSettings,
-              tenant_id: league.tenant_id
+              tenant_id
             }
           }
         );
       } else {
+        const timerSettings = createTimerSettingsDocument(req.body);
         await collection.insertOne({
           ...timerSettings,
-          tenant_id: league.tenant_id
+          tenant_id
         });
       }
 
-      const timers = await collection.find(getTimersQuery(league)).toArray();
+      const timers = await collection.find({ tenant_id }).toArray();
       return res.json({
         data: {
           timers,
-          leagues: await leagues.find({ tenant_id: league.tenant_id }).toArray()
+          leagues: await leagues.find({ tenant_id }).toArray()
         }
       });
     }

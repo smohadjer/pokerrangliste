@@ -3,13 +3,16 @@
     <main class="admin">
         {{> backLink }}
         <section>
-            <h2>Edit timer</h2>
+            <h2>Delete timer</h2>
             <form method="POST" action="/api/timers">
+                <input type="hidden" name="form_action" value="delete">
                 <div class="row">
                     <label>Timer:</label>
-                    <select id="timer_edit_dropdown" name="timer_id"></select>
+                    <select id="timer_delete_dropdown" name="timer_id"></select>
                 </div>
-                <fieldset id="timer-fieldset"></fieldset>
+                <div class="submit">
+                    <button>Delete timer</button>
+                </div>
                 <p class="error"></p>
             </form>
         </section>

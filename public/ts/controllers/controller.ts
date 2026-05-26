@@ -12,7 +12,9 @@ import editSeason from './editSeason';
 import addPlayer from './addPlayer';
 import editPlayer from './editPlayer';
 import editLeague from './editLeague';
+import addTimer from './addTimer';
 import editTimer from './editTimer';
+import deleteTimer from './deleteTimer';
 import home from './home';
 import timer from './timer';
 
@@ -38,5 +40,7 @@ export const controller: Controller = {
     '/admin/edit-player': editPlayer,
     '/admin/add-player': addPlayer,
     '/admin/edit-league': editLeague,
+    '/admin/add-timer': addTimer,
     '/admin/edit-timer': editTimer,
+    '/admin/delete-timer': deleteTimer,
 };

@@ -42,19 +42,38 @@ export function initEditTimer(container: HTMLElement) {
         window.history.replaceState({}, '', url.toString());
     });
 
+    bindTimerDurationSubmit(form);
+}
+
+export function initAddTimer(container: HTMLElement) {
+    const form = container.querySelector<HTMLFormElement>('form[action="/api/timers"]');
+
+    if (form) {
+        bindTimerDurationSubmit(form);
+    }
+}
+
+export function initDeleteTimer(container: HTMLElement) {
+    const timerDropdown = container.querySelector<HTMLSelectElement>('#timer_delete_dropdown');
+    const state = store.getState();
+
+    if (timerDropdown) {
+        populateTimerSelect(timerDropdown, state.timers);
+    }
+}
+
+function bindTimerDurationSubmit(form: HTMLFormElement) {
     form.addEventListener('submit', () => {
         const durationMinutes = form.querySelector<HTMLInputElement>('[data-timer-duration-minutes]');
-        const durationSecondsRemainder = form.querySelector<HTMLInputElement>('[data-timer-duration-seconds-remainder]');
         const durationSeconds = form.querySelector<HTMLInputElement>('[data-timer-duration-seconds]');
 
-        if (!durationMinutes || !durationSecondsRemainder || !durationSeconds) {
+        if (!durationMinutes || !durationSeconds) {
             return;
         }
 
         const minutes = Number(durationMinutes.value);
-        const seconds = Number(durationSecondsRemainder.value);
-        durationSeconds.value = Number.isFinite(minutes) && minutes >= 0 && Number.isFinite(seconds) && seconds >= 0
-            ? Math.round((minutes * 60) + seconds).toString()
+        durationSeconds.value = Number.isFinite(minutes) && minutes > 0
+            ? Math.round(minutes * 60).toString()
             : durationSeconds.value;
     });
 }
@@ -95,10 +114,13 @@ function getTimerFormData(timer: TimerSettings) {
     return {
         name: timer.name ?? '',
         duration,
-        durationMinutes: Math.floor(duration / 60),
-        durationSecondsRemainder: duration % 60,
+        durationMinutes: getDurationMinutes(duration),
         small_blinds: getSmallBlinds(timer.small_blinds).join(', ')
     };
+}
+
+function getDurationMinutes(duration: number) {
+    return Math.max(1, Math.round(duration / 60));
 }
 
 function getDurationSeconds(duration?: number) {
