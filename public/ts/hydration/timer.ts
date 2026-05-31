@@ -2,13 +2,26 @@ import { router } from '../lib/router';
 
 const fallbackDefaultDuration = 15 * 60;
 const fallbackBlinds = [5, 10, 20, 40, 80, 150, 300];
-const storageKeyPrefix = 'timerState';
-const selectedTimerKeyPrefix = 'selectedTimer';
+const timerStateKey = 'timerState';
 const roundChangedEventName = 'timer:round-change';
 
 type WakeLockSentinel = {
     release: () => Promise<void>;
     addEventListener: (type: 'release', listener: () => void) => void;
+};
+
+type SavedTimerState = {
+    selectedTimerId?: string;
+    timerId?: string;
+    remaining?: number;
+    level?: number;
+    endTime?: number;
+    isRunning?: boolean;
+    warningSpeechLevel?: number;
+};
+
+type StoredTimerState = {
+    leagues?: Record<string, SavedTimerState>;
 };
 
 let defaultDuration = fallbackDefaultDuration;
@@ -35,7 +48,8 @@ let nextLevelButton: HTMLButtonElement | null = null;
 let timerPageElement: HTMLElement | null = null;
 let timerSelector: HTMLSelectElement | null = null;
 let lastSavedRunningState = '';
-let storageKey = storageKeyPrefix;
+let leagueId = '';
+let currentTimerId = '';
 let warningSpeechLevel = 0;
 let preferredWarningVoice: SpeechSynthesisVoice | null = null;
 let wakeLock: WakeLockSentinel | null = null;
@@ -117,16 +131,14 @@ function changeTimer() {
         return;
     }
 
-    const leagueId = timerPageElement.dataset.timerLeagueId;
     const selectedTimerId = timerSelector.value;
 
     resetAll();
-    window.localStorage.removeItem(storageKey);
-    window.localStorage.removeItem(getStorageKey(leagueId, selectedTimerId));
     resetRuntimeState();
-    window.localStorage.setItem(
-        getSelectedTimerKey(leagueId),
-        selectedTimerId);
+    saveLeagueTimerState({
+        selectedTimerId,
+        timerId: selectedTimerId
+    });
 
     const urlParams = new URLSearchParams(window.location.search);
     urlParams.set('league_id', leagueId);
@@ -189,8 +201,8 @@ function toggleTimer() {
         return;
     }
 
-    unlockSpeech();
     const shouldAnnounceTournamentStart = isTournamentStart();
+    unlockSpeech();
 
     if (remaining === 0) {
         remaining = duration;
@@ -656,6 +668,8 @@ function speakMessage(message: string, options: { interrupt?: boolean } = {}) {
         utterance.lang = voice.lang;
     }
 
+    window.speechSynthesis.resume();
+
     if (options.interrupt && (window.speechSynthesis.speaking || window.speechSynthesis.pending)) {
         window.speechSynthesis.cancel();
         window.setTimeout(() => window.speechSynthesis.speak(utterance), 0);
@@ -671,27 +685,8 @@ function unlockSpeech() {
     }
 
     speechUnlocked = true;
-    primeSpeech();
     updateWakeLockSupportMessage();
     flushPendingSpeechMessages();
-}
-
-function primeSpeech() {
-    if (!window.speechSynthesis) {
-        return;
-    }
-
-    const utterance = new SpeechSynthesisUtterance(' ');
-    const voice = preferredWarningVoice ?? getPreferredWarningVoice();
-
-    utterance.volume = 0;
-
-    if (voice) {
-        utterance.voice = voice;
-        utterance.lang = voice.lang;
-    }
-
-    window.speechSynthesis.speak(utterance);
 }
 
 function flushPendingSpeechMessages() {
@@ -760,6 +755,8 @@ function saveState() {
     lastSavedRunningState = getRunningStateKey();
 
     const state = {
+        selectedTimerId: currentTimerId,
+        timerId: currentTimerId,
         remaining,
         level,
         endTime,
@@ -767,7 +764,7 @@ function saveState() {
         warningSpeechLevel
     };
 
-    window.localStorage.setItem(storageKey, JSON.stringify(state));
+    saveLeagueTimerState(state);
 }
 
 function saveRunningState() {
@@ -784,14 +781,12 @@ function getRunningStateKey() {
 }
 
 function restoreState() {
-    const rawState = window.localStorage.getItem(storageKey);
-    if (!rawState) {
+    const state = loadLeagueTimerState();
+    if (!state || state.timerId !== currentTimerId) {
         return;
     }
 
     try {
-        const state = JSON.parse(rawState);
-
         level = sanitizeLevel(state.level);
         warningSpeechLevel = sanitizeNumber(state.warningSpeechLevel, 0);
 
@@ -819,7 +814,7 @@ function restoreState() {
         remaining = defaultDuration;
         level = 1;
         endTime = 0;
-        window.localStorage.removeItem(storageKey);
+        removeLeagueTimerState();
     }
 }
 
@@ -854,10 +849,10 @@ function resetRuntimeState() {
 }
 
 function setDefaults(container: HTMLElement) {
+    removeLegacyTimerStateKeys();
     timerPageElement = container.querySelector<HTMLElement>('[data-timer-page]');
-    storageKey = getStorageKey(
-        timerPageElement?.dataset.timerLeagueId,
-        timerPageElement?.dataset.timerId);
+    leagueId = timerPageElement?.dataset.timerLeagueId || '';
+    currentTimerId = timerPageElement?.dataset.timerId || '';
     defaultDuration = getPositiveNumber(
         timerPageElement?.dataset.timerDefaultDuration,
         fallbackDefaultDuration);
@@ -868,20 +863,65 @@ function setDefaults(container: HTMLElement) {
     level = 1;
     endTime = 0;
     warningSpeechLevel = 0;
+
+    const savedState = loadLeagueTimerState();
+    if (currentTimerId && savedState?.timerId !== currentTimerId) {
+        saveLeagueTimerState({
+            selectedTimerId: currentTimerId,
+            timerId: currentTimerId
+        });
+    }
 }
 
-function getStorageKey(leagueId?: string, timerId?: string) {
-    return leagueId && timerId
-        ? `${storageKeyPrefix}:${leagueId}:${timerId}`
-        : leagueId
-        ? `${storageKeyPrefix}:${leagueId}`
-        : storageKeyPrefix;
+function loadTimerState() {
+    try {
+        return JSON.parse(window.localStorage.getItem(timerStateKey) || '{}') as StoredTimerState;
+    } catch {
+        return {};
+    }
 }
 
-function getSelectedTimerKey(leagueId?: string) {
-    return leagueId
-        ? `${selectedTimerKeyPrefix}:${leagueId}`
-        : selectedTimerKeyPrefix;
+function loadLeagueTimerState() {
+    if (!leagueId) {
+        return null;
+    }
+
+    return loadTimerState().leagues?.[leagueId] ?? null;
+}
+
+function saveLeagueTimerState(state: SavedTimerState) {
+    if (!leagueId) {
+        return;
+    }
+
+    const timerState = loadTimerState();
+    timerState.leagues = timerState.leagues || {};
+    timerState.leagues[leagueId] = state;
+    window.localStorage.setItem(timerStateKey, JSON.stringify(timerState));
+}
+
+function removeLeagueTimerState() {
+    if (!leagueId) {
+        return;
+    }
+
+    const timerState = loadTimerState();
+    if (!timerState.leagues?.[leagueId]) {
+        return;
+    }
+
+    delete timerState.leagues[leagueId];
+    window.localStorage.setItem(timerStateKey, JSON.stringify(timerState));
+}
+
+function removeLegacyTimerStateKeys() {
+    for (let i = window.localStorage.length - 1; i >= 0; i--) {
+        const key = window.localStorage.key(i);
+
+        if (key && (key === 'selectedTimer' || key.startsWith('selectedTimer:') || key.startsWith('timerState:'))) {
+            window.localStorage.removeItem(key);
+        }
+    }
 }
 
 function getPositiveNumber(value: string | undefined, fallback: number) {

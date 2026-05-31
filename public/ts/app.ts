@@ -136,6 +136,7 @@ export function submitHandler(e: SubmitEvent) {
             // localStorage and update leagues
             if (form.action.indexOf('logout') > -1) {
                 window.localStorage.removeItem('league_id');
+                removeTimerLocalStorage();
                 const leagues = await fetchLeagues();
                 store.setState({
                     ...state,
@@ -192,5 +193,16 @@ export function submitHandler(e: SubmitEvent) {
         }).catch(error => {
             console.log(error);
         })
+    }
+}
+
+function removeTimerLocalStorage() {
+    for (let i = window.localStorage.length - 1; i >= 0; i--) {
+        const key = window.localStorage.key(i);
+
+        // Remove the current timerState key plus legacy timer keys from earlier storage formats.
+        if (key && (key === 'timerState' || key === 'selectedTimer' || key.startsWith('selectedTimer:') || key.startsWith('timerState:'))) {
+            window.localStorage.removeItem(key);
+        }
     }
 }
