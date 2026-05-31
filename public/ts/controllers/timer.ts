@@ -12,7 +12,9 @@ export default (params: URLSearchParams) => {
     const timer_id = params.get('timer_id');
     const league = state.leagues.find(item => item._id === league_id);
     const rememberedTimerId = getRememberedTimerId(league_id);
-    const selectedTimerId = timer_id || rememberedTimerId || league?.default_timer_id;
+    const selectedTimerId = getSelectedTimerId(
+        [timer_id, rememberedTimerId, league?.default_timer_id],
+        state.timers);
     const timerSettings = state.timers.find(timer => getObjectId(timer._id) === selectedTimerId)
         || state.timers.find(timer => (
             timer.tenant_id === league?.tenant_id && timer.name === league?.name
@@ -83,4 +85,9 @@ function getRememberedTimerId(leagueId: string | null) {
     }
 
     return window.localStorage.getItem(`${selectedTimerKeyPrefix}:${leagueId}`) || '';
+}
+
+function getSelectedTimerId(timerIds: Array<string | undefined | null>, timers: Array<{ _id?: unknown }>) {
+    const validTimerIds = new Set(timers.map(timer => getObjectId(timer._id)));
+    return timerIds.find(timerId => timerId && validTimerIds.has(timerId)) || '';
 }

@@ -117,16 +117,20 @@ function changeTimer() {
         return;
     }
 
+    const leagueId = timerPageElement.dataset.timerLeagueId;
+    const selectedTimerId = timerSelector.value;
+
     resetAll();
     window.localStorage.removeItem(storageKey);
+    window.localStorage.removeItem(getStorageKey(leagueId, selectedTimerId));
     resetRuntimeState();
     window.localStorage.setItem(
-        getSelectedTimerKey(timerPageElement.dataset.timerLeagueId),
-        timerSelector.value);
+        getSelectedTimerKey(leagueId),
+        selectedTimerId);
 
     const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('league_id', timerPageElement.dataset.timerLeagueId);
-    urlParams.set('timer_id', timerSelector.value);
+    urlParams.set('league_id', leagueId);
+    urlParams.set('timer_id', selectedTimerId);
     router(window.location.pathname, urlParams.toString(), { type: 'reload' });
 }
 
@@ -851,23 +855,25 @@ function resetRuntimeState() {
 
 function setDefaults(container: HTMLElement) {
     timerPageElement = container.querySelector<HTMLElement>('[data-timer-page]');
-    storageKey = getStorageKey(timerPageElement?.dataset.timerLeagueId);
+    storageKey = getStorageKey(
+        timerPageElement?.dataset.timerLeagueId,
+        timerPageElement?.dataset.timerId);
     defaultDuration = getPositiveNumber(
         timerPageElement?.dataset.timerDefaultDuration,
         fallbackDefaultDuration);
     blinds = getBlinds(timerPageElement?.dataset.timerSmallBlinds);
 
-    if (!window.localStorage.getItem(storageKey)) {
-        duration = defaultDuration;
-        remaining = defaultDuration;
-        level = 1;
-        endTime = 0;
-        warningSpeechLevel = 0;
-    }
+    duration = defaultDuration;
+    remaining = defaultDuration;
+    level = 1;
+    endTime = 0;
+    warningSpeechLevel = 0;
 }
 
-function getStorageKey(leagueId?: string) {
-    return leagueId
+function getStorageKey(leagueId?: string, timerId?: string) {
+    return leagueId && timerId
+        ? `${storageKeyPrefix}:${leagueId}:${timerId}`
+        : leagueId
         ? `${storageKeyPrefix}:${leagueId}`
         : storageKeyPrefix;
 }
