@@ -188,7 +188,7 @@ function updateBlindsDisplay() {
 
 function updateNextBlindsDisplay() {
     if (nextBlindsDisplay) {
-        nextBlindsDisplay.textContent = hasNextLevel() ? `Next blinds: ${getBlindValuesLabel(level + 1)}` : '';
+        nextBlindsDisplay.textContent = hasNextLevel() ? `Next level: ${getBlindValuesLabel(level + 1)}` : '';
     }
 }
 
@@ -601,7 +601,7 @@ function formatTime(totalSeconds: number) {
 function getBlindValuesLabel(round = level) {
     const smallBlind = getSmallBlind(round);
     const bigBlind = smallBlind * 2;
-    return `${smallBlind} / ${bigBlind}`;
+    return `${smallBlind}/${bigBlind}`;
 }
 
 function getBlindsFontSize(label: string) {

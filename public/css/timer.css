@@ -31,6 +31,50 @@ body.fullscreen footer {
     display: none;
 }
 
+body.fullscreen #results,
+body.fullscreen #results > .wrapper {
+    height: 100dvh;
+    overflow: hidden;
+}
+
+body.fullscreen .timer-page {
+    min-height: 100dvh;
+    justify-content: center;
+    padding: min(4vmin, 1rem);
+}
+
+body.fullscreen .timer-panel {
+    width: min(100%, 96vw);
+    margin: 0;
+}
+
+body.fullscreen .timer-level {
+    line-height: 1;
+}
+
+body.fullscreen .timer-round {
+    display: block;
+    font-size: clamp(2rem, 8vmin, 5rem);
+    line-height: 1.1;
+}
+
+body.fullscreen .timer-blinds {
+    font-size: clamp(2rem, 14vmin, 7rem);
+}
+
+body.fullscreen .timer-display {
+    display: inline-block;
+    font-size: clamp(4rem, 24vmin, 12rem);
+    margin: 2vh 0;
+    padding: 5vh 10vw;
+}
+
+@media (orientation: landscape) {
+    body.fullscreen .timer-next-blinds {
+        font-size: 2rem;
+    }
+}
+
 .timer-level {
     color: black;
     font-weight: 600;
@@ -43,12 +87,11 @@ body.fullscreen footer {
 
 .timer-blinds {
     font-size: var(--timer-blinds-font-size, 4rem);
-    line-height: 1;
+    line-height: 1.25;
     white-space: nowrap;
 }
 
 .timer-next-blinds {
-    min-height: 2.4rem;
     color: black;
     font-size: 1.5rem;
     font-weight: normal;
