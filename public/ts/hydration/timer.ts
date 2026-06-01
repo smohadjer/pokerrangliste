@@ -59,6 +59,7 @@ let wakeLockRequestFailed = false;
 let speechUnlocked = false;
 let restoredRunningTimer = false;
 let needsRunningConfirmation = false;
+let interruptSpeechSequence = 0;
 const pendingSpeechMessages: Array<{ message: string; options: { interrupt?: boolean } }> = [];
 
 export function initTimer(container: HTMLElement) {
@@ -655,6 +656,15 @@ function speakMessage(message: string, options: { interrupt?: boolean } = {}) {
     }
 
     if (!speechUnlocked) {
+        if (options.interrupt) {
+            // Keep only the latest interrupting announcement, e.g. rapid level skips.
+            for (let index = pendingSpeechMessages.length - 1; index >= 0; index--) {
+                if (pendingSpeechMessages[index].options.interrupt) {
+                    pendingSpeechMessages.splice(index, 1);
+                }
+            }
+        }
+
         pendingSpeechMessages.push({ message, options });
         updateWakeLockSupportMessage();
         return;
@@ -671,8 +681,14 @@ function speakMessage(message: string, options: { interrupt?: boolean } = {}) {
     window.speechSynthesis.resume();
 
     if (options.interrupt && (window.speechSynthesis.speaking || window.speechSynthesis.pending)) {
+        const sequence = ++interruptSpeechSequence;
         window.speechSynthesis.cancel();
-        window.setTimeout(() => window.speechSynthesis.speak(utterance), 0);
+        window.setTimeout(() => {
+            // cancel() is asynchronous in some browsers; ignore stale scheduled announcements.
+            if (sequence === interruptSpeechSequence) {
+                window.speechSynthesis.speak(utterance);
+            }
+        }, 0);
         return;
     }
 
