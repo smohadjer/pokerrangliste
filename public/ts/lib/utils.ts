@@ -36,6 +36,63 @@ export const getRebuys = (tournament: Tournament) => {
     return rebuys;
 };
 
+export const calculatePayouts = (
+    playerCount: number,
+    prizePool: number,
+    percentPaid = 0.25,
+    decay = 0.75,
+    increment = 5,
+    maxPaidPlaces = playerCount
+) => {
+    if (!Number.isFinite(playerCount) || playerCount <= 0) {
+        return [];
+    }
+
+    if (!Number.isFinite(prizePool) || prizePool <= 0) {
+        return [];
+    }
+
+    if (!Number.isFinite(percentPaid) || percentPaid <= 0) {
+        return [];
+    }
+
+    const step = Number.isFinite(increment) && increment > 0 ? increment : 1;
+    const payoutDecay = Number.isFinite(decay) && decay > 0 && decay < 1 ? decay : 0.75;
+    const cappedPaidPlaces = Number.isFinite(maxPaidPlaces) && maxPaidPlaces > 0
+        ? Math.min(playerCount, Math.floor(maxPaidPlaces))
+        : playerCount;
+    let paidPlaces = Math.min(
+        cappedPaidPlaces,
+        Math.max(1, Math.floor(playerCount * percentPaid))
+    );
+
+    while (paidPlaces > 0) {
+        const weights = Array.from(
+            { length: paidPlaces },
+            (_, i) => Math.pow(payoutDecay, i)
+        );
+        const totalWeight = weights.reduce((sum, weight) => sum + weight, 0);
+        const payouts = weights.map((weight) => {
+            const rawAmount = (weight / totalWeight) * prizePool;
+            return Math.floor(rawAmount / step) * step;
+        });
+
+        if (payouts.every((amount) => amount > 0)) {
+            const distributed = payouts.reduce((sum, amount) => sum + amount, 0);
+            payouts[0] += prizePool - distributed;
+
+            return payouts.map((amount, index) => ({
+                place: index + 1,
+                amount
+            }));
+        }
+
+        paidPlaces -= 1;
+    }
+
+    return [{ place: 1, amount: prizePool }];
+};
+
 export const getPoints = (player: Player, tournament: Tournament) => {
     const rebuys = player.rebuys * tournament.buyin;
     const prize = getPrize(player, tournament);
