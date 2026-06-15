@@ -1,14 +1,27 @@
 import { router } from '../lib/router';
+import {
+    getPendingTimerSpeechCount,
+    initTimerSpeech,
+    isTimerSpeechReactivationRequired,
+    isTimerSpeechUnlocked,
+    resetTimerSpeech,
+    speakTimerMessage,
+    unlockTimerSpeech
+} from './timerSpeech';
+import {
+    hasActiveTimerWakeLock,
+    hasTimerWakeLockRequestFailed,
+    hasTimerWakeLockSupport,
+    initTimerWakeLock,
+    releaseTimerWakeLock,
+    requestTimerWakeLock,
+    resetTimerWakeLock
+} from './timerWakeLock';
 
 const fallbackDefaultDuration = 15 * 60;
 const fallbackBlinds = [5, 10, 20, 40, 80, 150, 300];
 const timerStateKey = 'timerState';
 const roundChangedEventName = 'timer:round-change';
-
-type WakeLockSentinel = {
-    release: () => Promise<void>;
-    addEventListener: (type: 'release', listener: () => void) => void;
-};
 
 type SavedTimerState = {
     selectedTimerId?: string;
@@ -24,76 +37,94 @@ type StoredTimerState = {
     leagues?: Record<string, SavedTimerState>;
 };
 
-let defaultDuration = fallbackDefaultDuration;
-let blinds = fallbackBlinds;
-let duration = defaultDuration;
-let remaining = defaultDuration;
-let level = 1;
-let endTime = 0;
-let timerId: number | undefined;
-let roundDisplay: HTMLElement | null = null;
-let blindsDisplay: HTMLElement | null = null;
-let nextBlindsDisplay: HTMLElement | null = null;
-let display: HTMLElement | null = null;
-let wakeLockMessage: HTMLElement | null = null;
-let wakeLockMessageText: HTMLElement | null = null;
-let wakeLockCloseButton: HTMLButtonElement | null = null;
-let wakeLockEnableButton: HTMLButtonElement | null = null;
-let blindsStructureModal: HTMLElement | null = null;
-let blindsStructureList: HTMLElement | null = null;
-let startButton: HTMLButtonElement | null = null;
-let startIcon: HTMLImageElement | null = null;
-let prevLevelButton: HTMLButtonElement | null = null;
-let nextLevelButton: HTMLButtonElement | null = null;
-let timerPageElement: HTMLElement | null = null;
-let timerSelector: HTMLSelectElement | null = null;
-let lastSavedRunningState = '';
-let leagueId = '';
-let currentTimerId = '';
-let warningSpeechLevel = 0;
-let preferredWarningVoice: SpeechSynthesisVoice | null = null;
-let wakeLock: WakeLockSentinel | null = null;
-let wakeLockListenerInitialized = false;
-let wakeLockMessageDismissed = false;
-let wakeLockRequestFailed = false;
-let speechUnlocked = false;
-let restoredRunningTimer = false;
-let needsRunningConfirmation = false;
-let interruptSpeechSequence = 0;
-const pendingSpeechMessages: Array<{ message: string; options: { interrupt?: boolean } }> = [];
+const state = {
+    defaultDuration: fallbackDefaultDuration,
+    blinds: fallbackBlinds,
+    duration: fallbackDefaultDuration,
+    remaining: fallbackDefaultDuration,
+    level: 1,
+    endTime: 0,
+    timerIntervalId: undefined as number | undefined,
+    lastSavedRunningState: '',
+    leagueId: '',
+    currentTimerId: '',
+    warningSpeechLevel: 0,
+    restoredRunningTimer: false,
+    needsRunningConfirmation: false
+};
+
+const ui = {
+    wakeLockMessageDismissed: false
+};
+
+const elements = {
+    roundDisplay: null as HTMLElement | null,
+    blindsDisplay: null as HTMLElement | null,
+    nextBlindsDisplay: null as HTMLElement | null,
+    display: null as HTMLElement | null,
+    wakeLockMessage: null as HTMLElement | null,
+    wakeLockMessageText: null as HTMLElement | null,
+    wakeLockCloseButton: null as HTMLButtonElement | null,
+    wakeLockEnableButton: null as HTMLButtonElement | null,
+    blindsStructureModal: null as HTMLElement | null,
+    blindsStructureList: null as HTMLElement | null,
+    startButton: null as HTMLButtonElement | null,
+    startIcon: null as HTMLImageElement | null,
+    prevLevelButton: null as HTMLButtonElement | null,
+    nextLevelButton: null as HTMLButtonElement | null,
+    timerPage: null as HTMLElement | null,
+    timerSelector: null as HTMLSelectElement | null
+};
 
 export function initTimer(container: HTMLElement) {
     setDefaults(container);
-    loadPreferredWarningVoice();
-    initWakeLockListener();
+    initTimerSpeech({
+        isTimerRunning: () => Boolean(state.timerIntervalId),
+        onStateChange: updateWakeLockSupportMessage
+    });
+    initTimerWakeLock({
+        isTimerRunning: () => Boolean(state.timerIntervalId),
+        onStateChange: updateWakeLockSupportMessage
+    });
 
-    roundDisplay = container.querySelector<HTMLElement>('[data-timer-round]');
-    blindsDisplay = container.querySelector<HTMLElement>('[data-timer-blinds]');
-    nextBlindsDisplay = container.querySelector<HTMLElement>('[data-timer-next-blinds]');
-    display = container.querySelector<HTMLElement>('[data-timer-display]');
-    wakeLockMessage = container.querySelector<HTMLElement>('[data-timer-wake-lock-message]');
-    wakeLockMessageText = container.querySelector<HTMLElement>('[data-timer-wake-lock-text]');
-    wakeLockCloseButton = container.querySelector<HTMLButtonElement>('[data-timer-wake-lock-close]');
-    wakeLockEnableButton = container.querySelector<HTMLButtonElement>('[data-timer-wake-lock-enable]');
-    blindsStructureModal = container.querySelector<HTMLElement>('[data-timer-blinds-structure-modal]');
-    blindsStructureList = container.querySelector<HTMLElement>('[data-timer-blinds-structure-list]');
-    startButton = container.querySelector<HTMLButtonElement>('[data-timer-start]');
-    startIcon = container.querySelector<HTMLImageElement>('[data-timer-start-icon]');
-    prevLevelButton = container.querySelector<HTMLButtonElement>('[data-timer-prev-level]');
-    nextLevelButton = container.querySelector<HTMLButtonElement>('[data-timer-next-level]');
-    timerSelector = container.querySelector<HTMLSelectElement>('#select-timer');
+    elements.roundDisplay = container.querySelector<HTMLElement>('[data-timer-round]');
+    elements.blindsDisplay = container.querySelector<HTMLElement>('[data-timer-blinds]');
+    elements.nextBlindsDisplay = container.querySelector<HTMLElement>('[data-timer-next-blinds]');
+    elements.display = container.querySelector<HTMLElement>('[data-timer-display]');
+    elements.wakeLockMessage = container.querySelector<HTMLElement>('[data-timer-wake-lock-message]');
+    elements.wakeLockMessageText = container.querySelector<HTMLElement>('[data-timer-wake-lock-text]');
+    elements.wakeLockCloseButton = container.querySelector<HTMLButtonElement>('[data-timer-wake-lock-close]');
+    elements.wakeLockEnableButton = container.querySelector<HTMLButtonElement>('[data-timer-wake-lock-enable]');
+    elements.blindsStructureModal = container.querySelector<HTMLElement>('[data-timer-blinds-structure-modal]');
+    elements.blindsStructureList = container.querySelector<HTMLElement>('[data-timer-blinds-structure-list]');
+    elements.startButton = container.querySelector<HTMLButtonElement>('[data-timer-start]');
+    elements.startIcon = container.querySelector<HTMLImageElement>('[data-timer-start-icon]');
+    elements.prevLevelButton = container.querySelector<HTMLButtonElement>('[data-timer-prev-level]');
+    elements.nextLevelButton = container.querySelector<HTMLButtonElement>('[data-timer-next-level]');
+    elements.timerSelector = container.querySelector<HTMLSelectElement>('#select-timer');
     const resetRoundButton = container.querySelector<HTMLButtonElement>('[data-timer-reset-round]');
     const resetAllButton = container.querySelector<HTMLButtonElement>('[data-timer-reset-all]');
     const openBlindsStructureButton = container.querySelector<HTMLButtonElement>('[data-timer-blinds-structure-open]');
     const closeBlindsStructureButton = container.querySelector<HTMLButtonElement>('[data-timer-blinds-structure-close]');
 
-    if (!roundDisplay || !blindsDisplay || !nextBlindsDisplay || !display || !startButton || !startIcon || !prevLevelButton || !nextLevelButton || !resetRoundButton || !resetAllButton) {
+    if (
+        !elements.roundDisplay
+        || !elements.blindsDisplay
+        || !elements.nextBlindsDisplay
+        || !elements.display
+        || !elements.startButton
+        || !elements.startIcon
+        || !elements.prevLevelButton
+        || !elements.nextLevelButton
+        || !resetRoundButton
+        || !resetAllButton
+    ) {
         return;
     }
 
-    startButton.addEventListener('click', toggleTimer);
-    display.addEventListener('click', toggleTimer);
-    display.addEventListener('keydown', event => {
+    elements.startButton.addEventListener('click', toggleTimer);
+    elements.display.addEventListener('click', toggleTimer);
+    elements.display.addEventListener('keydown', event => {
         if (event.key !== 'Enter' && event.key !== ' ') {
             return;
         }
@@ -102,19 +133,19 @@ export function initTimer(container: HTMLElement) {
         toggleTimer();
     });
 
-    prevLevelButton.addEventListener('click', prevLevel);
-    nextLevelButton.addEventListener('click', () => nextLevel({ interruptSpeech: true }));
+    elements.prevLevelButton.addEventListener('click', prevLevel);
+    elements.nextLevelButton.addEventListener('click', () => nextLevel({ interruptSpeech: true }));
     resetRoundButton.addEventListener('click', resetRound);
     resetAllButton.addEventListener('click', resetAll);
     openBlindsStructureButton?.addEventListener('click', openBlindsStructure);
     closeBlindsStructureButton?.addEventListener('click', closeBlindsStructure);
-    blindsStructureModal?.addEventListener('click', closeBlindsStructureOnBackdrop);
-    wakeLockEnableButton?.addEventListener('click', enableTimerFromPopup);
-    wakeLockCloseButton?.addEventListener('click', closeWakeLockMessage);
-    timerSelector?.addEventListener('change', changeTimer);
-    timerPageElement?.addEventListener(roundChangedEventName, event => {
+    elements.blindsStructureModal?.addEventListener('click', closeBlindsStructureOnBackdrop);
+    elements.wakeLockEnableButton?.addEventListener('click', enableTimerFromPopup);
+    elements.wakeLockCloseButton?.addEventListener('click', closeWakeLockMessage);
+    elements.timerSelector?.addEventListener('change', changeTimer);
+    elements.timerPage?.addEventListener(roundChangedEventName, event => {
         const detail = (event as CustomEvent<{ round: number; interruptSpeech?: boolean }>).detail;
-        speakMessage(getLevelChangedSpeech(detail.round), { interrupt: Boolean(detail.interruptSpeech) });
+        speakTimerMessage(getLevelChangedSpeech(detail.round), { interrupt: Boolean(detail.interruptSpeech) });
     });
 
     restoreState();
@@ -128,11 +159,11 @@ export function initTimer(container: HTMLElement) {
 }
 
 function changeTimer() {
-    if (!timerSelector || !timerPageElement?.dataset.timerLeagueId) {
+    if (!elements.timerSelector || !elements.timerPage?.dataset.timerLeagueId) {
         return;
     }
 
-    const selectedTimerId = timerSelector.value;
+    const selectedTimerId = elements.timerSelector.value;
 
     resetAll();
     resetRuntimeState();
@@ -142,89 +173,89 @@ function changeTimer() {
     });
 
     const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('league_id', leagueId);
+    urlParams.set('league_id', state.leagueId);
     urlParams.set('timer_id', selectedTimerId);
     router(window.location.pathname, urlParams.toString(), { type: 'reload' });
 }
 
 function updateDisplay() {
-    if (timerId) {
-        remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+    if (state.timerIntervalId) {
+        state.remaining = Math.max(0, Math.ceil((state.endTime - Date.now()) / 1000));
     }
 
-    if (display) {
-        display.textContent = formatTime(remaining);
-        display.classList.toggle('timer-display--warning', remaining <= 60);
-        display.classList.toggle('timer-display--paused', !timerId);
-        display.setAttribute('aria-label', timerId ? 'Pause timer' : 'Start timer');
+    if (elements.display) {
+        elements.display.textContent = formatTime(state.remaining);
+        elements.display.classList.toggle('timer-display--warning', state.remaining <= 60);
+        elements.display.classList.toggle('timer-display--paused', !state.timerIntervalId);
+        elements.display.setAttribute('aria-label', state.timerIntervalId ? 'Pause timer' : 'Start timer');
     }
 
-    if (prevLevelButton) {
-        prevLevelButton.disabled = level === 1;
+    if (elements.prevLevelButton) {
+        elements.prevLevelButton.disabled = state.level === 1;
     }
 
-    if (nextLevelButton) {
-        nextLevelButton.disabled = !hasNextLevel();
+    if (elements.nextLevelButton) {
+        elements.nextLevelButton.disabled = !hasNextLevel();
     }
 
     updateWakeLockSupportMessage();
 }
 
 function updateLevelDisplay() {
-    if (roundDisplay) {
-        roundDisplay.textContent = `Level ${level}`;
+    if (elements.roundDisplay) {
+        elements.roundDisplay.textContent = `Level ${state.level}`;
     }
 }
 
 function updateBlindsDisplay() {
-    if (!blindsDisplay) {
+    if (!elements.blindsDisplay) {
         return;
     }
 
     const blindValuesLabel = getBlindValuesLabel();
-    blindsDisplay.textContent = blindValuesLabel;
-    blindsDisplay.style.setProperty('--timer-blinds-font-size', getBlindsFontSize(blindValuesLabel));
+    elements.blindsDisplay.textContent = blindValuesLabel;
+    elements.blindsDisplay.style.setProperty('--timer-blinds-font-size', getBlindsFontSize(blindValuesLabel));
 }
 
 function updateNextBlindsDisplay() {
-    if (nextBlindsDisplay) {
-        nextBlindsDisplay.textContent = hasNextLevel() ? `Next level: ${getBlindValuesLabel(level + 1)}` : '';
+    if (elements.nextBlindsDisplay) {
+        elements.nextBlindsDisplay.textContent = hasNextLevel() ? `Next level: ${getBlindValuesLabel(state.level + 1)}` : '';
     }
 }
 
 function isTournamentStart() {
-    return level === 1 && remaining === duration;
+    return state.level === 1 && state.remaining === state.duration;
 }
 
 function toggleTimer() {
-    if (timerId) {
+    if (state.timerIntervalId) {
         stop();
         return;
     }
 
     const shouldAnnounceTournamentStart = isTournamentStart();
-    unlockSpeech();
+    unlockTimerSpeech();
 
-    if (remaining === 0) {
-        remaining = duration;
+    if (state.remaining === 0) {
+        state.remaining = state.duration;
     }
 
-    endTime = Date.now() + (remaining * 1000);
+    state.endTime = Date.now() + (state.remaining * 1000);
     setRunningState();
-    timerId = window.setInterval(tick, 250);
+    state.timerIntervalId = window.setInterval(tick, 250);
     syncRunningSideEffects();
     if (shouldAnnounceTournamentStart) {
-        speakMessage(getTournamentStartSpeech(), { interrupt: false });
+        speakTimerMessage(getTournamentStartSpeech(), { interrupt: false });
     }
     tick();
 }
 
 function renderBlindsStructure() {
-    if (!blindsStructureList) {
+    if (!elements.blindsStructureList) {
         return;
     }
 
-    blindsStructureList.replaceChildren();
+    elements.blindsStructureList.replaceChildren();
     const table = document.createElement('table');
     table.className = 'timer-blinds-structure__table';
 
@@ -238,7 +269,7 @@ function renderBlindsStructure() {
     thead.append(headerRow);
 
     const tbody = document.createElement('tbody');
-    blinds.forEach((smallBlind, index) => {
+    state.blinds.forEach((smallBlind, index) => {
         const row = document.createElement('tr');
         row.className = 'timer-blinds-structure__row';
 
@@ -256,71 +287,72 @@ function renderBlindsStructure() {
     });
 
     table.append(thead, tbody);
-    blindsStructureList.append(table);
+    elements.blindsStructureList.append(table);
 }
 
 function openBlindsStructure() {
     renderBlindsStructure();
 
-    if (blindsStructureModal) {
-        blindsStructureModal.hidden = false;
+    if (elements.blindsStructureModal) {
+        elements.blindsStructureModal.hidden = false;
     }
 }
 
 function closeBlindsStructure() {
-    if (blindsStructureModal) {
-        blindsStructureModal.hidden = true;
+    if (elements.blindsStructureModal) {
+        elements.blindsStructureModal.hidden = true;
     }
 }
 
 function closeBlindsStructureOnBackdrop(event: MouseEvent) {
-    if (event.target === blindsStructureModal) {
+    if (event.target === elements.blindsStructureModal) {
         closeBlindsStructure();
     }
 }
 
 function stop() {
-    if (timerId) {
+    if (state.timerIntervalId) {
         clearTimerInterval();
     }
 
     setPausedState();
-    releaseWakeLock();
-    restoredRunningTimer = false;
-    needsRunningConfirmation = false;
-    pendingSpeechMessages.splice(0);
+    void releaseTimerWakeLock();
+    state.restoredRunningTimer = false;
+    state.needsRunningConfirmation = false;
+    resetTimerSpeech();
+    resetTimerWakeLock();
     updateWakeLockSupportMessage();
     updateDisplay();
     saveState();
 }
 
 function clearTimerInterval() {
-    if (!timerId) {
+    if (!state.timerIntervalId) {
         return;
     }
 
-    window.clearInterval(timerId);
-    timerId = undefined;
+    window.clearInterval(state.timerIntervalId);
+    state.timerIntervalId = undefined;
 }
 
 function syncRunningSideEffects() {
     updateWakeLockSupportMessage();
 
-    if (!timerId) {
+    if (!state.timerIntervalId) {
         return;
     }
 
     setRunningState();
-    void requestWakeLock();
+    void requestTimerWakeLock();
     updateWakeLockSupportMessage();
 }
 
 function tick() {
-    const previousRemaining = remaining;
-    remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
+    const previousRemaining = state.remaining;
+    state.remaining = Math.max(0, Math.ceil((state.endTime - Date.now()) / 1000));
     speakWarningIfNeeded(previousRemaining);
 
-    if (remaining === 0) {
+    if (state.remaining === 0) {
         nextLevel({ resetTimer: true });
         return;
     }
@@ -330,15 +362,15 @@ function tick() {
 }
 
 function nextLevel(options: { resetTimer?: boolean; interruptSpeech?: boolean } = {}) {
-    const wasRunning = Boolean(timerId);
+    const wasRunning = Boolean(state.timerIntervalId);
 
     if (!hasNextLevel()) {
         if (options.resetTimer) {
-            remaining = duration;
-            warningSpeechLevel = 0;
+            state.remaining = state.duration;
+            state.warningSpeechLevel = 0;
 
             if (wasRunning) {
-                endTime = Date.now() + (duration * 1000);
+                state.endTime = Date.now() + (state.duration * 1000);
                 setRunningState();
             }
         }
@@ -348,16 +380,16 @@ function nextLevel(options: { resetTimer?: boolean; interruptSpeech?: boolean } 
         return;
     }
 
-    const previousLevel = level;
-    level++;
+    const previousLevel = state.level;
+    state.level++;
 
     if (options.resetTimer) {
-        remaining = duration;
-        warningSpeechLevel = 0;
+        state.remaining = state.duration;
+        state.warningSpeechLevel = 0;
     }
 
     if (wasRunning && options.resetTimer) {
-        endTime = Date.now() + (duration * 1000);
+        state.endTime = Date.now() + (state.duration * 1000);
         setRunningState();
     }
 
@@ -370,14 +402,14 @@ function nextLevel(options: { resetTimer?: boolean; interruptSpeech?: boolean } 
 }
 
 function prevLevel() {
-    if (level === 1) {
+    if (state.level === 1) {
         return;
     }
 
-    const wasRunning = Boolean(timerId);
-    const previousLevel = level;
-    level--;
-    warningSpeechLevel = 0;
+    const wasRunning = Boolean(state.timerIntervalId);
+    const previousLevel = state.level;
+    state.level--;
+    state.warningSpeechLevel = 0;
 
     if (wasRunning) {
         setRunningState();
@@ -393,18 +425,18 @@ function prevLevel() {
 
 function resetRound() {
     stop();
-    remaining = duration;
-    warningSpeechLevel = 0;
+    state.remaining = state.duration;
+    state.warningSpeechLevel = 0;
     updateDisplay();
     saveState();
 }
 
 function resetAll() {
     stop();
-    duration = defaultDuration;
-    remaining = duration;
-    level = 1;
-    warningSpeechLevel = 0;
+    state.duration = state.defaultDuration;
+    state.remaining = state.duration;
+    state.level = 1;
+    state.warningSpeechLevel = 0;
     updateLevelDisplay();
     updateBlindsDisplay();
     updateNextBlindsDisplay();
@@ -413,71 +445,67 @@ function resetAll() {
 }
 
 function setRunningState() {
-    if (startIcon) {
-        startIcon.src = '/images/pause.svg';
+    if (elements.startIcon) {
+        elements.startIcon.src = '/images/pause.svg';
     }
 
-    if (startButton) {
-        startButton.setAttribute('aria-label', 'Pause timer');
+    if (elements.startButton) {
+        elements.startButton.setAttribute('aria-label', 'Pause timer');
     }
 
     document.body.classList.add('fullscreen');
 }
 
 function setPausedState() {
-    if (startIcon) {
-        startIcon.src = '/images/play.svg';
+    if (elements.startIcon) {
+        elements.startIcon.src = '/images/play.svg';
     }
 
-    if (startButton) {
-        startButton.setAttribute('aria-label', 'Start timer');
+    if (elements.startButton) {
+        elements.startButton.setAttribute('aria-label', 'Start timer');
     }
 
     document.body.classList.remove('fullscreen');
 }
 
-function initWakeLockListener() {
-    if (wakeLockListenerInitialized) {
-        return;
-    }
-
-    wakeLockListenerInitialized = true;
-    document.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible' && timerId) {
-            void requestWakeLock();
-        }
-    });
-}
-
 function updateWakeLockSupportMessage() {
-    if (!wakeLockMessage) {
+    if (!elements.wakeLockMessage) {
         return;
     }
 
-    const supportsWakeLock = hasWakeLockSupport();
-    const needsAudioGesture = Boolean(timerId && !speechUnlocked && (restoredRunningTimer || pendingSpeechMessages.length > 0));
-    const needsWakeLockGesture = Boolean(timerId && supportsWakeLock && !wakeLock && wakeLockRequestFailed);
-    const shouldShow = !wakeLockMessageDismissed && (needsRunningConfirmation || !supportsWakeLock || needsWakeLockGesture || needsAudioGesture);
+    const supportsWakeLock = hasTimerWakeLockSupport();
+    const needsAudioGesture = Boolean(
+        state.timerIntervalId
+        && (!isTimerSpeechUnlocked() || isTimerSpeechReactivationRequired())
+        && (state.restoredRunningTimer || getPendingTimerSpeechCount() > 0 || isTimerSpeechReactivationRequired())
+    );
+    const needsWakeLockGesture = Boolean(
+        state.timerIntervalId
+        && supportsWakeLock
+        && !hasActiveTimerWakeLock()
+        && hasTimerWakeLockRequestFailed()
+    );
+    const shouldShow = !ui.wakeLockMessageDismissed && (state.needsRunningConfirmation || !supportsWakeLock || needsWakeLockGesture || needsAudioGesture);
 
-    wakeLockMessage.hidden = !shouldShow;
+    elements.wakeLockMessage.hidden = !shouldShow;
 
-    if (wakeLockMessageText) {
-        wakeLockMessageText.textContent = getTimerPermissionMessage(supportsWakeLock, needsAudioGesture, needsWakeLockGesture);
+    if (elements.wakeLockMessageText) {
+        elements.wakeLockMessageText.textContent = getTimerPermissionMessage(supportsWakeLock, needsAudioGesture, needsWakeLockGesture);
     }
 
-    if (wakeLockEnableButton) {
-        const hasAction = needsRunningConfirmation || needsAudioGesture || (supportsWakeLock && Boolean(timerId && !wakeLock));
-        wakeLockEnableButton.hidden = !hasAction;
-        wakeLockEnableButton.textContent = getTimerPermissionButtonLabel(supportsWakeLock, needsAudioGesture, needsWakeLockGesture);
+    if (elements.wakeLockEnableButton) {
+        const hasAction = state.needsRunningConfirmation || needsAudioGesture || (supportsWakeLock && Boolean(state.timerIntervalId && !hasActiveTimerWakeLock()));
+        elements.wakeLockEnableButton.hidden = !hasAction;
+        elements.wakeLockEnableButton.textContent = getTimerPermissionButtonLabel(supportsWakeLock, needsAudioGesture, needsWakeLockGesture);
     }
 
-    if (wakeLockCloseButton) {
-        wakeLockCloseButton.textContent = needsRunningConfirmation ? 'Stop timer' : 'Close';
+    if (elements.wakeLockCloseButton) {
+        elements.wakeLockCloseButton.textContent = state.needsRunningConfirmation ? 'Stop timer' : 'Close';
     }
 }
 
 function getTimerPermissionMessage(supportsWakeLock: boolean, needsAudioGesture: boolean, needsWakeLockGesture: boolean) {
-    if (needsRunningConfirmation) {
+    if (state.needsRunningConfirmation) {
         return 'The timer is still running. Do you want to keep it running?';
     }
 
@@ -497,7 +525,7 @@ function getTimerPermissionMessage(supportsWakeLock: boolean, needsAudioGesture:
 }
 
 function getTimerPermissionButtonLabel(supportsWakeLock: boolean, needsAudioGesture: boolean, needsWakeLockGesture: boolean) {
-    if (needsRunningConfirmation) {
+    if (state.needsRunningConfirmation) {
         return 'Keep running';
     }
 
@@ -509,84 +537,25 @@ function getTimerPermissionButtonLabel(supportsWakeLock: boolean, needsAudioGest
 }
 
 function closeWakeLockMessage() {
-    if (needsRunningConfirmation) {
-        needsRunningConfirmation = false;
+    if (state.needsRunningConfirmation) {
+        state.needsRunningConfirmation = false;
         stop();
         return;
     }
 
-    wakeLockMessageDismissed = true;
-    if (wakeLockMessage) {
-        wakeLockMessage.hidden = true;
+    ui.wakeLockMessageDismissed = true;
+    if (elements.wakeLockMessage) {
+        elements.wakeLockMessage.hidden = true;
     }
 }
 
 async function enableTimerFromPopup() {
-    wakeLockMessageDismissed = false;
-    needsRunningConfirmation = false;
-    unlockSpeech();
+    ui.wakeLockMessageDismissed = false;
+    state.needsRunningConfirmation = false;
+    unlockTimerSpeech();
 
-    if (timerId && hasWakeLockSupport()) {
-        await requestWakeLock();
-    }
-
-    updateWakeLockSupportMessage();
-}
-
-async function requestWakeLock() {
-    if (wakeLock) {
-        wakeLockRequestFailed = false;
-        updateWakeLockSupportMessage();
-        return true;
-    }
-
-    if (!hasWakeLockSupport()) {
-        wakeLockRequestFailed = true;
-        updateWakeLockSupportMessage();
-        return false;
-    }
-
-    const wakeLockNavigator = navigator as Navigator & {
-        wakeLock?: {
-            request: (type: 'screen') => Promise<WakeLockSentinel>;
-        };
-    };
-
-    try {
-        wakeLock = await wakeLockNavigator.wakeLock!.request('screen');
-        wakeLockRequestFailed = false;
-        wakeLock.addEventListener('release', () => {
-            wakeLock = null;
-            if (timerId) {
-                updateWakeLockSupportMessage();
-            }
-        });
-        updateWakeLockSupportMessage();
-        return true;
-    } catch {
-        wakeLock = null;
-        wakeLockRequestFailed = true;
-        updateWakeLockSupportMessage();
-        return false;
-    }
-}
-
-function hasWakeLockSupport() {
-    return 'wakeLock' in navigator;
-}
-
-async function releaseWakeLock() {
-    if (!wakeLock) {
-        return;
-    }
-
-    const currentWakeLock = wakeLock;
-    wakeLock = null;
-
-    try {
-        await currentWakeLock.release();
-    } catch {
-        // Ignore wake lock release failures; the browser may have already released it.
+    if (state.timerIntervalId && hasTimerWakeLockSupport()) {
+        await requestTimerWakeLock();
     }
 
     updateWakeLockSupportMessage();
@@ -598,7 +567,7 @@ function formatTime(totalSeconds: number) {
     return `${minutes}:${seconds}`;
 }
 
-function getBlindValuesLabel(round = level) {
+function getBlindValuesLabel(round = state.level) {
     const smallBlind = getSmallBlind(round);
     const bigBlind = smallBlind * 2;
     return `${smallBlind}/${bigBlind}`;
@@ -629,163 +598,66 @@ function getLevelChangedSpeech(round: number) {
 }
 
 function getTournamentStartSpeech() {
-    return `Tournament Starting, ${getLevelChangedSpeech(level)}`;
+    return `Tournament Starting, ${getLevelChangedSpeech(state.level)}`;
 }
 
-function getSmallBlind(round = level) {
-    return blinds[round - 1] ?? blinds[blinds.length - 1] ?? fallbackBlinds[0];
+function getSmallBlind(round = state.level) {
+    return state.blinds[round - 1] ?? state.blinds[state.blinds.length - 1] ?? fallbackBlinds[0];
 }
 
 function speakWarningIfNeeded(previousRemaining: number) {
     if (
-        remaining !== 60
+        state.remaining !== 60
         || previousRemaining < 60
-        || warningSpeechLevel === level
+        || state.warningSpeechLevel === state.level
     ) {
         return;
     }
 
-    warningSpeechLevel = level;
-    speakMessage('One minute remaining', { interrupt: true });
+    state.warningSpeechLevel = state.level;
+    speakTimerMessage('One minute remaining', { interrupt: true });
     saveState();
 }
 
-function speakMessage(message: string, options: { interrupt?: boolean } = {}) {
-    if (!window.speechSynthesis) {
-        return;
-    }
-
-    if (!speechUnlocked) {
-        if (options.interrupt) {
-            // Keep only the latest interrupting announcement, e.g. rapid level skips.
-            for (let index = pendingSpeechMessages.length - 1; index >= 0; index--) {
-                if (pendingSpeechMessages[index].options.interrupt) {
-                    pendingSpeechMessages.splice(index, 1);
-                }
-            }
-        }
-
-        pendingSpeechMessages.push({ message, options });
-        updateWakeLockSupportMessage();
-        return;
-    }
-
-    const utterance = new SpeechSynthesisUtterance(message);
-    const voice = preferredWarningVoice ?? getPreferredWarningVoice();
-
-    if (voice) {
-        utterance.voice = voice;
-        utterance.lang = voice.lang;
-    }
-
-    window.speechSynthesis.resume();
-
-    if (options.interrupt && (window.speechSynthesis.speaking || window.speechSynthesis.pending)) {
-        const sequence = ++interruptSpeechSequence;
-        window.speechSynthesis.cancel();
-        window.setTimeout(() => {
-            // cancel() is asynchronous in some browsers; ignore stale scheduled announcements.
-            if (sequence === interruptSpeechSequence) {
-                window.speechSynthesis.speak(utterance);
-            }
-        }, 0);
-        return;
-    }
-
-    window.speechSynthesis.speak(utterance);
-}
-
-function unlockSpeech() {
-    if (speechUnlocked) {
-        return;
-    }
-
-    speechUnlocked = true;
-    updateWakeLockSupportMessage();
-    flushPendingSpeechMessages();
-}
-
-function flushPendingSpeechMessages() {
-    const messages = pendingSpeechMessages.splice(0);
-    messages.forEach(item => speakMessage(item.message, item.options));
-}
-
-function loadPreferredWarningVoice() {
-    if (!window.speechSynthesis) {
-        return;
-    }
-
-    preferredWarningVoice = getPreferredWarningVoice();
-    window.speechSynthesis.onvoiceschanged = () => {
-        preferredWarningVoice = getPreferredWarningVoice();
-    };
-}
-
-function getPreferredWarningVoice() {
-    const voices = window.speechSynthesis.getVoices();
-    const femaleVoiceNames = [
-        'samantha',
-        'victoria',
-        'karen',
-        'moira',
-        'tessa',
-        'fiona',
-        'zira',
-        'susan',
-        'google uk english female',
-        'microsoft aria',
-        'microsoft jenny'
-    ];
-
-    return voices.find(voice => (
-        femaleVoiceNames.some(name => voice.name.toLowerCase().includes(name))
-    )) ?? voices.find(voice => (
-        voice.lang.toLowerCase().startsWith('en')
-        && voice.name.toLowerCase().includes('female')
-    )) ?? null;
-}
-
 function hasNextLevel() {
-    return level < getMaxLevel();
+    return state.level < getMaxLevel();
 }
 
 function getMaxLevel() {
-    return Math.max(1, blinds.length);
+    return Math.max(1, state.blinds.length);
 }
 
 function dispatchRoundChanged(previousLevel: number, options: { interruptSpeech?: boolean } = {}) {
-    if (previousLevel === level) {
+    if (previousLevel === state.level) {
         return;
     }
 
-    timerPageElement?.dispatchEvent(new CustomEvent(roundChangedEventName, {
+    elements.timerPage?.dispatchEvent(new CustomEvent(roundChangedEventName, {
         detail: {
             previousRound: previousLevel,
-            round: level,
+            round: state.level,
             interruptSpeech: options.interruptSpeech
         }
     }));
 }
 
 function saveState() {
-    lastSavedRunningState = getRunningStateKey();
+    state.lastSavedRunningState = getRunningStateKey();
 
-    const state = {
-        selectedTimerId: currentTimerId,
-        timerId: currentTimerId,
-        remaining,
-        level,
-        endTime,
-        isRunning: Boolean(timerId),
-        warningSpeechLevel
-    };
-
-    saveLeagueTimerState(state);
+    saveLeagueTimerState({
+        selectedTimerId: state.currentTimerId,
+        timerId: state.currentTimerId,
+        remaining: state.remaining,
+        level: state.level,
+        endTime: state.endTime,
+        isRunning: Boolean(state.timerIntervalId),
+        warningSpeechLevel: state.warningSpeechLevel
+    });
 }
 
 function saveRunningState() {
     const runningState = getRunningStateKey();
-    if (runningState === lastSavedRunningState) {
+    if (runningState === state.lastSavedRunningState) {
         return;
     }
 
@@ -793,43 +665,43 @@ function saveRunningState() {
 }
 
 function getRunningStateKey() {
-    return `${level}:${remaining}:${endTime}:${Boolean(timerId)}`;
+    return `${state.level}:${state.remaining}:${state.endTime}:${Boolean(state.timerIntervalId)}`;
 }
 
 function restoreState() {
-    const state = loadLeagueTimerState();
-    if (!state || state.timerId !== currentTimerId) {
+    const savedState = loadLeagueTimerState();
+    if (!savedState || savedState.timerId !== state.currentTimerId) {
         return;
     }
 
     try {
-        level = sanitizeLevel(state.level);
-        warningSpeechLevel = sanitizeNumber(state.warningSpeechLevel, 0);
+        state.level = sanitizeLevel(savedState.level);
+        state.warningSpeechLevel = sanitizeNumber(savedState.warningSpeechLevel, 0);
 
-        if (state.isRunning && typeof state.endTime === 'number') {
-            endTime = state.endTime;
-            remaining = Math.max(0, Math.ceil((endTime - Date.now()) / 1000));
-            restoredRunningTimer = true;
-            needsRunningConfirmation = true;
+        if (savedState.isRunning && typeof savedState.endTime === 'number') {
+            state.endTime = savedState.endTime;
+            state.remaining = Math.max(0, Math.ceil((state.endTime - Date.now()) / 1000));
+            state.restoredRunningTimer = true;
+            state.needsRunningConfirmation = true;
 
-            if (remaining === 0) {
+            if (state.remaining === 0) {
                 catchUpRunningTimer();
             }
 
-            if (!timerId) {
-                timerId = window.setInterval(tick, 250);
+            if (!state.timerIntervalId) {
+                state.timerIntervalId = window.setInterval(tick, 250);
             }
 
             return;
         }
 
-        remaining = sanitizeNumber(state.remaining, duration);
+        state.remaining = sanitizeNumber(savedState.remaining, state.duration);
     } catch {
         resetRuntimeState();
-        duration = defaultDuration;
-        remaining = defaultDuration;
-        level = 1;
-        endTime = 0;
+        state.duration = state.defaultDuration;
+        state.remaining = state.defaultDuration;
+        state.level = 1;
+        state.endTime = 0;
         removeLeagueTimerState();
     }
 }
@@ -843,48 +715,52 @@ function sanitizeLevel(value: unknown) {
 }
 
 function catchUpRunningTimer() {
-    const durationMs = duration * 1000;
-    const elapsedSinceRoundEnd = Date.now() - endTime;
+    const durationMs = state.duration * 1000;
+    const elapsedSinceRoundEnd = Date.now() - state.endTime;
     const completedRounds = Math.floor(elapsedSinceRoundEnd / durationMs) + 1;
     const elapsedInCurrentRound = elapsedSinceRoundEnd % durationMs;
 
-    level = Math.min(getMaxLevel(), level + completedRounds);
-    remaining = Math.ceil((durationMs - elapsedInCurrentRound) / 1000);
-    endTime = Date.now() + (remaining * 1000);
+    state.level = Math.min(getMaxLevel(), state.level + completedRounds);
+    state.remaining = Math.ceil((durationMs - elapsedInCurrentRound) / 1000);
+    state.endTime = Date.now() + (state.remaining * 1000);
 }
 
 function resetRuntimeState() {
     clearTimerInterval();
-    endTime = 0;
-    warningSpeechLevel = 0;
-    restoredRunningTimer = false;
-    needsRunningConfirmation = false;
-    pendingSpeechMessages.splice(0);
-    lastSavedRunningState = '';
-    void releaseWakeLock();
+    state.endTime = 0;
+    state.warningSpeechLevel = 0;
+    state.restoredRunningTimer = false;
+    state.needsRunningConfirmation = false;
+    resetTimerSpeech();
+    resetTimerWakeLock();
+    state.lastSavedRunningState = '';
+    void releaseTimerWakeLock();
 }
 
 function setDefaults(container: HTMLElement) {
     removeLegacyTimerStateKeys();
-    timerPageElement = container.querySelector<HTMLElement>('[data-timer-page]');
-    leagueId = timerPageElement?.dataset.timerLeagueId || '';
-    currentTimerId = timerPageElement?.dataset.timerId || '';
-    defaultDuration = getPositiveNumber(
-        timerPageElement?.dataset.timerDefaultDuration,
-        fallbackDefaultDuration);
-    blinds = getBlinds(timerPageElement?.dataset.timerSmallBlinds);
+    elements.timerPage = container.querySelector<HTMLElement>('[data-timer-page]');
+    state.leagueId = elements.timerPage?.dataset.timerLeagueId || '';
+    state.currentTimerId = elements.timerPage?.dataset.timerId || '';
+    state.defaultDuration = getPositiveNumber(
+        elements.timerPage?.dataset.timerDefaultDuration,
+        fallbackDefaultDuration
+    );
+    state.blinds = getBlinds(elements.timerPage?.dataset.timerSmallBlinds);
 
-    duration = defaultDuration;
-    remaining = defaultDuration;
-    level = 1;
-    endTime = 0;
-    warningSpeechLevel = 0;
+    state.duration = state.defaultDuration;
+    state.remaining = state.defaultDuration;
+    state.level = 1;
+    state.endTime = 0;
+    state.warningSpeechLevel = 0;
+    resetTimerSpeech();
+    resetTimerWakeLock();
 
     const savedState = loadLeagueTimerState();
-    if (currentTimerId && savedState?.timerId !== currentTimerId) {
+    if (state.currentTimerId && savedState?.timerId !== state.currentTimerId) {
         saveLeagueTimerState({
-            selectedTimerId: currentTimerId,
-            timerId: currentTimerId
+            selectedTimerId: state.currentTimerId,
+            timerId: state.currentTimerId
         });
     }
 }
@@ -898,35 +774,35 @@ function loadTimerState() {
 }
 
 function loadLeagueTimerState() {
-    if (!leagueId) {
+    if (!state.leagueId) {
         return null;
     }
 
-    return loadTimerState().leagues?.[leagueId] ?? null;
+    return loadTimerState().leagues?.[state.leagueId] ?? null;
 }
 
-function saveLeagueTimerState(state: SavedTimerState) {
-    if (!leagueId) {
+function saveLeagueTimerState(savedState: SavedTimerState) {
+    if (!state.leagueId) {
         return;
     }
 
     const timerState = loadTimerState();
     timerState.leagues = timerState.leagues || {};
-    timerState.leagues[leagueId] = state;
+    timerState.leagues[state.leagueId] = savedState;
     window.localStorage.setItem(timerStateKey, JSON.stringify(timerState));
 }
 
 function removeLeagueTimerState() {
-    if (!leagueId) {
+    if (!state.leagueId) {
         return;
     }
 
     const timerState = loadTimerState();
-    if (!timerState.leagues?.[leagueId]) {
+    if (!timerState.leagues?.[state.leagueId]) {
         return;
     }
 
-    delete timerState.leagues[leagueId];
+    delete timerState.leagues[state.leagueId];
     window.localStorage.setItem(timerStateKey, JSON.stringify(timerState));
 }
 
