@@ -1,16 +1,3 @@
-<div class="row">
-    <label>Date: *</label>
-    <input required name="date" type="date" value="{{date}}"/>
-</div>
-<div class="row">
-    <label>Buyin: *</label>
-    <input required name="buyin" type="number" value="{{buyin}}"/>
-</div>
-<div class="row">
-    <label>Season:</label>
-    <select id="season_dropdown" name="season_id">
-    </select>
-</div>
 <div class="row row--status">
     <label>Status: *</label>
     <div class="wrapper-status">
@@ -24,9 +11,22 @@
         </div>
         <div>
             <input required {{#ifCond status '==' 'done'}} checked {{/ifCond}} name="status" id="done" type="radio" value="done">
-            <label  for="done">Completed</label>
+            <label  for="done">Done</label>
         </div>
     </div>
+</div>
+<div class="row row--editable-field">
+    <label>Date: *</label>
+    <input required name="date" type="date" value="{{date}}"/>
+</div>
+<div class="row row--editable-field">
+    <label>Buyin: *</label>
+    <input required name="buyin" type="number" value="{{buyin}}"/>
+</div>
+<div class="row row--editable-field">
+    <label>Season:</label>
+    <select id="season_dropdown" name="season_id">
+    </select>
 </div>
 
 {{!-- <div class="row">
@@ -70,29 +70,35 @@
 
 <!-- keep the player count visible outside upcoming mode, but only show
 the player picker when adding/editing an upcoming tournament -->
-<div class="row row--addPlayers row--mt2">
-    <label>Players <span id="players-count"></span></label>
-    <div id="player_dropdown" class="disabled"></div>
+<div class="row row--addPlayers row--editable-field row--mt2">
+    <label>Players (<span id="players-count-select"></span>):</label>
+    <div>
+        <div id="player_dropdown" class="disabled"></div>
+    </div>
 </div>
 
 <!-- showing useful tournament data -->
-{{#ifCond status '!=' 'upcoming'}}
-    <div class="row">
-        <label>Total rebuys:</label>
-        <span id="tournament-total-rebuys">{{rebuys}}</span>
+<div class="row row--summary-field">
+    <label>Total players:</label>
+    <span id="players-count"></span>
+</div>
+<div class="row row--summary-field">
+    <label>Total rebuys:</label>
+    <span id="tournament-total-rebuys">{{rebuys}}</span>
+</div>
+<div class="row row--summary-field">
+    <label>Total prize:</label>
+    <div>
+        <span><span id="tournament-total-prize">{{totalPrize}}</span> <span id="calculate-payouts-hint"></span></span>
     </div>
-    <div class="row">
-        <label>Total prize:</label>
-        <span id="tournament-total-prize">{{totalPrize}}</span>
+</div>
+<div class="row row--summary-field">
+    <label>
+        <button type="button" id="calculate-payouts">Auto-fill prizes</button>
+    </label>
+    <div>
     </div>
-    <div class="row row--payouts">
-        <label>Payouts:</label>
-        <div>
-            <button type="button" id="calculate-payouts">Auto-fill prizes</button>
-            <span id="calculate-payouts-hint"></span>
-        </div>
-    </div>
-{{/ifCond}}
+</div>
 
 <table class="table-players">
     <thead>

@@ -56,12 +56,11 @@ form {
   }
 
   div.row--addPlayers {
-    margin-top: 2em;
-
     #player_dropdown {
         overflow-y: scroll;
         height: 50vh;
         min-width: 200px;
+        margin-top: 0.35em;
         background: white;
         border: solid 1px #666;
         padding: 2px;
@@ -194,6 +193,19 @@ form + p {
 }
 
 .wrapper-status {
+  display: flex;
+  gap: 1em;
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
+
+  input {
+    margin-left: 0;
+    margin-top: 0;
+  }
+
   label {
     line-height: 1.5;
   }

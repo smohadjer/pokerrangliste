@@ -26,7 +26,7 @@ export async function initTournamentForm(
         const formData = new FormData(form);
         const status = formData.get('status') ?? '';
         UpdateTournamentState(form, status as string);
-        initPayoutCalculator(formWrapper, form, data);
+        initPayoutCalculator(formWrapper, form);
 
         // change handler for tournament status field
         form.addEventListener('change', async (event) => {
@@ -41,8 +41,9 @@ export async function initTournamentForm(
 
 function UpdateTournamentState(form: HTMLFormElement, status: string) {
     const playerDropdown = form.querySelector('#player_dropdown');
-    const resultsTable = form.querySelector('.table-players');
-    const payoutRow = form.querySelector<HTMLElement>('.row--payouts');
+    const editableRows = form.querySelectorAll<HTMLElement>('.row--editable-field');
+    const summaryRows = form.querySelectorAll<HTMLElement>('.row--summary-field');
+    const resultsTable = form.querySelector<HTMLElement>('.table-players');
 
     // disable input fields if tournament is complete to avoid changing values by mistake
     if (status === 'done') {
@@ -61,8 +62,16 @@ function UpdateTournamentState(form: HTMLFormElement, status: string) {
         playerDropdown?.classList.add('disabled');
     }
 
-    if (payoutRow) {
-        payoutRow.hidden = status !== 'pending';
+    editableRows.forEach((row) => {
+        row.hidden = status === 'pending' || status === 'done';
+    });
+
+    summaryRows.forEach((row) => {
+        row.hidden = status === 'upcoming';
+    });
+
+    if (resultsTable) {
+        resultsTable.hidden = status === 'upcoming';
     }
 }
 
@@ -79,8 +88,7 @@ function populatePlayers(container: HTMLElement, allPlayers: PlayerDB[], tournam
 
 function initPayoutCalculator(
     formWrapper: HTMLElement,
-    form: HTMLFormElement,
-    tournamentData: Tournament | null
+    form: HTMLFormElement
 ) {
     const calculateButton = formWrapper.querySelector<HTMLButtonElement>('#calculate-payouts');
     const hintElm = formWrapper.querySelector<HTMLElement>('#calculate-payouts-hint');
@@ -88,7 +96,7 @@ function initPayoutCalculator(
     const totalPrizeElm = formWrapper.querySelector<HTMLElement>('#tournament-total-prize');
     const buyinInput = form.querySelector<HTMLInputElement>('input[name="buyin"]');
 
-    if (!calculateButton || !hintElm || !rebuysElm || !totalPrizeElm || !buyinInput || !tournamentData) {
+    if (!calculateButton || !hintElm || !rebuysElm || !totalPrizeElm || !buyinInput) {
         return;
     }
 

@@ -20,10 +20,12 @@ export async function generatePlayerFields(
     tournamentData: Tournament | null) {
     const playersElm = container.querySelector('#players')!;
     const countElm = container.querySelector('#players-count')!;
+    const selectCountElm = container.querySelector('#players-count-select')!;
 
     const updatePlayersCount = () => {
         const count = playersElm.children.length;
-        countElm.innerHTML = `(${count})`;
+        countElm.textContent = String(count);
+        selectCountElm.textContent = String(count);
     }
 
     playerDropdown.addEventListener('change', (event) => {
@@ -65,4 +67,3 @@ export async function generatePlayerFields(
         }
     }
 }
-
