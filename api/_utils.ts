@@ -34,6 +34,24 @@ export const sanitize = (item) => {
   }
 };
 
+export const findNameConflict = async (
+  collection: Collection,
+  scope: Record<string, unknown>,
+  name: string,
+  currentId?: string,
+) => {
+  const query: Record<string, unknown> = { ...scope, name };
+  if (currentId) {
+    query._id = { $ne: ObjectId.createFromHexString(currentId) };
+  }
+
+  return await collection.findOne(
+    query,
+    // Use case-insensitive matching so differently-cased names still conflict.
+    { collation: { locale: 'en', strength: 2 } }
+  );
+};
+
 export const fetchAllPlayers = async (collection, league_id) => {
     return await collection.find({league_id})
       // using collation so sort is case insensitive

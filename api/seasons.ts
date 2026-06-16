@@ -4,7 +4,9 @@ import {
   fetchAllSeasons,
   editSeasonName,
   addNewSeason,
-  userOwnsLeague
+  userOwnsLeague,
+  sanitize,
+  findNameConflict,
 } from './_utils.js';
 
 const client = new MongoClient(database_uri);
@@ -31,16 +33,16 @@ export default async (req, res) => {
       }
 
       // validate season name
-      const name = req.body.name;
-      if (!name) {
-        throw new Error(`a name for season is required`);
+      const name = sanitize(req.body.name);
+      if (!name || typeof name !== 'string') {
+        throw new Error('This field is required');
       }
-      const doc = await collection.findOne({league_id, name});
+      const seasonId = req.body.season_id;
+      const doc = await findNameConflict(collection, { league_id }, name, seasonId);
       if (doc) {
         throw new Error(`Name ${name} is already taken`);
       }
 
-      const seasonId = req.body.season_id;
       if (seasonId) {
         await editSeasonName(name, seasonId, collection, league_id);
       } else {

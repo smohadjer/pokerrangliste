@@ -4,7 +4,10 @@ import {
   fetchAllPlayers,
   editPlayerName,
   addNewPlayer,
-  userOwnsLeague } from './_utils.js';
+  userOwnsLeague,
+  sanitize,
+  findNameConflict,
+} from './_utils.js';
 
 const client = new MongoClient(database_uri);
 
@@ -45,13 +48,12 @@ export default async (req, res) => {
         throw new Error('Either league id is not valid or Logged-in user is not owner of the league');
       }
 
-      const name = req.body.name;
+      const name = sanitize(req.body.name);
+      if (!name || typeof name !== 'string') {
+        throw new Error('This field is required');
+      }
       const playerId = req.body.player_id;
-      // Using a case-insensitive collation to detect a name with different case
-      const doc = await collection.findOne(
-        { league_id, name },
-        { collation: { locale: "en", strength: 2 } }
-      );
+      const doc = await findNameConflict(collection, { league_id }, name, playerId);
 
       if (doc) {
         throw new Error(`Name ${name} is already taken`);

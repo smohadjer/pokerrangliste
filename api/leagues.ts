@@ -4,6 +4,9 @@ import {
   fetchAllLeagues,
   editLeagueName,
   addNewLeague,
+  sanitize,
+  findNameConflict,
+  userOwnsLeague,
 } from './_utils.js';
 import { JwtPayload } from '../public/ts/types'
 import { getJwtPayload } from './verifyAuth.js';
@@ -29,12 +32,22 @@ export default async (req, res) => {
         throw new Error('No tenant ID provided');
       }
 
-      const name = req.body.name;
+      const name = sanitize(req.body.name);
+      if (!name || typeof name !== 'string') {
+        throw new Error('This field is required');
+      }
       const leagueId = req.body.league_id;
       const default_season_id = req.body.default_season_id;
       const default_timer_id = req.body.default_timer_id;
 
       if (leagueId) {
+        if (!await userOwnsLeague(leagueId, req, collection)) {
+          throw new Error('Either league id is not valid or Logged-in user is not owner of the league');
+        }
+        const doc = await findNameConflict(collection, { tenant_id }, name, leagueId);
+        if (doc) {
+          throw new Error(`A league with name "${name}" already exists`);
+        }
         await editLeagueName(
           name,
           collection,
@@ -45,7 +58,7 @@ export default async (req, res) => {
       } else {
         // creating a new league
         // validate league name
-        const doc = await collection.findOne({tenant_id, name});
+        const doc = await findNameConflict(collection, { tenant_id }, name);
         if (doc) {
           throw new Error(`A league with name "${name}" already exists`);
         }
