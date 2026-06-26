@@ -5,6 +5,7 @@ import {
     getTournaments,
     getSeasonName,
     getPlayerName,
+    getPlayerPhotoVersion,
     allTimeSeason
 } from '../lib/utils';
 import { store } from '../lib/store';
@@ -53,6 +54,7 @@ export default (params: URLSearchParams) => {
     });
 
     return {
+        player_id: playerId,
         player_name: getPlayerName(playerId, state.players),
         points: player?.points,
         gamesCount: playerTournaments.length,
@@ -62,6 +64,7 @@ export default (params: URLSearchParams) => {
         results: results,
         seasonName: seasonName,
         seasons: [...state.seasons, allTimeSeason],
-        league_id: params.get('league_id')
+        league_id: params.get('league_id'),
+        photo_version: getPlayerPhotoVersion(playerId, state.players),
     };
 };

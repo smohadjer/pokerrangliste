@@ -77,6 +77,35 @@ h3 {
     margin: 1em 1em 0.25em;
 }
 
+.player-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.player-label span,
+.player-link span {
+    padding: 0.3em 0.5em 0.3em 0;
+    display: inline-block;
+
+    @media (min-width: 1024px) {
+        padding: 0.5em 0;
+    }
+}
+
+.player-label--heading .player-thumbnail {
+    width: 1.75rem;
+    height: 1.75rem;
+}
+
+.player-thumbnail {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex-shrink: 0;
+    border-radius: 999px;
+    object-fit: cover;
+}
+
 .profile-name + .details {
     margin-top: 0.25em;
 }
@@ -147,8 +176,8 @@ h3 {
         padding-left: 10px;
     }
 
-    td a, td.name span {
-        padding: 0.8em 0.5em 0.8em 0;
+    td a {
+        padding: 0.3em 0.5em 0.3em 0;
         display: inline-block;
 
         @media (min-width: 1024px) {
@@ -158,6 +187,12 @@ h3 {
 
     td a {
         color: #ECE18F;
+    }
+
+    td a.player-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.55rem;
     }
 
     td a:visited {

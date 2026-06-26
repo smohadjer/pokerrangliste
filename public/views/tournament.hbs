@@ -46,22 +46,25 @@
           {{/ifCond}}
           {{#ifCond this.ranking '==' 0}} - {{/ifCond}}
         </td>
-        <td class="name"><span
-          {{#ifEquals this.ranking 1}}
-            {{#ifCond this.prize '>' 0}}
-              class="first-place"
-            {{/ifCond}}
-          {{/ifEquals}}
-          {{#ifEquals this.ranking 2}}
-            {{#ifCond this.prize '>' 0}}
-              class="second-place"
-            {{/ifCond}}
-          {{/ifEquals}}
-          {{#ifEquals this.ranking 3}}
-            {{#ifCond this.prize '>' 0}}
-              class="third-place"
-            {{/ifCond}}
-          {{/ifEquals}}>{{this.name}}</span>
+        <td class="name"><a class="player-link" data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.id}}">
+          <img class="player-thumbnail" src="/api/player-photo?player_id={{this.id}}&v={{this.photo_version}}" alt="" aria-hidden="true" onerror="this.onerror=null;this.src='/assets/players/default.png';">
+          <span
+            {{#ifEquals this.ranking 1}}
+              {{#ifCond this.prize '>' 0}}
+                class="first-place"
+              {{/ifCond}}
+            {{/ifEquals}}
+            {{#ifEquals this.ranking 2}}
+              {{#ifCond this.prize '>' 0}}
+                class="second-place"
+              {{/ifCond}}
+            {{/ifEquals}}
+            {{#ifEquals this.ranking 3}}
+              {{#ifCond this.prize '>' 0}}
+                class="third-place"
+              {{/ifCond}}
+            {{/ifEquals}}>{{this.name}}</span>
+        </a>
         </td>
         <td>{{this.prize}}</td>
         <td>{{this.rebuys}}</td>

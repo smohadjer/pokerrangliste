@@ -1,6 +1,7 @@
 export type Player = {
   id: string;
   name?: string;
+  photo_version?: string;
   rebuys: number;
   ranking: number;
   points: number;
@@ -14,6 +15,7 @@ export type Player = {
 export type PlayerDB = {
   readonly _id: string;
   name: string;
+  photo_updated_at?: string;
 }
 
 export type Season = {
