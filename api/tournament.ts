@@ -5,6 +5,7 @@ import {
   getTournaments,
   duplicateTournament,
   deleteTournament,
+  fetchAllPlayers,
   userOwnsLeague,
   createTournamentDocument,
   getSubmittedTournamentPlayers,
@@ -35,7 +36,9 @@ export default async (req, res) => {
       const timers = await timersCol.find(getTimersQuery(league)).toArray();
       const data = {
         seasons: await seasonsCol.find({league_id}).sort({ name: -1 }).toArray(),
-        players: await playersCol.find({league_id}).sort({ name: 1 }).toArray(),
+        // Exclude stored photo blobs from the SPA bootstrap payload.
+        // Profile photos are fetched separately via /api/player-photo.
+        players: await fetchAllPlayers(playersCol, league_id),
         timers,
         tournaments: tournaments
       };

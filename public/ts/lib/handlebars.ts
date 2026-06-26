@@ -3,12 +3,20 @@ I have copy/pasted dist/handlebars.min.js to ts/lib/ext and renamed it from .js 
 to avoid errors during build */
 import Handlebars from './ext/handlebars.min.cjs';
 
+const templateCache = new Map<string, HandlebarsTemplateDelegate>();
+
 export const getHandlebarsTemplate = async (templateFile: string) => {
+    const cachedTemplate = templateCache.get(templateFile);
+    if (cachedTemplate) {
+        return cachedTemplate;
+    }
+
     try {
         const response = await fetch(templateFile);
         if (response.ok) {
             const responseText = await response.text();
             const template = Handlebars.compile(responseText);
+            templateCache.set(templateFile, template);
             return template;
         } else {
             if (response.status === 404) throw new Error('404, Not found');

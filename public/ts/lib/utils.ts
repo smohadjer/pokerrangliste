@@ -137,7 +137,11 @@ export const deepClone = (item: {} | []) => {
     }
 }
 
-export const getPlayers = (tournaments: Tournament[]) => {
+export const getPlayers = (
+    tournaments: Tournament[],
+    playersDb = store.getState().players
+) => {
+    const playersById = new Map(playersDb.map((player) => [player._id, player]));
     const players: Player[] = [];
     tournaments.forEach((tournament) => {
         tournament?.players?.forEach((item) => {
@@ -148,8 +152,9 @@ export const getPlayers = (tournaments: Tournament[]) => {
             clone.bounty = getBounty(clone, tournament);
             clone.prize = getPrize(clone, tournament);
             clone.games = 1;
-            clone.name = getPlayerName(clone.id, store.getState().players);
-            clone.photo_version = getPlayerPhotoVersion(clone.id, store.getState().players);
+            const playerDb = playersById.get(clone.id);
+            clone.name = playerDb?.name ?? missingPlayerName;
+            clone.photo_version = playerDb?.photo_updated_at ?? 'default';
 
             const foundPlayer = players.find(player => player.id === clone.id);
 
@@ -278,7 +283,7 @@ export const setRankings = (season_id: string) => {
         const tournamentsNormalized = tournaments.filter(
             tournament => tournament.status === 'done'
         );
-        const ranking = getPlayers(tournamentsNormalized);
+        const ranking = getPlayers(tournamentsNormalized, state.players);
         return ranking;
     };
 

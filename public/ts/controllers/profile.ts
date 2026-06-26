@@ -20,7 +20,7 @@ export default (params: URLSearchParams) => {
 
     if (!playerId) return;
 
-    const enhancedPlayers = getPlayers(tournamentsNormalized);
+    const enhancedPlayers = getPlayers(tournamentsNormalized, state.players);
     const player = enhancedPlayers.find((player) =>
         player.id === playerId);
     const playerFound = enhancedPlayers.some((player) => player.id === playerId);
