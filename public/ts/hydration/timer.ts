@@ -219,7 +219,7 @@ function updateBlindsDisplay() {
 
 function updateNextBlindsDisplay() {
     if (elements.nextBlindsDisplay) {
-        elements.nextBlindsDisplay.textContent = hasNextLevel() ? `Next level: ${getBlindValuesLabel(state.level + 1)}` : '';
+        elements.nextBlindsDisplay.textContent = hasNextLevel() ? `Next: ${getBlindValuesLabel(state.level + 1)}` : '';
     }
 }
 
