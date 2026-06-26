@@ -6,7 +6,9 @@ import {
   duplicateTournament,
   deleteTournament,
   userOwnsLeague,
-  createTournamentDocument
+  createTournamentDocument,
+  getSubmittedTournamentPlayers,
+  validateTournamentPlayersExist
 } from './_utils.js';
 
 const client = new MongoClient(database_uri);
@@ -81,8 +83,19 @@ export default async (req, res) => {
           }
         } else {
           // edit tournament
+          const submittedPlayers = getSubmittedTournamentPlayers(req);
           const responseObject = createTournamentDocument(req);
           if (responseObject.document) {
+            const playerValidation = await validateTournamentPlayersExist(
+              playersCol,
+              league_id,
+              submittedPlayers
+            );
+            if (!playerValidation.isValid) {
+              return res.status(409).json({
+                error: playerValidation.error
+              });
+            }
             const query = { _id: ObjectId.createFromHexString(req.body.tournament_id) };
             const response = await tournamentsCol.replaceOne(query, responseObject.document);
             if (response && response.modifiedCount > 0) {
@@ -101,8 +114,19 @@ export default async (req, res) => {
         }
       } else {
         // add tournament
+        const submittedPlayers = getSubmittedTournamentPlayers(req);
         const responseObject = createTournamentDocument(req);
         if (responseObject.document) {
+          const playerValidation = await validateTournamentPlayersExist(
+            playersCol,
+            league_id,
+            submittedPlayers
+          );
+          if (!playerValidation.isValid) {
+            return res.status(409).json({
+              error: playerValidation.error
+            });
+          }
           const response = await tournamentsCol.insertOne(responseObject.document);
           if (response && response.insertedId) {
             const tournamentsData = await getTournaments(tournamentsCol, league_id);

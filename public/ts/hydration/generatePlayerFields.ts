@@ -5,7 +5,7 @@ import { store } from '../lib/store';
 const addPlayer = async (container: Element, player: Player) => {
     const htmlElement = await generateHTML('/views/components/player.hbs', player);
     const row = htmlElement[0].querySelector('.row-player');
-    if(row) container.prepend(row);
+    if(row) container.append(row);
 };
 
 const removePlayer = (container: Element, playerId: string) => {
@@ -60,7 +60,12 @@ export async function generatePlayerFields(
     const players = tournamentData?.players && [...tournamentData.players];
     if (players) {
         for (let i = 0; i<players.length; i++) {
-            players[i].name = getPlayerName(players[i].id, store.getState().players);
+            const playerName = getPlayerName(players[i].id, store.getState().players);
+            if (!playerName) {
+                continue;
+            }
+
+            players[i].name = playerName;
             await addPlayer(playersElm, players[i]).then(() => {
                 updatePlayersCount();
             });
