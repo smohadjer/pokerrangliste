@@ -183,6 +183,7 @@ export async function submitHandler(e: SubmitEvent) {
                         tenant: res.data.tenant
                     });
                 } else {
+                    storePlayerPhotoFlashMessage(form, res.data.photo_saved_bytes);
                     // Update the state with data returned from api and reset rankings
                     // so rankings are calculated and cached again
                     console.log(res.data);
@@ -220,9 +221,22 @@ export async function submitHandler(e: SubmitEvent) {
     }
 }
 
+function storePlayerPhotoFlashMessage(form: HTMLFormElement, photoSavedBytes?: number) {
+    if (!photoSavedBytes) {
+        return;
+    }
+
+    if (window.location.pathname !== '/admin/add-player' && window.location.pathname !== '/admin/edit-player') {
+        return;
+    }
+
+    const kb = (photoSavedBytes / 1024).toFixed(1);
+    window.sessionStorage.setItem('playerPhotoFlash', `Saved image size: ${kb} KB`);
+}
+
 async function appendPlayerPhotoToFormData(formData: FormData) {
     const file = formData.get('photo');
-    const maxPhotoSizeBytes = 1 * 1024 * 1024;
+    const maxPhotoSizeBytes = 5 * 1024 * 1024;
 
     if (!(file instanceof File) || file.size === 0) {
         formData.delete('photo');
@@ -235,7 +249,7 @@ async function appendPlayerPhotoToFormData(formData: FormData) {
     }
 
     if (file.size > maxPhotoSizeBytes) {
-        throw new Error('Please select an image smaller than 1 MB');
+        throw new Error('Please select an image smaller than 5 MB');
     }
 
     const pngDataUrl = await fileToPngDataUrl(file);

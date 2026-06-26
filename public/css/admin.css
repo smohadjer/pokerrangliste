@@ -18,10 +18,21 @@ form {
     display: none;
   }
 
+  .success {
+    display: none;
+    color: #1d5410;
+  }
+
   &.error {
     .error {
       display: block;
       color: red;
+    }
+  }
+
+  &.success {
+    .success {
+      display: block;
     }
   }
 

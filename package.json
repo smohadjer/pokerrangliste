@@ -7,7 +7,6 @@
     "bundle:app": "esbuild public/ts/app.ts --bundle --format=esm --sourcemap --outfile=public/js/app.js --minify",
     "build": "npm run bundle:app",
     "start": "npm run bundle:app -- --watch=forever"
-
   },
   "author": "Saeid Mohadjer",
   "license": "ISC",
@@ -15,15 +14,16 @@
     "esbuild": "0.25.9"
   },
   "dependencies": {
-    "@types/node": "^24.3.0",
     "@edge-runtime/cookies": "^6.0.0",
+    "@types/node": "^24.3.0",
     "@vercel/functions": "^2.2.12",
+    "bcrypt": "^6.0.0",
     "chart.js": "^4.5.0",
     "dotenv": "^17.2.1",
     "handlebars": "^4.7.8",
+    "jimp": "^1.6.1",
     "jose": "^6.0.12",
-    "mongodb": "^6.18.0",
-    "bcrypt": "^6.0.0"
+    "mongodb": "^6.18.0"
   },
   "engines": {
     "node": ">=24.15.0"

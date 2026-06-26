@@ -87,6 +87,10 @@ function hydrate(
         populateSelect(select, state.players);
     }
 
+    if (view === '/admin/add-player' || view === '/admin/edit-player') {
+        showPlayerPhotoFlash(container);
+    }
+
     if (view === '/admin/edit-season') {
         const select: HTMLSelectElement = container.querySelector('#season_edit_dropdown')!;
         populateSelect(select, state.seasons);
@@ -133,4 +137,21 @@ function getObjectId(id: unknown) {
     }
 
     return String(id);
+}
+
+function showPlayerPhotoFlash(container: HTMLElement) {
+    const message = window.sessionStorage.getItem('playerPhotoFlash');
+    if (!message) {
+        return;
+    }
+
+    const form = container.querySelector('form');
+    const successElm = form?.querySelector('.success');
+    if (form instanceof HTMLFormElement && successElm instanceof HTMLElement) {
+        form.classList.remove('error');
+        form.classList.add('success');
+        successElm.textContent = message;
+    }
+
+    window.sessionStorage.removeItem('playerPhotoFlash');
 }

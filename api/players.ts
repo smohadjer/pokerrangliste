@@ -1,4 +1,5 @@
 import { MongoClient, ObjectId } from 'mongodb';
+import { Jimp } from 'jimp';
 import { database_uri, database_name } from './_config.js';
 import {
   fetchAllPlayers,
@@ -45,6 +46,7 @@ export default async (req, res) => {
 
     if (req.method === 'POST') {
       const league_id = req.body.league_id;
+      let savedPhotoBytes: number | undefined;
       const leagues = database.collection('leagues');
       if (!await userOwnsLeague(league_id, req, leagues)) {
         throw new Error('Either league id is not valid or Logged-in user is not owner of the league');
@@ -73,7 +75,7 @@ export default async (req, res) => {
         }
 
         if (hasPhotoUpdate) {
-          await savePlayerPhoto(collection, league_id, req.body.photo_data_url, playerId);
+          savedPhotoBytes = await savePlayerPhoto(collection, league_id, req.body.photo_data_url, playerId);
         }
       } else {
         const doc = await findNameConflict(collection, { league_id }, name);
@@ -82,7 +84,7 @@ export default async (req, res) => {
         }
         const response = await addNewPlayer(name, collection, league_id);
         if (hasPhotoUpdate) {
-          await savePlayerPhoto(
+          savedPhotoBytes = await savePlayerPhoto(
             collection,
             league_id,
             req.body.photo_data_url,
@@ -94,7 +96,10 @@ export default async (req, res) => {
       // return all players so state in app can be updated from response
       const players = await fetchAllPlayers(collection, league_id);
       res.json({
-        data: { players }
+        data: {
+          players,
+          photo_saved_bytes: savedPhotoBytes,
+        }
       });
     }
 
@@ -122,26 +127,58 @@ export default async (req, res) => {
 
 async function savePlayerPhoto(collection, league_id: string, photoDataUrl: string, playerId: string) {
   const matches = photoDataUrl.match(/^data:(image\/png);base64,(.+)$/);
-  const maxPhotoSizeBytes = 1 * 1024 * 1024;
+  const maxStoredPhotoSizeBytes = 100 * 1024;
   if (!matches) {
     throw new Error('Uploaded player photo must be a PNG image');
   }
 
-  const imageSizeBytes = Buffer.byteLength(matches[2], 'base64');
-  if (imageSizeBytes > maxPhotoSizeBytes) {
-    throw new Error('Uploaded player photo must be smaller than 1 MB');
-  }
+  const optimizedPhoto = await optimizePlayerPhoto(matches[2], maxStoredPhotoSizeBytes);
 
   const response = await collection.updateOne(
     { league_id, _id: ObjectId.createFromHexString(playerId) },
     {
       $set: {
-        photo_content_type: matches[1],
-        photo_data_base64: matches[2],
+        photo_content_type: optimizedPhoto.contentType,
+        photo_data_base64: optimizedPhoto.dataBase64,
         photo_updated_at: new Date().toISOString(),
       }
     }
   );
 
   console.log(response);
+  return optimizedPhoto.bytes;
+}
+
+async function optimizePlayerPhoto(photoBase64: string, maxPhotoSizeBytes: number) {
+  const sourceBuffer = Buffer.from(photoBase64, 'base64');
+  let image = await Jimp.read(sourceBuffer);
+  let width = Math.min(image.bitmap.width, 192);
+  let height = Math.min(image.bitmap.height, 192);
+  image = image.cover({ w: width, h: height });
+  let quality = 76;
+  let outputBuffer = await image.getBuffer('image/jpeg', { quality });
+
+  while (outputBuffer.length > maxPhotoSizeBytes && (width > 96 || height > 96 || quality > 36)) {
+    if (outputBuffer.length > maxPhotoSizeBytes && quality > 40) {
+      quality -= 7;
+    }
+
+    if (outputBuffer.length > maxPhotoSizeBytes && (width > 96 || height > 96)) {
+      width = Math.max(96, Math.floor(width * 0.85));
+      height = Math.max(96, Math.floor(height * 0.85));
+      image = image.clone().cover({ w: width, h: height });
+    }
+
+    outputBuffer = await image.getBuffer('image/jpeg', { quality });
+  }
+
+  if (outputBuffer.length > maxPhotoSizeBytes) {
+    throw new Error('Uploaded player photo could not be reduced below 100 KB');
+  }
+
+  return {
+    contentType: 'image/jpeg',
+    dataBase64: outputBuffer.toString('base64'),
+    bytes: outputBuffer.length,
+  };
 }
