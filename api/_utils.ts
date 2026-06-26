@@ -20,6 +20,8 @@ type NamedDocument = {
   name: string;
   league_id?: string;
   tenant_id?: string;
+  photo_content_type?: string;
+  photo_data_base64?: string;
 };
 
 type TournamentDocument = {
@@ -104,7 +106,10 @@ export const fetchAllPlayers = async (
   collection: Collection<NamedDocument>,
   league_id: string,
 ) => {
-    return await collection.find({league_id})
+    return await collection.find(
+      { league_id },
+      { projection: { photo_content_type: 0, photo_data_base64: 0 } }
+    )
       // using collation so sort is case insensitive
       .collation({ locale: 'en' })
       .sort({ name: 1 })
@@ -396,9 +401,10 @@ export const addNewPlayer = async (
   name: string,
   collection: Collection<NamedDocument>,
   league_id: string,
-): Promise<void> => {
+): Promise<InsertOneResult<NamedDocument>> => {
   const response = await collection.insertOne({name, league_id});
   console.log(response);
+  return response;
 };
 
 export const addNewSeason = async (

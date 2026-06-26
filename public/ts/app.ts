@@ -64,8 +64,13 @@ function addSPAEventListeners(results: HTMLElement) {
 }
 
 const clickHandler = async (event: MouseEvent, results: HTMLElement) => {
-    const link = event.target as HTMLAnchorElement;
-    if (link.nodeName !== 'A' || link.classList.contains('no-ajax')) {
+    const target = event.target;
+    if (!(target instanceof HTMLElement)) {
+        return;
+    }
+
+    const link = target.closest('a');
+    if (!(link instanceof HTMLAnchorElement) || link.classList.contains('no-ajax')) {
         return;
     }
 
@@ -93,7 +98,7 @@ const clickHandler = async (event: MouseEvent, results: HTMLElement) => {
     router(link.pathname, link.search, options);
 };
 
-export function submitHandler(e: SubmitEvent) {
+export async function submitHandler(e: SubmitEvent) {
     e.preventDefault();
     const form = e.target;
     if (form && form instanceof HTMLFormElement) {
@@ -104,9 +109,28 @@ export function submitHandler(e: SubmitEvent) {
         }
         const redirect = form.dataset.redirect;
         const formData = new FormData(form);
-        // casting formData as any to avoid typescript error
-        // https://github.com/microsoft/TypeScript/issues/30584
-        const data = new URLSearchParams(formData as any);
+
+        try {
+            await appendPlayerPhotoToFormData(formData);
+        } catch (error) {
+            form.classList.add('error');
+            const errorElm = form.querySelector('.error');
+            if (errorElm) {
+                errorElm.innerHTML = error instanceof Error ? error.message : 'Failed to process the selected image';
+            }
+            if (submitButton) {
+                submitButton.classList.remove('loading');
+            }
+            return;
+        }
+
+        const data = new URLSearchParams();
+        formData.forEach((value, key) => {
+            if (value instanceof File) {
+                return;
+            }
+            data.append(key, value);
+        });
 
         //const body = (form.method === 'DELETE') ? JSON.stringify({}) : JSON.stringify(object);
         //const url =  (form.method === 'DELETE') ? `${form.action}/${object.player_id}` : form.action;
@@ -194,6 +218,63 @@ export function submitHandler(e: SubmitEvent) {
             console.log(error);
         })
     }
+}
+
+async function appendPlayerPhotoToFormData(formData: FormData) {
+    const file = formData.get('photo');
+    const maxPhotoSizeBytes = 1 * 1024 * 1024;
+
+    if (!(file instanceof File) || file.size === 0) {
+        formData.delete('photo');
+        return;
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+        throw new Error('Please select a JPG, JPEG, PNG, or GIF image');
+    }
+
+    if (file.size > maxPhotoSizeBytes) {
+        throw new Error('Please select an image smaller than 1 MB');
+    }
+
+    const pngDataUrl = await fileToPngDataUrl(file);
+    formData.delete('photo');
+    formData.set('photo_data_url', pngDataUrl);
+}
+
+async function fileToPngDataUrl(file: File): Promise<string> {
+    const dataUrl = await readFileAsDataUrl(file);
+    const image = await loadImage(dataUrl);
+    const canvas = document.createElement('canvas');
+    canvas.width = image.naturalWidth || image.width;
+    canvas.height = image.naturalHeight || image.height;
+
+    const context = canvas.getContext('2d');
+    if (!context) {
+        throw new Error('Your browser could not process the selected image');
+    }
+
+    context.drawImage(image, 0, 0);
+    return canvas.toDataURL('image/png');
+}
+
+function readFileAsDataUrl(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(new Error('Failed to read the selected image'));
+        reader.readAsDataURL(file);
+    });
+}
+
+function loadImage(src: string): Promise<HTMLImageElement> {
+    return new Promise((resolve, reject) => {
+        const image = new Image();
+        image.onload = () => resolve(image);
+        image.onerror = () => reject(new Error('Failed to load the selected image'));
+        image.src = src;
+    });
 }
 
 function removeTimerLocalStorage() {

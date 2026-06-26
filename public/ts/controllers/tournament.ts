@@ -6,7 +6,8 @@ import {
     getPoints,
     getRebuys,
     getTournaments,
-    getPlayerName
+    getPlayerName,
+    getPlayerPhotoVersion
 } from '../lib/utils';
 import { store } from '../lib/store';
 
@@ -35,6 +36,7 @@ export default (params: URLSearchParams) => {
             player.bounty = (cloneTournament.status === 'upcoming') ? 0 : getBounty(player, cloneTournament);
             player.points = (cloneTournament.status === 'upcoming') ? 0 : getPoints(player, cloneTournament);
             player.name = getPlayerName(player.id, state.players);
+            player.photo_version = getPlayerPhotoVersion(player.id, state.players);
             return player;
         });
     }

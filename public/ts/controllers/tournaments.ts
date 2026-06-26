@@ -1,4 +1,4 @@
-import { getTournaments, getPlayerName, allTimeSeason } from '../lib/utils';
+import { getTournaments, getPlayerName, getPlayerPhotoVersion, allTimeSeason } from '../lib/utils';
 import { store } from '../lib/store';
 
 export default (params: URLSearchParams) => {
@@ -10,9 +10,11 @@ export default (params: URLSearchParams) => {
         if ((item.status === 'done' || !item.status) && hasPlayers) {
             item.firstPlace = getPlayerName(item.players[0].id, state.players);
             item.firstPlaceId = item.players[0].id;
+            item.firstPlacePhotoVersion = getPlayerPhotoVersion(item.players[0].id, state.players);
             if (item.players[1]) {
                 item.secondPlace = getPlayerName(item.players[1].id, state.players);
                 item.secondPlaceId = item.players[1].id;
+                item.secondPlacePhotoVersion = getPlayerPhotoVersion(item.players[1].id, state.players);
             }
         }
         return item;

@@ -16,10 +16,14 @@
   </div>
 </header>
 <div class="wrapper">
-  <h2 class="profile-name
-    {{#ifEquals ranking 1}}first-place{{/ifEquals}}
-    {{#ifEquals ranking 2}}second-place{{/ifEquals}}
-    {{#ifEquals ranking 3}}third-place{{/ifEquals}}">{{player_name}}
+  <h2 class="profile-name">
+    <span class="player-label player-label--heading">
+      <img class="player-thumbnail" src="/api/player-photo?player_id={{player_id}}&v={{photo_version}}" alt="" aria-hidden="true" onerror="this.onerror=null;this.src='/assets/players/default.png';">
+      <span class="
+        {{#ifEquals ranking 1}}first-place{{/ifEquals}}
+        {{#ifEquals ranking 2}}second-place{{/ifEquals}}
+        {{#ifEquals ranking 3}}third-place{{/ifEquals}}">{{player_name}}</span>
+    </span>
   </h2>
   {{#if results}}
     <table class="details">

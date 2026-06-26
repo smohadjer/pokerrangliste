@@ -36,12 +36,18 @@
           {{#ifCond this.status '==' 'pending'}} ? {{/ifCond}}
           {{#ifCond this.status '==' 'upcoming'}} ? {{/ifCond}}
           {{#ifCond this.status '==' 'done'}}
-            <a data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.firstPlaceId}}">{{this.firstPlace}}</a>
+            <a class="player-link" data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.firstPlaceId}}">
+              <img class="player-thumbnail" src="/api/player-photo?player_id={{this.firstPlaceId}}&v={{this.firstPlacePhotoVersion}}" alt="" aria-hidden="true" onerror="this.onerror=null;this.src='/assets/players/default.png';">
+              <span>{{this.firstPlace}}</span>
+            </a>
           {{/ifCond}}
 
           {{!-- for backward compatibility --}}
           {{#unless this.status }}
-            <a data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.firstPlaceId}}">{{this.firstPlace}}</a>
+            <a class="player-link" data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.firstPlaceId}}">
+              <img class="player-thumbnail" src="/api/player-photo?player_id={{this.firstPlaceId}}&v={{this.firstPlacePhotoVersion}}" alt="" aria-hidden="true" onerror="this.onerror=null;this.src='/assets/players/default.png';">
+              <span>{{this.firstPlace}}</span>
+            </a>
           {{/unless}}
          </td>
         <td>
@@ -49,14 +55,20 @@
           {{#ifCond this.status '==' 'upcoming'}} ? {{/ifCond}}
           {{#ifCond this.status '==' 'done'}}
             {{#if this.secondPlaceId}}
-              <a data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.secondPlaceId}}">{{this.secondPlace}}</a>
+              <a class="player-link" data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.secondPlaceId}}">
+                <img class="player-thumbnail" src="/api/player-photo?player_id={{this.secondPlaceId}}&v={{this.secondPlacePhotoVersion}}" alt="" aria-hidden="true" onerror="this.onerror=null;this.src='/assets/players/default.png';">
+                <span>{{this.secondPlace}}</span>
+              </a>
             {{/if}}
           {{/ifCond}}
 
           {{!-- for backward compatibility --}}
           {{#unless this.status }}
             {{#if this.secondPlaceId}}
-              <a data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.secondPlaceId}}">{{this.secondPlace}}</a>
+              <a class="player-link" data-animation="slideInRTL" href="/profile?league_id={{../league_id}}&season_id={{../season_id}}&player_id={{this.secondPlaceId}}">
+                <img class="player-thumbnail" src="/api/player-photo?player_id={{this.secondPlaceId}}&v={{this.secondPlacePhotoVersion}}" alt="" aria-hidden="true" onerror="this.onerror=null;this.src='/assets/players/default.png';">
+                <span>{{this.secondPlace}}</span>
+              </a>
             {{/if}}
           {{/unless}}
          </td>

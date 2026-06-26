@@ -8,6 +8,8 @@ export const allTimeSeason = {
     name: 'All-Time'
 }
 
+export const missingPlayerName = 'Anonym';
+
 export const getSeasonName = (season_id: string | null, seasons: Season[]) => {
     return season_id
         ? seasons.find(item => item._id == season_id)?.name
@@ -16,7 +18,12 @@ export const getSeasonName = (season_id: string | null, seasons: Season[]) => {
 
 export const getPlayerName = (playerId: string, players: PlayerDB[]) => {
     const player = players.find(player => player._id === playerId);
-    return player?.name;
+    return player?.name ?? missingPlayerName;
+}
+
+export const getPlayerPhotoVersion = (playerId: string, players: PlayerDB[]) => {
+    const player = players.find(player => player._id === playerId);
+    return player?.photo_updated_at ?? 'default';
 }
 
 const sortByDate = (tournaments: Tournament[]) => {
@@ -142,6 +149,7 @@ export const getPlayers = (tournaments: Tournament[]) => {
             clone.prize = getPrize(clone, tournament);
             clone.games = 1;
             clone.name = getPlayerName(clone.id, store.getState().players);
+            clone.photo_version = getPlayerPhotoVersion(clone.id, store.getState().players);
 
             const foundPlayer = players.find(player => player.id === clone.id);
 
