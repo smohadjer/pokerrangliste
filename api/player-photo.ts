@@ -1,7 +1,10 @@
 import { MongoClient, ObjectId } from 'mongodb';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import { database_uri, database_name } from './_config.js';
 
 const client = new MongoClient(database_uri);
+const defaultImagePath = path.join(process.cwd(), 'public', 'assets', 'players', 'default.png');
 
 export default async (req, res) => {
   try {
@@ -26,7 +29,10 @@ export default async (req, res) => {
       return;
     }
 
-    res.status(404).end();
+    const defaultImage = await readFile(defaultImagePath);
+    res.setHeader('Content-Type', 'image/png');
+    res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+    res.status(200).send(defaultImage);
   } catch (error) {
     res.status(404).end();
   } finally {
