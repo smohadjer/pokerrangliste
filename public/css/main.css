@@ -94,13 +94,13 @@ h3 {
 }
 
 .player-label--heading .player-thumbnail {
-    width: 3rem;
-    height: 3rem;
+    width: 5rem;
+    height: 5rem;
 }
 
 .player-thumbnail {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 2rem;
+    height: 2rem;
     flex-shrink: 0;
     border-radius: 999px;
     object-fit: cover;
@@ -114,18 +114,27 @@ h3 {
 .first-place.before:before {
     content: '🥇';
     display: inline-block;
+    font-size: 1.3em;
+    vertical-align: middle;
+    margin-left: 0.1em;
 }
 
 .second-place:after,
 .second-place.before:before {
     content: '🥈';
     display: inline-block;
+    font-size: 1.3em;
+    vertical-align: middle;
+    margin-left: 0.1em;
 }
 
 .third-place:after,
 .third-place.before:before {
     content: '🥉';
     display: inline-block;
+    font-size: 1.3em;
+    vertical-align: middle;
+    margin-left: 0.1em;
 }
 
 .first-place.before:after,
@@ -166,7 +175,7 @@ h3 {
     }
 
     td {
-        padding: 0 10px 0 0;
+        padding: 3px 10px 3px 0;
         text-align: left;
         font-size: 1.1em;
     }
