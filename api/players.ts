@@ -17,20 +17,32 @@ export default async (req, res) => {
     await client.connect();
     const database = client.db(database_name);
     const collection = database.collection('players');
+    const leagues = database.collection('leagues');
+    const tournaments = database.collection('tournaments');
 
     if (req.method === 'GET') {
       const league_id = req.query.league_id;
+      const league = typeof league_id === 'string'
+        ? await leagues.findOne({ _id: ObjectId.createFromHexString(league_id) })
+        : null;
+      const tenant_id = league?.tenant_id;
       const id = req.query?.id;
       const name = req.query?.name;
+      if (!tenant_id) {
+        throw new Error('Valid league_id is required');
+      }
+
       if (id || name) {
         const query = id ? {
-          league_id,
-          _id: new ObjectId(id)
+          tenant_id,
+          _id: new ObjectId(id),
+          deleted_at: { $exists: false }
         } : {
-          league_id,
-          name: name
+          tenant_id,
+          name: name,
+          deleted_at: { $exists: false }
         };
-        const doc = await collection.findOne(query);
+        const doc = await collection.findOne(query, { collation: { locale: 'en', strength: 2 } });
         if (doc) {
           delete doc.photo_content_type;
           delete doc.photo_data_base64;
@@ -39,7 +51,7 @@ export default async (req, res) => {
           res.status(404).end();
         }
       } else {
-        const docs = await fetchAllPlayers(collection, league_id);
+        const docs = await fetchAllPlayers(collection, tenant_id);
         res.json(docs);
       }
     }
@@ -47,15 +59,72 @@ export default async (req, res) => {
     if (req.method === 'POST') {
       const league_id = req.body.league_id;
       let savedPhotoBytes: number | undefined;
-      const leagues = database.collection('leagues');
       if (!await userOwnsLeague(league_id, req, leagues)) {
         throw new Error('Either league id is not valid or Logged-in user is not owner of the league');
       }
+      const league = await leagues.findOne({ _id: ObjectId.createFromHexString(league_id) });
+      const tenant_id = league?.tenant_id;
+      if (!tenant_id) {
+        throw new Error('League is missing tenant_id');
+      }
 
       const playerId = req.body.player_id;
+      const formAction = req.body.form_action;
       const name = sanitize(req.body.name);
       const hasNameUpdate = typeof name === 'string' && name.length > 0;
       const hasPhotoUpdate = typeof req.body.photo_data_url === 'string' && req.body.photo_data_url.length > 0;
+
+      if (formAction === 'delete') {
+        if (!playerId || !ObjectId.isValid(playerId)) {
+          throw new Error('Valid player_id is required');
+        }
+
+        const playerObjectId = ObjectId.createFromHexString(playerId);
+        const player = await collection.findOne({
+          _id: playerObjectId,
+          tenant_id,
+          deleted_at: { $exists: false }
+        });
+        if (!player) {
+          return res.status(404).json({ error: 'Player not found' });
+        }
+
+        const existingReferences = await tournaments.countDocuments({
+          $or: [
+            { players: { $elemMatch: { id: playerId } } },
+            { bounties: { $elemMatch: { id: playerId } } }
+          ]
+        });
+        if (existingReferences > 0) {
+          return res.status(409).json({
+            error: 'Only players who have never played in a tournament can be deleted.'
+          });
+        }
+
+        const result = await collection.updateOne(
+          {
+            _id: playerObjectId,
+            tenant_id,
+            deleted_at: { $exists: false }
+          },
+          {
+            $set: {
+              deleted_at: new Date().toISOString()
+            }
+          }
+        );
+
+        if (result.modifiedCount === 0) {
+          throw new Error('Delete failed!');
+        }
+
+        const players = await fetchAllPlayers(collection, tenant_id);
+        return res.json({
+          data: {
+            players
+          }
+        });
+      }
 
       if (!playerId && !hasNameUpdate) {
         throw new Error('This field is required');
@@ -67,26 +136,31 @@ export default async (req, res) => {
         }
 
         if (hasNameUpdate) {
-          const doc = await findNameConflict(collection, { league_id }, name, playerId);
+          const doc = await findNameConflict(collection, { tenant_id }, name, playerId);
           if (doc) {
             throw new Error(`Name ${name} is already taken`);
           }
-          await editPlayerName(name, playerId, collection, league_id);
+          await editPlayerName(name, playerId, collection, tenant_id);
         }
 
         if (hasPhotoUpdate) {
-          savedPhotoBytes = await savePlayerPhoto(collection, league_id, req.body.photo_data_url, playerId);
+          savedPhotoBytes = await savePlayerPhoto(
+            collection,
+            tenant_id,
+            req.body.photo_data_url,
+            playerId
+          );
         }
       } else {
-        const doc = await findNameConflict(collection, { league_id }, name);
+        const doc = await findNameConflict(collection, { tenant_id }, name);
         if (doc) {
           throw new Error(`Name ${name} is already taken`);
         }
-        const response = await addNewPlayer(name, collection, league_id);
+        const response = await addNewPlayer(name, collection, league_id, tenant_id);
         if (hasPhotoUpdate) {
           savedPhotoBytes = await savePlayerPhoto(
             collection,
-            league_id,
+            tenant_id,
             req.body.photo_data_url,
             response.insertedId.toString()
           );
@@ -94,7 +168,7 @@ export default async (req, res) => {
       }
 
       // return all players so state in app can be updated from response
-      const players = await fetchAllPlayers(collection, league_id);
+      const players = await fetchAllPlayers(collection, tenant_id);
       res.json({
         data: {
           players,
@@ -103,20 +177,6 @@ export default async (req, res) => {
       });
     }
 
-    if (req.method === 'DELETE') {
-      const name = req.query.name;
-      const id = req.query.id
-
-      console.log(name, id);
-
-      const result = await collection.deleteOne( { name: req.query.name });
-      console.log(result);
-      if (result.deletedCount > 0) {
-        res.end();
-      } else {
-        res.json({'Error': 'Delete failed!'});
-      }
-    }
   } catch (e) {
     console.error(e);
     res.status(500).json({error: e.message});
@@ -125,7 +185,12 @@ export default async (req, res) => {
   }
 }
 
-async function savePlayerPhoto(collection, league_id: string, photoDataUrl: string, playerId: string) {
+async function savePlayerPhoto(
+  collection,
+  tenant_id: string,
+  photoDataUrl: string,
+  playerId: string
+) {
   const matches = photoDataUrl.match(/^data:(image\/png);base64,(.+)$/);
   const maxStoredPhotoSizeBytes = 100 * 1024;
   if (!matches) {
@@ -135,7 +200,10 @@ async function savePlayerPhoto(collection, league_id: string, photoDataUrl: stri
   const optimizedPhoto = await optimizePlayerPhoto(matches[2], maxStoredPhotoSizeBytes);
 
   const response = await collection.updateOne(
-    { league_id, _id: ObjectId.createFromHexString(playerId) },
+    {
+      _id: ObjectId.createFromHexString(playerId),
+      tenant_id
+    },
     {
       $set: {
         photo_content_type: optimizedPhoto.contentType,

@@ -20,6 +20,8 @@ type NamedDocument = {
   name: string;
   league_id?: string;
   tenant_id?: string;
+  legacy_league_ids?: string[];
+  deleted_at?: string;
   photo_content_type?: string;
   photo_data_base64?: string;
 };
@@ -90,7 +92,11 @@ export const findNameConflict = async (
   name: string,
   currentId?: string,
 ): Promise<NamedDocument | null> => {
-  const query: Record<string, unknown> = { ...scope, name };
+  const query: Record<string, unknown> = {
+    ...scope,
+    name,
+    deleted_at: { $exists: false }
+  };
   if (currentId) {
     query._id = { $ne: ObjectId.createFromHexString(currentId) };
   }
@@ -104,10 +110,13 @@ export const findNameConflict = async (
 
 export const fetchAllPlayers = async (
   collection: Collection<NamedDocument>,
-  league_id: string,
+  tenant_id: string,
 ) => {
     return await collection.find(
-      { league_id },
+      {
+        tenant_id,
+        deleted_at: { $exists: false }
+      },
       { projection: { photo_content_type: 0, photo_data_base64: 0 } }
     )
       // using collation so sort is case insensitive
@@ -144,13 +153,14 @@ export const fetchPlayerById = async (
   playerId: string,
 ) => {
     return await collection.findOne({
-      _id: ObjectId.createFromHexString(playerId)
+      _id: ObjectId.createFromHexString(playerId),
+      deleted_at: { $exists: false }
     });
 };
 
 export const validateTournamentPlayersExist = async (
   collection: Collection<NamedDocument>,
-  league_id: string,
+  tenant_id: string,
   players: Player[] = [],
 ): Promise<ValidationResult> => {
   if (players.length === 0) {
@@ -185,7 +195,8 @@ export const validateTournamentPlayersExist = async (
   });
 
   const existingPlayers = await collection.find({
-    league_id,
+    tenant_id,
+    deleted_at: { $exists: false },
     _id: { $in: objectIds }
   }, {
     projection: { _id: 1 }
@@ -401,8 +412,9 @@ export const addNewPlayer = async (
   name: string,
   collection: Collection<NamedDocument>,
   league_id: string,
+  tenant_id: string,
 ): Promise<InsertOneResult<NamedDocument>> => {
-  const response = await collection.insertOne({name, league_id});
+  const response = await collection.insertOne({name, league_id, tenant_id});
   console.log(response);
   return response;
 };
@@ -430,9 +442,12 @@ export const editPlayerName = async (
   name: string,
   id: string,
   collection: Collection<NamedDocument>,
-  league_id: string,
+  tenant_id: string,
 ): Promise<void> => {
-  const query = {league_id, _id: ObjectId.createFromHexString(id)};
+  const query = {
+    _id: ObjectId.createFromHexString(id),
+    tenant_id
+  };
   const response = await collection.updateOne(query, {
     $set: {name: name}
   });

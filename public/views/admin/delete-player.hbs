@@ -4,9 +4,10 @@
         {{> backLink }}
         <section>
             <h2>Delete players</h2>
-            <form method="DELETE" action="/api/players">
-                <p>Only palyers who have never played in a tournament can be deleted.</p>
+            <form method="POST" action="/api/players">
+                <p>Only players who have never played in a tournament can be deleted.</p>
                 <input type="hidden" name="league_id" value="{{league_id}}">
+                <input type="hidden" name="form_action" value="delete">
                 <div class="row">
                     <label>Players</label>
                     <select id="player_delete_dropdown" name="player_id">
@@ -14,8 +15,9 @@
                     </select>
                 </div>
                 <div class="submit">
-                    <button>Submit</button>
+                    <button>Delete player</button>
                 </div>
+                <p class="error"></p>
             </form>
         </section>
     </main>

@@ -4,8 +4,7 @@ import { populateSelect } from '../lib/utils.js';
 
 export const hydrateLeaguesDropdown = async (container: HTMLElement, league_id?: string) => {
     const select: HTMLSelectElement = container.querySelector('#leagues_dropdown')!;
-    const state = store.getState();
-    const leagues = state.leagues;
+    const leagues = store.getState().leagues;
     populateSelect(select, leagues);
     select.closest('form')?.classList.remove('loading');
 
@@ -14,6 +13,7 @@ export const hydrateLeaguesDropdown = async (container: HTMLElement, league_id?:
     }
 
     select.addEventListener('change', (event) => {
+        const state = store.getState();
         // reset state by setting dataIsState to true so data for new event is fetched
         store.setState({
             ...state,

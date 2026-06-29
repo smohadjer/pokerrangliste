@@ -33,12 +33,15 @@ export async function router(
         params.set('league_id', league_id);
     }
 
-    if (state.dataIsStale) {
+    const leagueChanged = state.currentLeagueId !== league_id;
+    if (state.dataIsStale || leagueChanged) {
         console.log('data is stale');
         const data: State | undefined = await fetchData(league_id);
         store.setState({
             ...state,
             ...data,
+            rankings: {},
+            currentLeagueId: league_id,
             dataIsStale: false
         });
         state = store.getState();
