@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 - Added an `npm run export:db` command to export all MongoDB collections as Extended JSON files.
 - Added a MongoDB export script that requires `db_uri` and writes per-collection backups plus a manifest file.
 - Changed the default backup output location from `database_backup/` to repo-ignored `backups/`.
+- Added tenant-scoped player reads and tournament player validation so the same player can be reused across leagues for a tenant.
+- Added a dry-run/apply player deduplication migration that can merge duplicate per-league player records and rewrite tournament references.
+- Added dry-run/apply repair and cleanup scripts for unreferenced players, legacy league-linked players, and tournament/player reference recovery from backups.
+- Added admin delete-player support with soft deletes and blocking validation when a player is still referenced by tournaments.
+- Fixed league switching in the SPA by refreshing tenant-scoped state when the selected league changes.
+- Removed runtime fallbacks that queried players by `league_id`, so the app now relies on `tenant_id` for player reads, uniqueness checks, photo updates, and tournament player validation.
 
 ## [1.4.4]
 - Updated the timer next blinds label from `Next level:` to `Next:`.

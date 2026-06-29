@@ -87,6 +87,11 @@ function hydrate(
         populateSelect(select, state.players);
     }
 
+    if (view === '/admin/delete-player') {
+        const select: HTMLSelectElement = container.querySelector('#player_delete_dropdown')!;
+        populateSelect(select, state.players);
+    }
+
     if (view === '/admin/add-player' || view === '/admin/edit-player') {
         showPlayerPhotoFlash(container);
     }

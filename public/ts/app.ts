@@ -135,8 +135,10 @@ export async function submitHandler(e: SubmitEvent) {
         //const body = (form.method === 'DELETE') ? JSON.stringify({}) : JSON.stringify(object);
         //const url =  (form.method === 'DELETE') ? `${form.action}/${object.player_id}` : form.action;
 
+        const method = (form.getAttribute('method') || form.method || 'GET').toUpperCase();
+
         fetch(form.action, {
-            method: form.method,
+            method,
             body: data
         })
         .then(response => response.json())

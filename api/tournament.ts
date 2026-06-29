@@ -38,7 +38,12 @@ export default async (req, res) => {
         seasons: await seasonsCol.find({league_id}).sort({ name: -1 }).toArray(),
         // Exclude stored photo blobs from the SPA bootstrap payload.
         // Profile photos are fetched separately via /api/player-photo.
-        players: await fetchAllPlayers(playersCol, league_id),
+        players: league?.tenant_id
+          ? await fetchAllPlayers(
+              playersCol,
+              league.tenant_id
+            )
+          : [],
         timers,
         tournaments: tournaments
       };
@@ -50,6 +55,11 @@ export default async (req, res) => {
       const leagues = database.collection('leagues');
       if (!await userOwnsLeague(league_id, req, leagues)) {
         throw new Error('Either league id is not valid or Logged-in user is not owner of the league');
+      }
+      const league = await leagues.findOne({ _id: ObjectId.createFromHexString(league_id) });
+      const tenant_id = league?.tenant_id;
+      if (!tenant_id) {
+        throw new Error('League is missing tenant_id');
       }
 
       if (req.body.tournament_id) {
@@ -91,7 +101,7 @@ export default async (req, res) => {
           if (responseObject.document) {
             const playerValidation = await validateTournamentPlayersExist(
               playersCol,
-              league_id,
+              tenant_id,
               submittedPlayers
             );
             if (!playerValidation.isValid) {
@@ -122,7 +132,7 @@ export default async (req, res) => {
         if (responseObject.document) {
           const playerValidation = await validateTournamentPlayersExist(
             playersCol,
-            league_id,
+            tenant_id,
             submittedPlayers
           );
           if (!playerValidation.isValid) {

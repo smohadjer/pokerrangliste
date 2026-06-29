@@ -4,6 +4,7 @@ import { deepClone } from './utils.js';
 class Store {
     #state: State = {
         dataIsStale: true,
+        currentLeagueId: undefined,
         leagues: [],
         tournaments: [],
         players: [],
