@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [1.4.5]
+- Added an `npm run export:db` command to export all MongoDB collections as Extended JSON files.
+- Added a MongoDB export script that requires `db_uri` and writes per-collection backups plus a manifest file.
+- Changed the default backup output location from `database_backup/` to repo-ignored `backups/`.
+
 ## [1.4.4]
 - Updated the timer next blinds label from `Next level:` to `Next:`.
 - Increased the timer next blinds font size to `2rem`.
