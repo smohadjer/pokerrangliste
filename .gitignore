@@ -3,7 +3,8 @@ node_modules
 .vercel
 public/js
 middlewares/*.js
-
+backups/
+database_backup/export_*/
 
 
 

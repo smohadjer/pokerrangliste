@@ -1,12 +1,13 @@
 {
   "name": "tournament-organizer",
-  "version": "1.4.4",
+  "version": "1.4.5",
   "description": "",
   "type": "module",
   "scripts": {
     "bundle:app": "esbuild public/ts/app.ts --bundle --format=esm --sourcemap --outfile=public/js/app.js --minify",
     "build": "npm run bundle:app",
-    "start": "npm run bundle:app -- --watch=forever"
+    "start": "npm run bundle:app -- --watch=forever",
+    "export:db": "node scripts/export-mongodb.js"
   },
   "author": "Saeid Mohadjer",
   "license": "ISC",
