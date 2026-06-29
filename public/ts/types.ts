@@ -63,6 +63,7 @@ export interface Tournament {
 
 export type State = {
   dataIsStale: boolean;
+  currentLeagueId?: string;
   leagues: League[];
   tournaments: Tournament[];
   seasons: Season[];

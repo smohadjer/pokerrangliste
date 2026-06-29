@@ -7,7 +7,17 @@
     "bundle:app": "esbuild public/ts/app.ts --bundle --format=esm --sourcemap --outfile=public/js/app.js --minify",
     "build": "npm run bundle:app",
     "start": "npm run bundle:app -- --watch=forever",
-    "export:db": "node scripts/export-mongodb.js"
+    "export:db": "node scripts/export-mongodb.js",
+    "find:players:unreferenced": "node scripts/find-unreferenced-players.js",
+    "delete:players:unreferenced": "node scripts/find-unreferenced-players.js --apply",
+    "delete:players:league": "node scripts/delete-players-by-league.js",
+    "delete:players:league:apply": "node scripts/delete-players-by-league.js --apply",
+    "repair:players:refs": "node scripts/repair-player-references-from-backup.js",
+    "repair:players:refs:apply": "node scripts/repair-player-references-from-backup.js --apply",
+    "restore:tournaments:backup": "node scripts/restore-tournament-fields-from-backup.js",
+    "restore:tournaments:backup:apply": "node scripts/restore-tournament-fields-from-backup.js --apply",
+    "migrate:players:dedupe": "node scripts/merge-duplicate-players.js",
+    "migrate:players:dedupe:apply": "node scripts/merge-duplicate-players.js --apply"
   },
   "author": "Saeid Mohadjer",
   "license": "ISC",
